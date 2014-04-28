@@ -3,12 +3,12 @@ pyqueue
 
 Postfix queue control python tool
 
-Author: Denis Pompilio (jawa) <denis.pompilio@gmail.org>
-Contact : Denis Pompilio (jawa) <denis.pompilio@gmail.org>
+Author: Denis 'jawa' Pompilio <denis.pompilio@gmail.com>
+Contact : Denis 'jawa' Pompilio <denis.pompilio@gmail.com>
 Sources : https://github.com/outini/pyqueue/
 
 This project is still in development and might be very unstable for now.
-A full content documentation, would soon be online.
+A full content documentation, is online at http://outini.github.io/pyqueue/.
 
 What you need
 -------------
