@@ -136,10 +136,12 @@
 
 <span class="sd">    .. seealso::</span>
 
-<span class="sd">       Python module:</span>
-<span class="sd">         :mod:`email` -- An email and MIME handling package</span>
+<span class="sd">        Python modules:</span>
+<span class="sd">            :mod:`email` -- An email and MIME handling package</span>
 
-<span class="sd">       :rfc:`822` -- Standard for ARPA Internet Text Messages</span>
+<span class="sd">            :class:`email.message.Message` -- Representing an email message</span>
+
+<span class="sd">        :rfc:`822` -- Standard for ARPA Internet Text Messages</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 </div>
 <div class="viewcode-block" id="Mail"><a class="viewcode-back" href="../index.html#pyqueue.Mail">[docs]</a><span class="k">class</span> <span class="nc">Mail</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -244,6 +246,11 @@
 <span class="sd">        Parsed headers become attributes and are retrieved with help of</span>
 <span class="sd">        :func:`~email.message_from_string` function provided by the</span>
 <span class="sd">        :mod:`email` module.</span>
+
+<span class="sd">        .. seealso::</span>
+<span class="sd">            Postfix manual:</span>
+<span class="sd">                `postcat`_ -- Show Postfix queue file contents</span>
+<span class="sd"> </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">child</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">postcat_cmd</span><span class="p">,</span>
                                  <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
@@ -269,9 +276,6 @@
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">head</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">parsed</span> <span class="o">=</span> <span class="bp">True</span>
-        <span class="c">#for part in message.walk():</span>
-        <span class="c">#    print part.get_content_type()</span>
-            <span class="c">#print dir(part)</span>
 </div>
     <span class="nd">@debug</span>
 <div class="viewcode-block" id="Mail.dump"><a class="viewcode-back" href="../index.html#pyqueue.Mail.dump">[docs]</a>    <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -375,12 +379,12 @@
 <span class="sd">        Get Postfix postqueue command output.</span>
 
 <span class="sd">        This method used the postfix command defined in</span>
-<span class="sd">        :attr:`~pyqueue.PostqueueStore.postqueue_cmd` attribute to view the</span>
-<span class="sd">        mails queue content.</span>
+<span class="sd">        :attr:`~PostqueueStore.postqueue_cmd` attribute to view the mails queue</span>
+<span class="sd">        content.</span>
 
-<span class="sd">        Command defined in :attr:`~pyqueue.PostqueueStore.postqueue_cmd`</span>
-<span class="sd">        attribute is runned using a :class:`subprocess.Popen` instance. Output</span>
-<span class="sd">        headers (1 line) and footers (2 lines) are excluded from result.</span>
+<span class="sd">        Command defined in :attr:`~PostqueueStore.postqueue_cmd` attribute is</span>
+<span class="sd">        runned using a :class:`subprocess.Popen` instance. Output headers</span>
+<span class="sd">        (1 line) and footers (2 lines) are excluded from result.</span>
 
 <span class="sd">        :return: Command&#39;s output lines without headers and footers.</span>
 <span class="sd">        :rtype: :func:`list`</span>
@@ -418,12 +422,29 @@
 <div class="viewcode-block" id="PostqueueStore._load_from_postqueue"><a class="viewcode-back" href="../index.html#pyqueue.PostqueueStore._load_from_postqueue">[docs]</a>    <span class="k">def</span> <span class="nf">_load_from_postqueue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load content from postfix queue using postqueue command output.</span>
-<span class="sd">        </span>
-<span class="sd">        .. todo:: Documentation</span>
+
+<span class="sd">        Output lines from :attr:`~PostqueueStore._get_postqueue_output` are</span>
+<span class="sd">        parsed to build :class:`Mail` objects. Sample Postfix queue control</span>
+<span class="sd">        tool (`postqueue`_) output::</span>
+
+<span class="sd">            C0004979687     4769 Tue Apr 29 06:35:05  sender@domain.com</span>
+<span class="sd">            (error message from mx.remote1.org with parenthesis)</span>
+<span class="sd">                                                     first.rcpt@remote1.org</span>
+<span class="sd">            (error message from mx.remote2.org with parenthesis)</span>
+<span class="sd">                                                     second.rcpt@remote2.org</span>
+<span class="sd">                                                     third.rcpt@remote2.org</span>
+
+<span class="sd">        Parsing rules are pretty simple:</span>
+
+<span class="sd">        - Line starts with a valid :attr:`Mail.qid`: create new :class:`Mail`</span>
+<span class="sd">          object with :attr:`~Mail.qid`, :attr:`~Mail.size`, :attr:`~Mail.date`</span>
+<span class="sd">          and :attr:`~Mail.sender` informations from line.</span>
+<span class="sd">        - Line starts with a parenthesis: store error messages to last created</span>
+<span class="sd">          :class:`Mail` object&#39;s :attr:`~Mail.errors` attribute.</span>
+<span class="sd">        - Any other matches: add new recipient to the :attr:`~Mail.recipients`</span>
+<span class="sd">          attribute of the last created :class:`Mail` object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">mail</span> <span class="o">=</span> <span class="bp">None</span>
-
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_postqueue_output</span><span class="p">():</span>
             <span class="c"># Mails are blank line separated</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
@@ -529,6 +550,10 @@
 <span class="sd">                   hold: -h</span>
 <span class="sd">                release: -H</span>
 <span class="sd">                requeue: -r</span>
+
+<span class="sd">            .. seealso::</span>
+<span class="sd">                Postfix manual:</span>
+<span class="sd">                    `postsuper`_ -- Postfix superintendent</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">postsuper_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;postsuper&quot;</span><span class="p">]</span>
@@ -566,35 +591,27 @@
 
         <span class="k">return</span> <span class="p">[</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">stderr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span> <span class="p">]</span>
 </div>
-<div class="viewcode-block" id="QueueControl.delete_messages"><a class="viewcode-back" href="../index.html#pyqueue.QueueControl.delete_messages">[docs]</a>    <span class="k">def</span> <span class="nf">delete_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>
+<div class="viewcode-block" id="QueueControl.delete_messages"><a class="viewcode-back" href="../index.html#pyqueue.QueueControl.delete_messages">[docs]</a>    <span class="k">def</span> <span class="nf">delete_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>  <span class="c"># TODO: documentation</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Delete several messages from postfix mail queue</span>
-<span class="sd">        </span>
-<span class="sd">        .. todo:: Documentation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operate</span><span class="p">(</span><span class="s">&#39;delete&#39;</span><span class="p">,</span> <span class="n">messages</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="QueueControl.hold_messages"><a class="viewcode-back" href="../index.html#pyqueue.QueueControl.hold_messages">[docs]</a>    <span class="k">def</span> <span class="nf">hold_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>
+<div class="viewcode-block" id="QueueControl.hold_messages"><a class="viewcode-back" href="../index.html#pyqueue.QueueControl.hold_messages">[docs]</a>    <span class="k">def</span> <span class="nf">hold_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>  <span class="c"># TODO: documentation</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Hold several messages from postfix mail queue</span>
-<span class="sd">        </span>
-<span class="sd">        .. todo:: Documentation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operate</span><span class="p">(</span><span class="s">&#39;hold&#39;</span><span class="p">,</span> <span class="n">messages</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="QueueControl.release_messages"><a class="viewcode-back" href="../index.html#pyqueue.QueueControl.release_messages">[docs]</a>    <span class="k">def</span> <span class="nf">release_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>
+<div class="viewcode-block" id="QueueControl.release_messages"><a class="viewcode-back" href="../index.html#pyqueue.QueueControl.release_messages">[docs]</a>    <span class="k">def</span> <span class="nf">release_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>  <span class="c"># TODO: documentation</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Release several messages from postfix mail queue</span>
-<span class="sd">        </span>
-<span class="sd">        .. todo:: Documentation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operate</span><span class="p">(</span><span class="s">&#39;release&#39;</span><span class="p">,</span> <span class="n">messages</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="QueueControl.requeue_messages"><a class="viewcode-back" href="../index.html#pyqueue.QueueControl.requeue_messages">[docs]</a>    <span class="k">def</span> <span class="nf">requeue_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>
+<div class="viewcode-block" id="QueueControl.requeue_messages"><a class="viewcode-back" href="../index.html#pyqueue.QueueControl.requeue_messages">[docs]</a>    <span class="k">def</span> <span class="nf">requeue_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>  <span class="c"># TODO: documentation</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Requeue several messages from postfix mail queue</span>
-<span class="sd">        </span>
-<span class="sd">        .. todo:: Documentation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operate</span><span class="p">(</span><span class="s">&#39;requeue&#39;</span><span class="p">,</span> <span class="n">messages</span><span class="p">)</span>
 
@@ -631,11 +648,9 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 
-<div class="viewcode-block" id="MailSelector.filter_registration"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.filter_registration">[docs]</a>    <span class="k">def</span> <span class="nf">filter_registration</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
+<div class="viewcode-block" id="MailSelector.filter_registration"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.filter_registration">[docs]</a>    <span class="k">def</span> <span class="nf">filter_registration</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>  <span class="c"># TODO: documentation</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Decorator to register applied filter.</span>
-<span class="sd">        </span>
-<span class="sd">        .. todo:: Documentation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nd">@wraps</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -644,11 +659,9 @@
             <span class="k">return</span> <span class="n">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">wrapper</span>
 </div>
-<div class="viewcode-block" id="MailSelector.reset"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MailSelector.reset"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c"># TODO: documentation</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reset mail selector with initial store mails list.</span>
-<span class="sd">        </span>
-<span class="sd">        .. todo:: Documentation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
         <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
@@ -656,11 +669,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span> <span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="o">.</span><span class="n">mails</span> <span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filters</span> <span class="o">=</span> <span class="p">[]</span>
 </div>
-<div class="viewcode-block" id="MailSelector.replay_filters"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.replay_filters">[docs]</a>    <span class="k">def</span> <span class="nf">replay_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MailSelector.replay_filters"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.replay_filters">[docs]</a>    <span class="k">def</span> <span class="nf">replay_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c"># TODO: documentation</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reset selection with store content and replay registered filters.</span>
-<span class="sd">        </span>
-<span class="sd">        .. todo:: Documentation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
         <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
@@ -674,11 +685,9 @@
 </div>
     <span class="nd">@debug</span>
     <span class="nd">@filter_registration</span>
-<div class="viewcode-block" id="MailSelector.lookup_status"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.lookup_status">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+<div class="viewcode-block" id="MailSelector.lookup_status"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.lookup_status">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>  <span class="c"># TODO: documentation</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Lookup mails with specified postqueue status.</span>
-<span class="sd">        </span>
-<span class="sd">        .. todo:: Documentation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">status</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
             <span class="n">status</span> <span class="o">=</span> <span class="p">[</span><span class="n">status</span><span class="p">]</span>
@@ -694,11 +703,9 @@
 </div>
     <span class="nd">@debug</span>
     <span class="nd">@filter_registration</span>
-<div class="viewcode-block" id="MailSelector.lookup_sender"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.lookup_sender">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_sender</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">partial</span> <span class="o">=</span> <span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="MailSelector.lookup_sender"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.lookup_sender">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_sender</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">partial</span> <span class="o">=</span> <span class="bp">False</span><span class="p">):</span>  <span class="c"># TODO: documentation</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Lookup mails send from a specific sender.</span>
-<span class="sd">        </span>
-<span class="sd">        .. todo:: Documentation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">partial</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span> <span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
@@ -711,11 +718,9 @@
 </div>
     <span class="nd">@debug</span>
     <span class="nd">@filter_registration</span>
-<div class="viewcode-block" id="MailSelector.lookup_error"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.lookup_error">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_msg</span><span class="p">):</span>
+<div class="viewcode-block" id="MailSelector.lookup_error"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.lookup_error">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_msg</span><span class="p">):</span>  <span class="c"># TODO: documentation</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Lookup mails with specific error message (message may be partial).</span>
-<span class="sd">        </span>
-<span class="sd">        .. todo:: Documentation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span> <span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
                        <span class="k">if</span> <span class="bp">True</span> <span class="ow">in</span> <span class="p">[</span> <span class="bp">True</span> <span class="k">for</span> <span class="n">err</span> <span class="ow">in</span> <span class="n">mail</span><span class="o">.</span><span class="n">errors</span>
@@ -724,19 +729,25 @@
 </div>
     <span class="nd">@debug</span>
     <span class="nd">@filter_registration</span>
-<div class="viewcode-block" id="MailSelector.lookup_date"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.lookup_date">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">1970</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span>
-                          <span class="n">stop</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span> <span class="n">inclusive</span> <span class="o">=</span> <span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="MailSelector.lookup_date"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.lookup_date">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="n">stop</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>   <span class="c"># TODO: documentation</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Lookup mails send on specific date range.</span>
-<span class="sd">        </span>
-<span class="sd">        .. todo:: Documentation</span>
+
+<span class="sd">        :param datetime.datetime start: Start date</span>
+<span class="sd">        :param datetime.datetime stop: Stop date</span>
+<span class="sd">        :return: Matching :class:`Mail` objects from</span>
+<span class="sd">                 :attr:`~PostqueueStore.mails`</span>
+<span class="sd">        :rtype: :func:`list`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="n">inclusive</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
-            <span class="n">start</span> <span class="o">=</span> <span class="n">start</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">stop</span> <span class="o">=</span> <span class="n">stop</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">stop</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Required arguments &#39;start&#39; or &#39;stop&#39; not found&quot;</span><span class="p">)</span>
 
-        <span class="c">#date = datetime.strptime(datestr, &quot;%a %b %d %H:%M:%S %Y&quot;)</span>
+        <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">1970</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">stop</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">stop</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span> <span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
                        <span class="k">if</span> <span class="n">mail</span><span class="o">.</span><span class="n">date</span> <span class="o">&gt;=</span> <span class="n">start</span> <span class="ow">and</span> <span class="n">mail</span><span class="o">.</span><span class="n">date</span> <span class="o">&lt;=</span> <span class="n">stop</span> <span class="p">]</span>
 
@@ -744,11 +755,9 @@
 </div>
     <span class="nd">@debug</span>
     <span class="nd">@filter_registration</span>
-<div class="viewcode-block" id="MailSelector.lookup_size"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.lookup_size">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">smin</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">smax</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="MailSelector.lookup_size"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.lookup_size">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">smin</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">smax</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>  <span class="c"># TODO: documentation</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Lookup mails send with specific size.</span>
-<span class="sd">        </span>
-<span class="sd">        .. todo:: Documentation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">smin</span> <span class="ow">is</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">smax</span> <span class="ow">is</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
