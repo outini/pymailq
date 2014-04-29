@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -9,8 +10,9 @@
     
     <title>pyqueue — Simple Postfix queue management &mdash; PyQueue 0.4 documentation</title>
     
-    <link rel="stylesheet" href="_static/pyramid.css" type="text/css" />
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/print.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
@@ -24,34 +26,24 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="PyQueue 0.4 documentation" href="#" />
-<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Neuton&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
-<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Nobile:regular,italic,bold,bolditalic&amp;subset=latin" type="text/css" media="screen" charset="utf-8" />
-<!--[if lte IE 6]>
-<link rel="stylesheet" href="_static/ie6.css" type="text/css" media="screen" charset="utf-8" />
-<![endif]-->
-
+    <script type="text/javascript" src="_static/theme_extras.js"></script>
+    <link rel="top" title="PyQueue 0.4 documentation" href="#" /> 
   </head>
   <body>
+      <div class="header"><h1 class="heading"><a href="#">
+          <span>PyQueue 0.4 documentation</span></a></h1>
+        <h2 class="heading"><span>pyqueue — Simple Postfix queue management</span></h2>
+      </div>
+      <div class="topnav">
+      
+        <p>
+        <a class="uplink" href="#">Contents</a>
+        </p>
 
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li><a href="#">PyQueue 0.4 documentation</a> &raquo;</li> 
-      </ul>
-    </div>  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body">
-            
+      </div>
+      <div class="content">
+        
+        
   <div class="section" id="pyqueue-simple-postfix-queue-management">
 <h1><a class="reference internal" href="#module-pyqueue" title="pyqueue: Simple Postfix queue management."><tt class="xref py py-mod docutils literal"><span class="pre">pyqueue</span></tt></a> &#8212; Simple Postfix queue management<a class="headerlink" href="#pyqueue-simple-postfix-queue-management" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
@@ -164,7 +156,7 @@ Default used regular expression is: <tt class="docutils literal"><span class="pr
 <blockquote>
 <div><dl class="method">
 <dt id="pyqueue.PostqueueStore.load">
-<tt class="descclassname">PostqueueStore.</tt><tt class="descname">load</tt><big>(</big><em>method=&quot;postqueue&quot;</em><big>)</big><a class="reference internal" href="_modules/pyqueue.html#PostqueueStore.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyqueue.PostqueueStore.load" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">PostqueueStore.</tt><tt class="descname">load</tt><big>(</big><span class="optional">[</span><em>method</em><span class="optional">]</span><big>)</big><a class="reference internal" href="_modules/pyqueue.html#PostqueueStore.load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyqueue.PostqueueStore.load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load content from postfix mails queue.</p>
 <p>Mails are loaded using postqueue command line tool or reading directly
 from spool. The optionnal argument, if present, is a method string and
@@ -397,7 +389,7 @@ operation.</li>
 <dl class="attribute">
 <dt id="pyqueue.MailSelector.mails">
 <tt class="descname">mails</tt><a class="headerlink" href="#pyqueue.MailSelector.mails" title="Permalink to this definition">¶</a></dt>
-<dd><p>Currently selected mails <a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">list()</span></tt></a></p>
+<dd><p>Currently selected <a class="reference internal" href="#pyqueue.Mail" title="pyqueue.Mail"><tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt></a> objects <a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">list()</span></tt></a></p>
 </dd></dl>
 
 <dl class="attribute">
@@ -411,7 +403,7 @@ initialization.</p>
 <dt id="pyqueue.MailSelector.filters">
 <tt class="descname">filters</tt><a class="headerlink" href="#pyqueue.MailSelector.filters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applied filters <a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">list()</span></tt></a> on current selection. Filters list
-entries are tuple containing <tt class="docutils literal"><span class="pre">(function.__name__,</span> <span class="pre">args,</span> <span class="pre">kwargs)</span></tt>
+entries are tuples containing <tt class="docutils literal"><span class="pre">(function.__name__,</span> <span class="pre">args,</span> <span class="pre">kwargs)</span></tt>
 for each applied filters. This list is filled by the
 <a class="reference internal" href="#pyqueue.MailSelector.filter_registration" title="pyqueue.MailSelector.filter_registration"><tt class="xref py py-meth docutils literal"><span class="pre">filter_registration()</span></tt></a> decorator while calling
 filtering methods. It is possible to replay registered filter using
@@ -426,54 +418,124 @@ filtering methods. It is possible to replay registered filter using
 <dt id="pyqueue.MailSelector.filter_registration">
 <tt class="descclassname">MailSelector.</tt><tt class="descname">filter_registration</tt><big>(</big><em>function</em><big>)</big><a class="reference internal" href="_modules/pyqueue.html#MailSelector.filter_registration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyqueue.MailSelector.filter_registration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorator to register applied filter.</p>
+<p>This decorated is used to wrap selection methods <tt class="docutils literal"><span class="pre">lookup_*</span></tt>. It
+registers a <tt class="docutils literal"><span class="pre">(function.func_name,</span> <span class="pre">args,</span> <span class="pre">kwargs)</span></tt> <tt class="xref py py-class docutils literal"><span class="pre">tuple</span></tt> in
+the <a class="reference internal" href="#pyqueue.MailSelector.filters" title="pyqueue.MailSelector.filters"><tt class="xref py py-attr docutils literal"><span class="pre">filters</span></tt></a> attribute.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyqueue.MailSelector.reset">
 <tt class="descclassname">MailSelector.</tt><tt class="descname">reset</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyqueue.html#MailSelector.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyqueue.MailSelector.reset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset mail selector with initial store mails list.</p>
+<p>Selected <a class="reference internal" href="#pyqueue.Mail" title="pyqueue.Mail"><tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt></a> objects are deleted and the
+<a class="reference internal" href="#pyqueue.MailSelector.mails" title="pyqueue.MailSelector.mails"><tt class="xref py py-attr docutils literal"><span class="pre">mails</span></tt></a> attribute is removed for memory releasing
+purpose (with help of <a class="reference external" href="http://docs.python.org/2.7/library/gc.html#gc.collect" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">gc.collect()</span></tt></a>). Attribute
+<a class="reference internal" href="#pyqueue.MailSelector.mails" title="pyqueue.MailSelector.mails"><tt class="xref py py-attr docutils literal"><span class="pre">mails</span></tt></a> is then reinitialized a copy of
+<a class="reference internal" href="#pyqueue.MailSelector.store" title="pyqueue.MailSelector.store"><tt class="xref py py-attr docutils literal"><span class="pre">store</span></tt></a>&#8216;s <a class="reference internal" href="#pyqueue.PostqueueStore.mails" title="pyqueue.PostqueueStore.mails"><tt class="xref py py-attr docutils literal"><span class="pre">mails</span></tt></a> attribute.</p>
+<p>Registered <a class="reference internal" href="#pyqueue.MailSelector.filters" title="pyqueue.MailSelector.filters"><tt class="xref py py-attr docutils literal"><span class="pre">filters</span></tt></a> are also emptied.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyqueue.MailSelector.replay_filters">
 <tt class="descclassname">MailSelector.</tt><tt class="descname">replay_filters</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyqueue.html#MailSelector.replay_filters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyqueue.MailSelector.replay_filters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset selection with store content and replay registered filters.</p>
+<p>Like with the <a class="reference internal" href="#pyqueue.MailSelector.reset" title="pyqueue.MailSelector.reset"><tt class="xref py py-meth docutils literal"><span class="pre">reset()</span></tt></a> method, selected
+<a class="reference internal" href="#pyqueue.Mail" title="pyqueue.Mail"><tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt></a> objects are deleted and reinitialized with a copy of
+<a class="reference internal" href="#pyqueue.MailSelector.store" title="pyqueue.MailSelector.store"><tt class="xref py py-attr docutils literal"><span class="pre">store</span></tt></a>&#8216;s <a class="reference internal" href="#pyqueue.PostqueueStore.mails" title="pyqueue.PostqueueStore.mails"><tt class="xref py py-attr docutils literal"><span class="pre">mails</span></tt></a> attribute.</p>
+<p>However, registered <a class="reference internal" href="#pyqueue.MailSelector.filters" title="pyqueue.MailSelector.filters"><tt class="xref py py-attr docutils literal"><span class="pre">filters</span></tt></a> are kept and replayed
+on resetted selection. Use this method to refresh your store content
+while keeping your filters.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyqueue.MailSelector.lookup_status">
 <tt class="descclassname">MailSelector.</tt><tt class="descname">lookup_status</tt><big>(</big><em>status</em><big>)</big><a class="reference internal" href="_modules/pyqueue.html#MailSelector.lookup_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyqueue.MailSelector.lookup_status" title="Permalink to this definition">¶</a></dt>
 <dd><p>Lookup mails with specified postqueue status.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>status</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; List of matching status to filter on.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of newly selected <a class="reference internal" href="#pyqueue.Mail" title="pyqueue.Mail"><tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt></a> objects</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">list()</span></tt></a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyqueue.MailSelector.lookup_sender">
-<tt class="descclassname">MailSelector.</tt><tt class="descname">lookup_sender</tt><big>(</big><em>sender</em>, <em>partial=False</em><big>)</big><a class="reference internal" href="_modules/pyqueue.html#MailSelector.lookup_sender"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyqueue.MailSelector.lookup_sender" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MailSelector.</tt><tt class="descname">lookup_sender</tt><big>(</big><em>sender</em><span class="optional">[</span>, <em>partial</em><span class="optional">]</span><big>)</big><a class="reference internal" href="_modules/pyqueue.html#MailSelector.lookup_sender"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyqueue.MailSelector.lookup_sender" title="Permalink to this definition">¶</a></dt>
 <dd><p>Lookup mails send from a specific sender.</p>
+<p>Optionnal parameter <tt class="docutils literal"><span class="pre">partial</span></tt> allow lookup of partial sender like
+<tt class="docutils literal"><span class="pre">&#64;domain.com</span></tt> or <tt class="docutils literal"><span class="pre">sender&#64;</span></tt>. By default, <tt class="docutils literal"><span class="pre">partial</span></tt> is <tt class="docutils literal"><span class="pre">False</span></tt>
+and selection is made on exact sender.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Matches are made against <a class="reference internal" href="#pyqueue.Mail.sender" title="pyqueue.Mail.sender"><tt class="xref py py-class docutils literal"><span class="pre">Mail.sender</span></tt></a> attribute instead of
+real mail header <em class="mailheader">Sender</em>.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sender</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Sender address to lookup in <a class="reference internal" href="#pyqueue.Mail" title="pyqueue.Mail"><tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt></a> selection.</li>
+<li><strong>partial</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Allow lookup with partial match</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">List of newly selected <a class="reference internal" href="#pyqueue.Mail" title="pyqueue.Mail"><tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt></a> objects</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">list()</span></tt></a></p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyqueue.MailSelector.lookup_error">
 <tt class="descclassname">MailSelector.</tt><tt class="descname">lookup_error</tt><big>(</big><em>error_msg</em><big>)</big><a class="reference internal" href="_modules/pyqueue.html#MailSelector.lookup_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyqueue.MailSelector.lookup_error" title="Permalink to this definition">¶</a></dt>
 <dd><p>Lookup mails with specific error message (message may be partial).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>error_msg</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Error message to filter on</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of newly selected <a class="reference internal" href="#pyqueue.Mail" title="pyqueue.Mail"><tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt></a> objects`</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">list()</span></tt></a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyqueue.MailSelector.lookup_date">
-<tt class="descclassname">MailSelector.</tt><tt class="descname">lookup_date</tt><big>(</big><em>start</em>, <em>stop</em>, <em>inclusive=False</em><big>)</big><a class="reference internal" href="_modules/pyqueue.html#MailSelector.lookup_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyqueue.MailSelector.lookup_date" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MailSelector.</tt><tt class="descname">lookup_date</tt><big>(</big><span class="optional">[</span><em>start</em><span class="optional">[</span>, <em>stop</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="reference internal" href="_modules/pyqueue.html#MailSelector.lookup_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyqueue.MailSelector.lookup_date" title="Permalink to this definition">¶</a></dt>
 <dd><p>Lookup mails send on specific date range.</p>
+<p>Both arguments <tt class="docutils literal"><span class="pre">start</span></tt> and <tt class="docutils literal"><span class="pre">stop</span></tt> are optionnal and default is set
+to <tt class="docutils literal"><span class="pre">None</span></tt>. However, it is required to pass at least one of those
+arguments. This method will raise <tt class="xref py py-class docutils literal"><span class="pre">TypeError</span></tt> if both
+arguments <tt class="docutils literal"><span class="pre">start</span></tt> and <tt class="docutils literal"><span class="pre">stop</span></tt> are set to <tt class="docutils literal"><span class="pre">None</span></tt>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>start</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; Start date</li>
-<li><strong>stop</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; Stop date</li>
+<li><strong>start</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; Start date
+(default: <tt class="docutils literal"><span class="pre">datetime(1970,1,1)</span></tt>)</li>
+<li><strong>stop</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; Stop date
+(default: <tt class="docutils literal"><span class="pre">datetime.now()</span></tt>)</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Matching <a class="reference internal" href="#pyqueue.Mail" title="pyqueue.Mail"><tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt></a> objects from
-<a class="reference internal" href="#pyqueue.PostqueueStore.mails" title="pyqueue.PostqueueStore.mails"><tt class="xref py py-attr docutils literal"><span class="pre">mails</span></tt></a></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">List of newly selected <a class="reference internal" href="#pyqueue.Mail" title="pyqueue.Mail"><tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt></a> objects`</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">list()</span></tt></a></p>
@@ -485,7 +547,7 @@ filtering methods. It is possible to replay registered filter using
 
 <dl class="method">
 <dt id="pyqueue.MailSelector.lookup_size">
-<tt class="descclassname">MailSelector.</tt><tt class="descname">lookup_size</tt><big>(</big><em>smin=0</em>, <em>smax=0</em><big>)</big><a class="reference internal" href="_modules/pyqueue.html#MailSelector.lookup_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyqueue.MailSelector.lookup_size" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">MailSelector.</tt><tt class="descname">lookup_size</tt><big>(</big><span class="optional">[</span><em>smin</em><span class="optional">[</span>, <em>smax</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="reference internal" href="_modules/pyqueue.html#MailSelector.lookup_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyqueue.MailSelector.lookup_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Lookup mails send with specific size.</p>
 </dd></dl>
 
@@ -495,7 +557,7 @@ filtering methods. It is possible to replay registered filter using
 <h2>Mail Objects<a class="headerlink" href="#mail-objects" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="pyqueue.Mail">
-<em class="property">class </em><tt class="descclassname">pyqueue.</tt><tt class="descname">Mail</tt><big>(</big><em>mail_id</em>, <em>size=0</em>, <em>date=None</em>, <em>sender=''</em><big>)</big><a class="reference internal" href="_modules/pyqueue.html#Mail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyqueue.Mail" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">pyqueue.</tt><tt class="descname">Mail</tt><big>(</big><em>mail_id</em><span class="optional">[</span>, <em>size</em><span class="optional">[</span>, <em>date</em><span class="optional">[</span>, <em>sender</em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="reference internal" href="_modules/pyqueue.html#Mail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyqueue.Mail" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simple object to manipulate email messages.</p>
 <p>This class provides the necessary methods to load and inspect mails
 content. This object functionnalities are mainly based on <a class="reference external" href="http://docs.python.org/2.7/library/email.html#email" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">email</span></tt></a>
@@ -608,8 +670,10 @@ initialization with: <tt class="docutils literal"><span class="pre">[&quot;postc
 <a class="reference external" href="http://docs.python.org/2.7/library/email.html#email" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">email</span></tt></a> module.</p>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last">Postfix manual:
-    <a class="reference external" href="http://www.postfix.org/postcat.1.html">postcat</a> &#8211; Show Postfix queue file contents</p>
+<dl class="last docutils">
+<dt>Postfix manual:</dt>
+<dd><a class="reference external" href="http://www.postfix.org/postcat.1.html">postcat</a> &#8211; Show Postfix queue file contents</dd>
+</dl>
 </div>
 </dd></dl>
 
@@ -679,52 +743,15 @@ attributes will return <em>list</em> of values.</p>
 </div>
 
 
-          </div>
-        </div>
       </div>
-      <div class="sphinxsidebar">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="#">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">pyqueue</span></tt> &#8212; Simple Postfix queue management</a><ul>
-<li><a class="reference internal" href="#postqueuestore-objects">PostqueueStore Objects</a></li>
-<li><a class="reference internal" href="#queuecontrol-objects">QueueControl Objects</a></li>
-<li><a class="reference internal" href="#mailselector-objects">MailSelector Objects</a></li>
-<li><a class="reference internal" href="#mail-objects">Mail Objects</a></li>
-<li><a class="reference internal" href="#mailheaders-objects">MailHeaders Objects</a></li>
-</ul>
-</li>
-</ul>
+      <div class="bottomnav">
+      
+        <p>
+        <a class="uplink" href="#">Contents</a>
+        </p>
 
-<div id="searchbox" style="display: none">
-  <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li><a href="#">PyQueue 0.4 documentation</a> &raquo;</li> 
-      </ul>
-    </div>
+
     <div class="footer">
         &copy; Copyright 2014, Denis &#39;jawa&#39; Pompilio.
       Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
