@@ -495,6 +495,7 @@ class QueueControl(object):
                 requeue: -r
 
             .. seealso::
+
                 Postfix manual:
                     `postsuper`_ -- Postfix superintendent
     """
