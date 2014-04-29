@@ -79,10 +79,12 @@ class MailHeaders(object):
 
     .. seealso::
 
-       Python module:
-         :mod:`email` -- An email and MIME handling package
+        Python modules:
+            :mod:`email` -- An email and MIME handling package
 
-       :rfc:`822` -- Standard for ARPA Internet Text Messages
+            :class:`email.message.Message` -- Representing an email message
+
+        :rfc:`822` -- Standard for ARPA Internet Text Messages
     """
 
 class Mail(object):
@@ -187,6 +189,11 @@ class Mail(object):
         Parsed headers become attributes and are retrieved with help of
         :func:`~email.message_from_string` function provided by the
         :mod:`email` module.
+
+        .. seealso::
+            Postfix manual:
+                `postcat`_ -- Show Postfix queue file contents
+ 
         """
         child = subprocess.Popen(self.postcat_cmd,
                                  stdout=subprocess.PIPE,
@@ -212,9 +219,6 @@ class Mail(object):
             setattr(self.head, header, value)
 
         self.parsed = True
-        #for part in message.walk():
-        #    print part.get_content_type()
-            #print dir(part)
 
     @debug
     def dump(self):
@@ -318,12 +322,12 @@ class PostqueueStore(object):
         Get Postfix postqueue command output.
 
         This method used the postfix command defined in
-        :attr:`~pyqueue.PostqueueStore.postqueue_cmd` attribute to view the
-        mails queue content.
+        :attr:`~PostqueueStore.postqueue_cmd` attribute to view the mails queue
+        content.
 
-        Command defined in :attr:`~pyqueue.PostqueueStore.postqueue_cmd`
-        attribute is runned using a :class:`subprocess.Popen` instance. Output
-        headers (1 line) and footers (2 lines) are excluded from result.
+        Command defined in :attr:`~PostqueueStore.postqueue_cmd` attribute is
+        runned using a :class:`subprocess.Popen` instance. Output headers
+        (1 line) and footers (2 lines) are excluded from result.
 
         :return: Command's output lines without headers and footers.
         :rtype: :func:`list`
@@ -358,11 +362,21 @@ class PostqueueStore(object):
         return True
 
     @debug
-    def _load_from_postqueue(self):
+    def _load_from_postqueue(self):  # TODO: documentation
         """
         Load content from postfix queue using postqueue command output.
-        
-        .. todo:: Documentation
+
+        Output lines from :attr:`~PostqueueStore._get_postqueue_output` are
+        parsed to build :class:`Mail` objects.
+
+        Sample Postfix queue control tool output:
+        ::
+            C0004979687     4769 Tue Apr 29 06:35:05  sender@domain.com
+            (error message from mx.remote1.org with parenthesis)
+                                                     first.rcpt@remote1.org
+            (error message from mx.remote2.org with parenthesis)
+                                                     second.rcpt@remote2.org
+                                                     third.rcpt@remote2.org
         """
 
         mail = None
@@ -509,35 +523,27 @@ class QueueControl(object):
 
         return [ line.strip() for line in stderr.split('\n') ]
 
-    def delete_messages(self, messages):
+    def delete_messages(self, messages):  # TODO: documentation
         """
         Delete several messages from postfix mail queue
-        
-        .. todo:: Documentation
         """
         return self._operate('delete', messages)
 
-    def hold_messages(self, messages):
+    def hold_messages(self, messages):  # TODO: documentation
         """
         Hold several messages from postfix mail queue
-        
-        .. todo:: Documentation
         """
         return self._operate('hold', messages)
 
-    def release_messages(self, messages):
+    def release_messages(self, messages):  # TODO: documentation
         """
         Release several messages from postfix mail queue
-        
-        .. todo:: Documentation
         """
         return self._operate('release', messages)
 
-    def requeue_messages(self, messages):
+    def requeue_messages(self, messages):  # TODO: documentation
         """
         Requeue several messages from postfix mail queue
-        
-        .. todo:: Documentation
         """
         return self._operate('requeue', messages)
 
@@ -574,11 +580,9 @@ class MailSelector(object):
 
         self.reset()
 
-    def filter_registration(function):
+    def filter_registration(function):  # TODO: documentation
         """
         Decorator to register applied filter.
-        
-        .. todo:: Documentation
         """
         @wraps(function)
         def wrapper(self, *args, **kwargs):
@@ -587,11 +591,9 @@ class MailSelector(object):
             return function(self, *args, **kwargs)
         return wrapper
 
-    def reset(self):
+    def reset(self):  # TODO: documentation
         """
         Reset mail selector with initial store mails list.
-        
-        .. todo:: Documentation
         """
         del self.mails
         gc.collect()
@@ -599,11 +601,9 @@ class MailSelector(object):
         self.mails = [ mail for mail in self.store.mails ]
         self.filters = []
 
-    def replay_filters(self):
+    def replay_filters(self):  # TODO: documentation
         """
         Reset selection with store content and replay registered filters.
-        
-        .. todo:: Documentation
         """
         del self.mails
         gc.collect()
@@ -617,11 +617,9 @@ class MailSelector(object):
 
     @debug
     @filter_registration
-    def lookup_status(self, status):
+    def lookup_status(self, status):  # TODO: documentation
         """
         Lookup mails with specified postqueue status.
-        
-        .. todo:: Documentation
         """
         if type(status) == str:
             status = [status]
@@ -637,11 +635,9 @@ class MailSelector(object):
 
     @debug
     @filter_registration
-    def lookup_sender(self, sender, partial = False):
+    def lookup_sender(self, sender, partial = False):  # TODO: documentation
         """
         Lookup mails send from a specific sender.
-        
-        .. todo:: Documentation
         """
         if partial is False:
             self.mails = [ mail for mail in self.mails
@@ -654,11 +650,9 @@ class MailSelector(object):
 
     @debug
     @filter_registration
-    def lookup_error(self, error_msg):
+    def lookup_error(self, error_msg):  # TODO: documentation
         """
         Lookup mails with specific error message (message may be partial).
-        
-        .. todo:: Documentation
         """
         self.mails = [ mail for mail in self.mails
                        if True in [ True for err in mail.errors
@@ -667,19 +661,25 @@ class MailSelector(object):
 
     @debug
     @filter_registration
-    def lookup_date(self, start = datetime(1970,1,1),
-                          stop = datetime.now(), inclusive = False):
+    def lookup_date(self, start = None, stop = None):   # TODO: documentation
         """
         Lookup mails send on specific date range.
-        
-        .. todo:: Documentation
+
+        :param datetime.datetime start: Start date
+        :param datetime.datetime start: Stop date
+        :return: Matching :class:`Mail` objects from
+                 :attr:`~PostqueueStore.mails`
+        :rtype: :func:`list`
         """
 
-        if inclusive is True:
-            start = start - timedelta(1)
-            stop = stop + timedelta(1)
+        if start is None and stop is None:
+            raise TypeError("Required arguments 'start' or 'stop' not found")
 
-        #date = datetime.strptime(datestr, "%a %b %d %H:%M:%S %Y")
+        if start is None:
+            start = datetime(1970,1,1)
+        if stop is None:
+            stop = datetime.now()
+
         self.mails = [ mail for mail in self.mails
                        if mail.date >= start and mail.date <= stop ]
 
@@ -687,11 +687,9 @@ class MailSelector(object):
 
     @debug
     @filter_registration
-    def lookup_size(self, smin = 0, smax = 0):
+    def lookup_size(self, smin = 0, smax = 0):  # TODO: documentation
         """
         Lookup mails send with specific size.
-        
-        .. todo:: Documentation
         """
         if smin is 0 and smax is 0:
             return self.mails
