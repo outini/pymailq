@@ -362,25 +362,32 @@ class PostqueueStore(object):
         return True
 
     @debug
-    def _load_from_postqueue(self):  # TODO: documentation
+    def _load_from_postqueue(self):
         """
         Load content from postfix queue using postqueue command output.
 
         Output lines from :attr:`~PostqueueStore._get_postqueue_output` are
-        parsed to build :class:`Mail` objects.
+        parsed to build :class:`Mail` objects. Sample Postfix queue control
+        tool (`postqueue`_) output::
 
-        Sample Postfix queue control tool output:
-        ::
             C0004979687     4769 Tue Apr 29 06:35:05  sender@domain.com
             (error message from mx.remote1.org with parenthesis)
                                                      first.rcpt@remote1.org
             (error message from mx.remote2.org with parenthesis)
                                                      second.rcpt@remote2.org
                                                      third.rcpt@remote2.org
+
+        Parsing rules are pretty simple:
+
+        - Line starts with a valid :attr:`Mail.qid`: create new :class:`Mail`
+          object with :attr:`~Mail.qid`, :attr:`~Mail.size`, :attr:`~Mail.date`
+          and :attr:`~Mail.sender` informations from line.
+        - Line starts with a parenthesis: store error messages to last created
+          :class:`Mail` object's :attr:`~Mail.errors` attribute.
+        - Any other matches: add new recipient to the :attr:`~Mail.recipients`
+          attribute of the last created :class:`Mail` object.
         """
-
         mail = None
-
         for line in self._get_postqueue_output():
             # Mails are blank line separated
             if not len(line):
@@ -666,7 +673,7 @@ class MailSelector(object):
         Lookup mails send on specific date range.
 
         :param datetime.datetime start: Start date
-        :param datetime.datetime start: Stop date
+        :param datetime.datetime stop: Stop date
         :return: Matching :class:`Mail` objects from
                  :attr:`~PostqueueStore.mails`
         :rtype: :func:`list`
