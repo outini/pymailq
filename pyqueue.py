@@ -191,6 +191,7 @@ class Mail(object):
         :mod:`email` module.
 
         .. seealso::
+
             Postfix manual:
                 `postcat`_ -- Show Postfix queue file contents
  
@@ -591,7 +592,7 @@ class MailSelector(object):
 
     .. attribute:: mails
 
-        Currently selected mails :func:`list`
+        Currently selected :class:`Mail` objects :func:`list`
 
     .. attribute:: store
     
@@ -601,7 +602,7 @@ class MailSelector(object):
     .. attribute:: filters
     
         Applied filters :func:`list` on current selection. Filters list
-        entries are tuple containing ``(function.__name__, args, kwargs)``
+        entries are tuples containing ``(function.__name__, args, kwargs)``
         for each applied filters. This list is filled by the
         :meth:`~MailSelector.filter_registration` decorator while calling
         filtering methods. It is possible to replay registered filter using
@@ -618,6 +619,10 @@ class MailSelector(object):
     def filter_registration(function):  # TODO: documentation
         """
         Decorator to register applied filter.
+
+        This decorated is used to wrap selection methods ``lookup_*``. It
+        registers a ``(function.func_name, args, kwargs)`` :class:`tuple` in
+        the :attr:`~MailSelector.filters` attribute.
         """
         @wraps(function)
         def wrapper(self, *args, **kwargs):
@@ -626,9 +631,17 @@ class MailSelector(object):
             return function(self, *args, **kwargs)
         return wrapper
 
-    def reset(self):  # TODO: documentation
+    def reset(self):
         """
         Reset mail selector with initial store mails list.
+
+        Selected :class:`Mail` objects are deleted and the
+        :attr:`~MailSelector.mails` attribute is removed for memory releasing
+        purpose (with help of :func:`gc.collect`). Attribute
+        :attr:`~MailSelector.mails` is then reinitialized a copy of
+        :attr:`~MailSelector.store`'s :attr:`~PostqueueStore.mails` attribute.
+
+        Registered :attr:`~MailSelector.filters` are also emptied.
         """
         del self.mails
         gc.collect()
@@ -636,9 +649,17 @@ class MailSelector(object):
         self.mails = [ mail for mail in self.store.mails ]
         self.filters = []
 
-    def replay_filters(self):  # TODO: documentation
+    def replay_filters(self):
         """
         Reset selection with store content and replay registered filters.
+
+        Like with the :meth:`~MailSelector.reset` method, selected
+        :class:`Mail` objects are deleted and reinitialized with a copy of
+        :attr:`~MailSelector.store`'s :attr:`~PostqueueStore.mails` attribute.
+
+        However, registered :attr:`~MailSelector.filters` are kept and replayed
+        on resetted selection. Use this method to refresh your store content
+        while keeping your filters.
         """
         del self.mails
         gc.collect()
@@ -652,16 +673,14 @@ class MailSelector(object):
 
     @debug
     @filter_registration
-    def lookup_status(self, status):  # TODO: documentation
+    def lookup_status(self, status):
         """
         Lookup mails with specified postqueue status.
+
+        :param list status: List of matching status to filter on.
+        :return: List of newly selected :class:`Mail` objects
+        :rtype: :func:`list`
         """
-        if type(status) == str:
-            status = [status]
-
-        if not len(status):
-            return self.mails
-
         self.mails = [ mail for mail in self.mails
                        if mail.status in status ]
 
@@ -670,24 +689,42 @@ class MailSelector(object):
 
     @debug
     @filter_registration
-    def lookup_sender(self, sender, partial = False):  # TODO: documentation
+    def lookup_sender(self, sender, partial = False):
         """
         Lookup mails send from a specific sender.
+
+        Optionnal parameter ``partial`` allow lookup of partial sender like
+        ``@domain.com`` or ``sender@``. By default, ``partial`` is ``False``
+        and selection is made on exact sender.
+
+        .. note::
+
+            Matches are made against :class:`Mail.sender` attribute instead of
+            real mail header :mailheader:`Sender`.
+
+        :param str sender: Sender address to lookup in :class:`Mail` selection.
+        :param bool partial: Allow lookup with partial match
+        :return: List of newly selected :class:`Mail` objects
+        :rtype: :func:`list`
         """
-        if partial is False:
-            self.mails = [ mail for mail in self.mails
-                           if sender == mail.sender ]
-        else:
+        if partial is True:
             self.mails = [ mail for mail in self.mails
                            if sender in mail.sender ]
+        else:
+            self.mails = [ mail for mail in self.mails
+                           if sender == mail.sender ]
 
         return self.mails
 
     @debug
     @filter_registration
-    def lookup_error(self, error_msg):  # TODO: documentation
+    def lookup_error(self, error_msg):
         """
         Lookup mails with specific error message (message may be partial).
+
+        :param str error_msg: Error message to filter on
+        :return: List of newly selected :class:`Mail` objects`
+        :rtype: :func:`list`
         """
         self.mails = [ mail for mail in self.mails
                        if True in [ True for err in mail.errors
@@ -700,10 +737,16 @@ class MailSelector(object):
         """
         Lookup mails send on specific date range.
 
+        Both arguments ``start`` and ``stop`` are optionnal and default is set
+        to ``None``. However, it is required to pass at least one of those
+        arguments. This method will raise :class:`~exception.TypeError` if both
+        arguments ``start`` and ``stop`` are set to ``None``.
+
         :param datetime.datetime start: Start date
+                                        (default: ``datetime(1970,1,1)``)
         :param datetime.datetime stop: Stop date
-        :return: Matching :class:`Mail` objects from
-                 :attr:`~PostqueueStore.mails`
+                                       (default: ``datetime.now()``)
+        :return: List of newly selected :class:`Mail` objects`
         :rtype: :func:`list`
         """
 
