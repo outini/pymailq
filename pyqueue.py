@@ -486,18 +486,22 @@ class QueueControl(object):
         .. attribute:: known_operations
 
             Known Postfix administrative operations dictionnary to associate
-            operations to command arguments. Known associations are:
-            ::
+            operations to command arguments. Known associations are::
 
                  delete: -d
                    hold: -h
                 release: -H
                 requeue: -r
 
-            .. seealso::
+            .. warning::
 
-                Postfix manual:
-                    `postsuper`_ -- Postfix superintendent
+                Default known associations are provided for the default mails
+                queue administrative command `postsuper`_.
+
+        .. seealso::
+
+            Postfix manual:
+                `postsuper`_ -- Postfix superintendent
     """
 
     postsuper_cmd = ["postsuper"]
@@ -510,11 +514,17 @@ class QueueControl(object):
         """
         Generic method to lead operations messages from postfix mail queue.
 
-        Operations can be one of Postfix known operations:
-        :attr:`~QueueControl.known_operations`. Operation argument is directly
-        converted and passed to the :attr:`~QueueControl.postsuper_cmd` command.
-        """
+        Operations can be one of Postfix known operations stored in
+        :attr:`~QueueControl.known_operations` attribute. Operation argument is
+        directly converted and passed to the :attr:`~QueueControl.postsuper_cmd`
+        command.
 
+        :param str operation: Known operation from
+                              :attr:`~QueueControl.known_operations`.
+        :param list messages: List of :class:`Mail` targetted for operation.
+        :return: Command's *stderr* output lines
+        :rtype: :func:`list`
+        """
         # Convert operation name to operation attribute. Raise KeyError.
         operation = self.known_operations[operation]
 
@@ -535,27 +545,39 @@ class QueueControl(object):
 
         return [ line.strip() for line in stderr.split('\n') ]
 
-    def delete_messages(self, messages):  # TODO: documentation
+    def delete_messages(self, messages):
         """
-        Delete several messages from postfix mail queue
+        Delete several messages from postfix mail queue.
+
+        This method is a :func:`functools.partial` wrapper on
+        :meth:`~QueueControl._operate`. Passed operation is ``delete``
         """
         return self._operate('delete', messages)
 
-    def hold_messages(self, messages):  # TODO: documentation
+    def hold_messages(self, messages):
         """
-        Hold several messages from postfix mail queue
+        Hold several messages from postfix mail queue.
+
+        This method is a :func:`functools.partial` wrapper on
+        :meth:`~QueueControl._operate`. Passed operation is ``hold``
         """
         return self._operate('hold', messages)
 
-    def release_messages(self, messages):  # TODO: documentation
+    def release_messages(self, messages):
         """
-        Release several messages from postfix mail queue
+        Release several messages from postfix mail queue.
+
+        This method is a :func:`functools.partial` wrapper on
+        :meth:`~QueueControl._operate`. Passed operation is ``release``
         """
         return self._operate('release', messages)
 
-    def requeue_messages(self, messages):  # TODO: documentation
+    def requeue_messages(self, messages):
         """
-        Requeue several messages from postfix mail queue
+        Requeue several messages from postfix mail queue.
+
+        This method is a :func:`functools.partial` wrapper on
+        :meth:`~QueueControl._operate`. Passed operation is ``requeue``
         """
         return self._operate('requeue', messages)
 
