@@ -493,6 +493,10 @@ class QueueControl(object):
                    hold: -h
                 release: -H
                 requeue: -r
+
+            .. seealso::
+                Postfix manual:
+                    `postsuper`_ -- Postfix superintendent
     """
 
     postsuper_cmd = ["postsuper"]
