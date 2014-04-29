@@ -38,6 +38,7 @@ coverage.xml
 *.mo
 
 # Sphinx documentation
+.buildinfo
 docs/_build/
 
 # Vim swap files
