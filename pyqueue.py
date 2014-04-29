@@ -521,7 +521,8 @@ class QueueControl(object):
 
         :param str operation: Known operation from
                               :attr:`~QueueControl.known_operations`.
-        :param list messages: List of :class:`Mail` targetted for operation.
+        :param list messages: List of :class:`Mail` objects targetted for
+                              operation.
         :return: Command's *stderr* output lines
         :rtype: :func:`list`
         """
@@ -549,7 +550,7 @@ class QueueControl(object):
         """
         Delete several messages from postfix mail queue.
 
-        This method is a :func:`functools.partial` wrapper on
+        This method is a :func:`~functools.partial` wrapper on
         :meth:`~QueueControl._operate`. Passed operation is ``delete``
         """
         return self._operate('delete', messages)
@@ -558,7 +559,7 @@ class QueueControl(object):
         """
         Hold several messages from postfix mail queue.
 
-        This method is a :func:`functools.partial` wrapper on
+        This method is a :func:`~functools.partial` wrapper on
         :meth:`~QueueControl._operate`. Passed operation is ``hold``
         """
         return self._operate('hold', messages)
@@ -567,7 +568,7 @@ class QueueControl(object):
         """
         Release several messages from postfix mail queue.
 
-        This method is a :func:`functools.partial` wrapper on
+        This method is a :func:`~functools.partial` wrapper on
         :meth:`~QueueControl._operate`. Passed operation is ``release``
         """
         return self._operate('release', messages)
@@ -576,7 +577,7 @@ class QueueControl(object):
         """
         Requeue several messages from postfix mail queue.
 
-        This method is a :func:`functools.partial` wrapper on
+        This method is a :func:`~functools.partial` wrapper on
         :meth:`~QueueControl._operate`. Passed operation is ``requeue``
         """
         return self._operate('requeue', messages)
