@@ -415,9 +415,11 @@
         <span class="k">return</span> <span class="bp">True</span>
 </div>
     <span class="nd">@debug</span>
-<div class="viewcode-block" id="PostqueueStore._load_from_postqueue"><a class="viewcode-back" href="../index.html#pyqueue.PostqueueStore._load_from_postqueue">[docs]</a>    <span class="k">def</span> <span class="nf">_load_from_postqueue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c"># TODO: documentation</span>
+<div class="viewcode-block" id="PostqueueStore._load_from_postqueue"><a class="viewcode-back" href="../index.html#pyqueue.PostqueueStore._load_from_postqueue">[docs]</a>    <span class="k">def</span> <span class="nf">_load_from_postqueue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load content from postfix queue using postqueue command output.</span>
+<span class="sd">        </span>
+<span class="sd">        .. todo:: Documentation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">mail</span> <span class="o">=</span> <span class="bp">None</span>
@@ -465,8 +467,8 @@
 
 <span class="sd">        .. warning::</span>
 <span class="sd">        </span>
-<span class="sd">            Be aware that parsing mails on disk is slow and can be lead to</span>
-<span class="sd">            systems high load usage for large mails queue.</span>
+<span class="sd">            Be aware that parsing mails on disk is slow and can lead to</span>
+<span class="sd">            high load usage on system with large mails queue.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">mail</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">for</span> <span class="n">status</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">postqueue_mailstatus</span><span class="p">:</span>
@@ -537,21 +539,19 @@
 
 <div class="viewcode-block" id="QueueControl._operate"><a class="viewcode-back" href="../index.html#pyqueue.QueueControl._operate">[docs]</a>    <span class="k">def</span> <span class="nf">_operate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        | Generic method to lead operations messages from postfix mail queue.</span>
-<span class="sd">        | Operations can be one of Postfix known operations:</span>
-<span class="sd">          :attr:`~QueueControl.known_operations`.</span>
-<span class="sd">        | Operation argument is directly converted and passed to the</span>
-<span class="sd">          :attr:`~QueueControl.postsuper_cmd` command.</span>
+<span class="sd">        Generic method to lead operations messages from postfix mail queue.</span>
+
+<span class="sd">        Operations can be one of Postfix known operations:</span>
+<span class="sd">        :attr:`~QueueControl.known_operations`. Operation argument is directly</span>
+<span class="sd">        converted and passed to the :attr:`~QueueControl.postsuper_cmd` command.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">operation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">known_operations</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span>
+        <span class="c"># Convert operation name to operation attribute. Raise KeyError.</span>
+        <span class="n">operation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">known_operations</span><span class="p">[</span><span class="n">operation</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">list</span> <span class="ow">or</span> <span class="n">operation</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">False</span>
-
+        <span class="c"># validate that object&#39;s attribute &quot;qid&quot; exist. Raise AttributeError.</span>
         <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="s">&quot;qid&quot;</span><span class="p">):</span>
-                <span class="k">return</span> <span class="bp">False</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="s">&quot;qid&quot;</span><span class="p">)</span>
 
         <span class="n">postsuper_cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">postsuper_cmd</span> <span class="o">+</span> <span class="p">[</span><span class="n">operation</span><span class="p">,</span> <span class="s">&#39;-&#39;</span><span class="p">]</span>
         <span class="n">child</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">postsuper_cmd</span><span class="p">,</span>
@@ -567,19 +567,35 @@
         <span class="k">return</span> <span class="p">[</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">stderr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span> <span class="p">]</span>
 </div>
 <div class="viewcode-block" id="QueueControl.delete_messages"><a class="viewcode-back" href="../index.html#pyqueue.QueueControl.delete_messages">[docs]</a>    <span class="k">def</span> <span class="nf">delete_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Delete several messages from postfix mail queue&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete several messages from postfix mail queue</span>
+<span class="sd">        </span>
+<span class="sd">        .. todo:: Documentation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operate</span><span class="p">(</span><span class="s">&#39;delete&#39;</span><span class="p">,</span> <span class="n">messages</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="QueueControl.hold_messages"><a class="viewcode-back" href="../index.html#pyqueue.QueueControl.hold_messages">[docs]</a>    <span class="k">def</span> <span class="nf">hold_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Hold several messages from postfix mail queue&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Hold several messages from postfix mail queue</span>
+<span class="sd">        </span>
+<span class="sd">        .. todo:: Documentation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operate</span><span class="p">(</span><span class="s">&#39;hold&#39;</span><span class="p">,</span> <span class="n">messages</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="QueueControl.release_messages"><a class="viewcode-back" href="../index.html#pyqueue.QueueControl.release_messages">[docs]</a>    <span class="k">def</span> <span class="nf">release_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Release several messages from postfix mail queue&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Release several messages from postfix mail queue</span>
+<span class="sd">        </span>
+<span class="sd">        .. todo:: Documentation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operate</span><span class="p">(</span><span class="s">&#39;release&#39;</span><span class="p">,</span> <span class="n">messages</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="QueueControl.requeue_messages"><a class="viewcode-back" href="../index.html#pyqueue.QueueControl.requeue_messages">[docs]</a>    <span class="k">def</span> <span class="nf">requeue_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Requeue several messages from postfix mail queue&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Requeue several messages from postfix mail queue</span>
+<span class="sd">        </span>
+<span class="sd">        .. todo:: Documentation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operate</span><span class="p">(</span><span class="s">&#39;requeue&#39;</span><span class="p">,</span> <span class="n">messages</span><span class="p">)</span>
 
 </div></div>
@@ -618,6 +634,8 @@
 <div class="viewcode-block" id="MailSelector.filter_registration"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.filter_registration">[docs]</a>    <span class="k">def</span> <span class="nf">filter_registration</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Decorator to register applied filter.</span>
+<span class="sd">        </span>
+<span class="sd">        .. todo:: Documentation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nd">@wraps</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -629,6 +647,8 @@
 <div class="viewcode-block" id="MailSelector.reset"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reset mail selector with initial store mails list.</span>
+<span class="sd">        </span>
+<span class="sd">        .. todo:: Documentation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
         <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
@@ -639,6 +659,8 @@
 <div class="viewcode-block" id="MailSelector.replay_filters"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.replay_filters">[docs]</a>    <span class="k">def</span> <span class="nf">replay_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reset selection with store content and replay registered filters.</span>
+<span class="sd">        </span>
+<span class="sd">        .. todo:: Documentation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
         <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
@@ -655,6 +677,8 @@
 <div class="viewcode-block" id="MailSelector.lookup_status"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.lookup_status">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Lookup mails with specified postqueue status.</span>
+<span class="sd">        </span>
+<span class="sd">        .. todo:: Documentation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">status</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
             <span class="n">status</span> <span class="o">=</span> <span class="p">[</span><span class="n">status</span><span class="p">]</span>
@@ -673,6 +697,8 @@
 <div class="viewcode-block" id="MailSelector.lookup_sender"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.lookup_sender">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_sender</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">partial</span> <span class="o">=</span> <span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Lookup mails send from a specific sender.</span>
+<span class="sd">        </span>
+<span class="sd">        .. todo:: Documentation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">partial</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span> <span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
@@ -688,6 +714,8 @@
 <div class="viewcode-block" id="MailSelector.lookup_error"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.lookup_error">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_msg</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Lookup mails with specific error message (message may be partial).</span>
+<span class="sd">        </span>
+<span class="sd">        .. todo:: Documentation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span> <span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
                        <span class="k">if</span> <span class="bp">True</span> <span class="ow">in</span> <span class="p">[</span> <span class="bp">True</span> <span class="k">for</span> <span class="n">err</span> <span class="ow">in</span> <span class="n">mail</span><span class="o">.</span><span class="n">errors</span>
@@ -700,6 +728,8 @@
                           <span class="n">stop</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span> <span class="n">inclusive</span> <span class="o">=</span> <span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Lookup mails send on specific date range.</span>
+<span class="sd">        </span>
+<span class="sd">        .. todo:: Documentation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">inclusive</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
@@ -717,6 +747,8 @@
 <div class="viewcode-block" id="MailSelector.lookup_size"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.lookup_size">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">smin</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">smax</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Lookup mails send with specific size.</span>
+<span class="sd">        </span>
+<span class="sd">        .. todo:: Documentation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">smin</span> <span class="ow">is</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">smax</span> <span class="ow">is</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>

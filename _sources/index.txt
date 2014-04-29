@@ -84,3 +84,4 @@ MailHeaders Objects
 
 .. External links for documentation
 .. _postqueue: http://www.postfix.org/postqueue.1.html
+.. _postcat: http://www.postfix.org/postcat.1.html

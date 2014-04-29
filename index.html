@@ -187,6 +187,26 @@ to find a <em>self._load_from_&lt;method&gt;</em> method.</p>
 <dt id="pyqueue.PostqueueStore._load_from_postqueue">
 <tt class="descclassname">PostqueueStore.</tt><tt class="descname">_load_from_postqueue</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyqueue.html#PostqueueStore._load_from_postqueue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyqueue.PostqueueStore._load_from_postqueue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load content from postfix queue using postqueue command output.</p>
+<p>Output lines from <a class="reference internal" href="#pyqueue.PostqueueStore._get_postqueue_output" title="pyqueue.PostqueueStore._get_postqueue_output"><tt class="xref py py-attr docutils literal"><span class="pre">_get_postqueue_output</span></tt></a> are
+parsed to build <a class="reference internal" href="#pyqueue.Mail" title="pyqueue.Mail"><tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt></a> objects. Sample Postfix queue control
+tool (<a class="reference external" href="http://www.postfix.org/postqueue.1.html">postqueue</a>) output:</p>
+<div class="highlight-python"><pre>C0004979687     4769 Tue Apr 29 06:35:05  sender@domain.com
+(error message from mx.remote1.org with parenthesis)
+                                         first.rcpt@remote1.org
+(error message from mx.remote2.org with parenthesis)
+                                         second.rcpt@remote2.org
+                                         third.rcpt@remote2.org</pre>
+</div>
+<p>Parsing rules are pretty simple:</p>
+<ul class="simple">
+<li>Line starts with a valid <a class="reference internal" href="#pyqueue.Mail.qid" title="pyqueue.Mail.qid"><tt class="xref py py-attr docutils literal"><span class="pre">Mail.qid</span></tt></a>: create new <a class="reference internal" href="#pyqueue.Mail" title="pyqueue.Mail"><tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt></a>
+object with <a class="reference internal" href="#pyqueue.Mail.qid" title="pyqueue.Mail.qid"><tt class="xref py py-attr docutils literal"><span class="pre">qid</span></tt></a>, <a class="reference internal" href="#pyqueue.Mail.size" title="pyqueue.Mail.size"><tt class="xref py py-attr docutils literal"><span class="pre">size</span></tt></a>, <a class="reference internal" href="#pyqueue.Mail.date" title="pyqueue.Mail.date"><tt class="xref py py-attr docutils literal"><span class="pre">date</span></tt></a>
+and <a class="reference internal" href="#pyqueue.Mail.sender" title="pyqueue.Mail.sender"><tt class="xref py py-attr docutils literal"><span class="pre">sender</span></tt></a> informations from line.</li>
+<li>Line starts with a parenthesis: store error messages to last created
+<a class="reference internal" href="#pyqueue.Mail" title="pyqueue.Mail"><tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt></a> object&#8217;s <a class="reference internal" href="#pyqueue.Mail.errors" title="pyqueue.Mail.errors"><tt class="xref py py-attr docutils literal"><span class="pre">errors</span></tt></a> attribute.</li>
+<li>Any other matches: add new recipient to the <a class="reference internal" href="#pyqueue.Mail.recipients" title="pyqueue.Mail.recipients"><tt class="xref py py-attr docutils literal"><span class="pre">recipients</span></tt></a>
+attribute of the last created <a class="reference internal" href="#pyqueue.Mail" title="pyqueue.Mail"><tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt></a> object.</li>
+</ul>
 </dd></dl>
 
 <dl class="method">
@@ -211,11 +231,11 @@ high load usage on system with large mails queue.</p>
 <tt class="descclassname">PostqueueStore.</tt><tt class="descname">_get_postqueue_output</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyqueue.html#PostqueueStore._get_postqueue_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyqueue.PostqueueStore._get_postqueue_output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get Postfix postqueue command output.</p>
 <p>This method used the postfix command defined in
-<a class="reference internal" href="#pyqueue.PostqueueStore.postqueue_cmd" title="pyqueue.PostqueueStore.postqueue_cmd"><tt class="xref py py-attr docutils literal"><span class="pre">postqueue_cmd</span></tt></a> attribute to view the
-mails queue content.</p>
-<p>Command defined in <a class="reference internal" href="#pyqueue.PostqueueStore.postqueue_cmd" title="pyqueue.PostqueueStore.postqueue_cmd"><tt class="xref py py-attr docutils literal"><span class="pre">postqueue_cmd</span></tt></a>
-attribute is runned using a <a class="reference external" href="http://docs.python.org/2.7/library/subprocess.html#subprocess.Popen" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">subprocess.Popen</span></tt></a> instance. Output
-headers (1 line) and footers (2 lines) are excluded from result.</p>
+<a class="reference internal" href="#pyqueue.PostqueueStore.postqueue_cmd" title="pyqueue.PostqueueStore.postqueue_cmd"><tt class="xref py py-attr docutils literal"><span class="pre">postqueue_cmd</span></tt></a> attribute to view the mails queue
+content.</p>
+<p>Command defined in <a class="reference internal" href="#pyqueue.PostqueueStore.postqueue_cmd" title="pyqueue.PostqueueStore.postqueue_cmd"><tt class="xref py py-attr docutils literal"><span class="pre">postqueue_cmd</span></tt></a> attribute is
+runned using a <a class="reference external" href="http://docs.python.org/2.7/library/subprocess.html#subprocess.Popen" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">subprocess.Popen</span></tt></a> instance. Output headers
+(1 line) and footers (2 lines) are excluded from result.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -401,6 +421,25 @@ filtering methods. It is possible to replay registered filter using
 <dt id="pyqueue.MailSelector.lookup_date">
 <tt class="descclassname">MailSelector.</tt><tt class="descname">lookup_date</tt><big>(</big><em>start</em>, <em>stop</em>, <em>inclusive=False</em><big>)</big><a class="reference internal" href="_modules/pyqueue.html#MailSelector.lookup_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyqueue.MailSelector.lookup_date" title="Permalink to this definition">¶</a></dt>
 <dd><p>Lookup mails send on specific date range.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>start</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; Start date</li>
+<li><strong>stop</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; Stop date</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Matching <a class="reference internal" href="#pyqueue.Mail" title="pyqueue.Mail"><tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt></a> objects from
+<a class="reference internal" href="#pyqueue.PostqueueStore.mails" title="pyqueue.PostqueueStore.mails"><tt class="xref py py-attr docutils literal"><span class="pre">mails</span></tt></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">list()</span></tt></a></p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -526,6 +565,11 @@ initialization with: <tt class="docutils literal"><span class="pre">[&quot;postc
 <p>Parsed headers become attributes and are retrieved with help of
 <a class="reference external" href="http://docs.python.org/2.7/library/email.parser.html#email.message_from_string" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">message_from_string()</span></tt></a> function provided by the
 <a class="reference external" href="http://docs.python.org/2.7/library/email.html#email" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">email</span></tt></a> module.</p>
+<div class="admonition-see-also admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last">Postfix manual:
+    <a class="reference external" href="http://www.postfix.org/postcat.1.html">postcat</a> &#8211; Show Postfix queue file contents</p>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -581,10 +625,12 @@ attributes will return <em>list</em> of values.</p>
 <div class="admonition-see-also admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="docutils">
-<dt>Python module:</dt>
-<dd><a class="reference external" href="http://docs.python.org/2.7/library/email.html#email" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">email</span></tt></a> &#8211; An email and MIME handling package</dd>
+<dt>Python modules:</dt>
+<dd><p class="first"><a class="reference external" href="http://docs.python.org/2.7/library/email.html#email" title="(in Python v2.7)"><tt class="xref py py-mod docutils literal"><span class="pre">email</span></tt></a> &#8211; An email and MIME handling package</p>
+<p class="last"><a class="reference external" href="http://docs.python.org/2.7/library/email.message.html#email.message.Message" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">email.message.Message</span></tt></a> &#8211; Representing an email message</p>
+</dd>
 </dl>
-<p class="last"><span class="target" id="index-13"></span><a class="rfc reference external" href="http://tools.ietf.org/html/rfc822.html"><strong>RFC 822</strong></a> &#8211; Standard for ARPA Internet Text Messages</p>
+<p class="last"><span class="target" id="index-0"></span><a class="rfc reference external" href="http://tools.ietf.org/html/rfc822.html"><strong>RFC 822</strong></a> &#8211; Standard for ARPA Internet Text Messages</p>
 </div>
 </dd></dl>
 
