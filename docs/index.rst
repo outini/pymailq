@@ -28,11 +28,11 @@ The :mod:`pyqueue` module defines the following decorators:
 PostqueueStore Objects
 **********************
 
-.. autoclass:: pyqueue.PostqueueStore
+.. autoclass:: pyqueue.PostqueueStore()
 
 The :class:`~pyqueue.PostqueueStore` instance provides the following methods:
 
-    .. automethod:: PostqueueStore.load(method="postqueue")
+    .. automethod:: PostqueueStore.load([method])
     .. automethod:: PostqueueStore._load_from_postqueue()
     .. automethod:: PostqueueStore._load_from_spool()
     .. automethod:: PostqueueStore._get_postqueue_output()
@@ -41,7 +41,7 @@ The :class:`~pyqueue.PostqueueStore` instance provides the following methods:
 QueueControl Objects
 ********************
 
-.. autoclass:: pyqueue.QueueControl
+.. autoclass:: pyqueue.QueueControl()
 
 The :class:`~pyqueue.QueueControl` instance provides the following methods:
 
@@ -54,7 +54,7 @@ The :class:`~pyqueue.QueueControl` instance provides the following methods:
 MailSelector Objects
 ********************
 
-.. autoclass:: pyqueue.MailSelector
+.. autoclass:: pyqueue.MailSelector(store)
 
 The :class:`~pyqueue.MailSelector` instance provides the following methods:
 
@@ -62,15 +62,15 @@ The :class:`~pyqueue.MailSelector` instance provides the following methods:
     .. automethod:: MailSelector.reset()
     .. automethod:: MailSelector.replay_filters()
     .. automethod:: MailSelector.lookup_status(status)
-    .. automethod:: MailSelector.lookup_sender(sender, partial=False)
+    .. automethod:: MailSelector.lookup_sender(sender[, partial])
     .. automethod:: MailSelector.lookup_error(error_msg)
-    .. automethod:: MailSelector.lookup_date(start, stop, inclusive=False)
-    .. automethod:: MailSelector.lookup_size(smin=0, smax=0)
+    .. automethod:: MailSelector.lookup_date([start[, stop]])
+    .. automethod:: MailSelector.lookup_size([smin[, smax]])
 
 Mail Objects
 ************
 
-.. autoclass:: pyqueue.Mail
+.. autoclass:: pyqueue.Mail(mail_id[, size[, date[, sender]]])
 
 The :class:`~pyqueue.Mail` instance provides the following methods:
 
@@ -80,7 +80,7 @@ The :class:`~pyqueue.Mail` instance provides the following methods:
 MailHeaders Objects
 *******************
 
-.. autoclass:: pyqueue.MailHeaders
+.. autoclass:: pyqueue.MailHeaders()
 
 .. External links for documentation
 .. _postqueue: http://www.postfix.org/postqueue.1.html
