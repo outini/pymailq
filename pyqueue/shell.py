@@ -18,11 +18,15 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-import pyqueue
-import cmd
 import re
+import cmd
 from functools import partial
 from collections import Counter
+
+import store
+import selector
+import control
+
 
 try:
     import readline
@@ -63,9 +67,9 @@ class PyQueueShell(cmd.Cmd, object):
         setattr(self, "help_show", partial(self._help_, "show"))
         setattr(self, "complete_show", partial(self.__complete, "show"))
 
-        self.pstore = pyqueue.PostqueueStore()
-        self.selector = pyqueue.MailSelector(self.pstore)
-        self.qcontrol = pyqueue.QueueControl()
+        self.pstore = store.PostqueueStore()
+        self.selector = selector.MailSelector(self.pstore)
+        self.qcontrol = control.QueueControl()
 
         # Formats for output
         self.format_parser = re.compile(r'\{[^{}]+\}')
@@ -171,7 +175,6 @@ class PyQueueShell(cmd.Cmd, object):
     def _store_load(self):
         """Load Postfix queue content"""
         self.pstore.load()
-        self.selector = pyqueue.MailSelector(self.pstore)
         return ["%d mails loaded from queue" % (len(self.pstore.mails))]
 
     def _store_status(self):
@@ -479,13 +482,3 @@ class PyQueueShell(cmd.Cmd, object):
             for key,value in _kwargs.items():
                 lines.append("    %s: %s" % (key, value))
         return lines
-
-
-# MAIN #
-if __name__ == "__main__":
-
-    try:
-        cli = PyQueueShell()
-        cli.cmdloop()
-    except KeyboardInterrupt:
-        print "\nSlapping the door is not so kind while exiting...."

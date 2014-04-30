@@ -20,8 +20,9 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import sys
 from datetime import datetime, timedelta
-from pyqueue import store, control, selector
+from pyqueue import store, control, selector, shell
 
 
 #
@@ -39,6 +40,19 @@ from pyqueue import store, control, selector
 # >>> print "\n".join(qcontrol.requeue_messages(selector.mails))
 #
 if __name__ == "__main__":
+
+    # Looking for "tests", shell is the default action
+    if "tests" not in sys.argv:
+        try:
+            cli = shell.PyQueueShell()
+            cli.cmdloop()
+        except KeyboardInterrupt:
+            print "\nSlapping the door is not so kind while exiting...."
+        sys.exit(0)
+
+
+    ################################################
+    # if not shell, then pyqueue module validation
 
     def list_preview(datas, limit = 5):
         """Return at most "limit" elements of datas list"""
