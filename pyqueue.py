@@ -393,8 +393,16 @@ class PostqueueStore(object):
         - Line starts with a valid :attr:`Mail.qid`: create new :class:`Mail`
           object with :attr:`~Mail.qid`, :attr:`~Mail.size`, :attr:`~Mail.date`
           and :attr:`~Mail.sender` informations from line.
+
+          +-------------+------+---------------------------+-----------------+
+          | Queue ID    | Size | Reception date and time   | Sender          |
+          +-------------+------+-----+-----+----+----------+-----------------+
+          | C0004979687 | 4769 | Tue | Apr | 29 | 06:35:05 | user@domain.com |
+          +-------------+------+-----+-----+----+----------+-----------------+
+
         - Line starts with a parenthesis: store error messages to last created
           :class:`Mail` object's :attr:`~Mail.errors` attribute.
+
         - Any other matches: add new recipient to the :attr:`~Mail.recipients`
           attribute of the last created :class:`Mail` object.
         """
