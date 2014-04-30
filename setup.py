@@ -1,3 +1,4 @@
+import os
 from distutils.core import setup
 import pyqueue
 
@@ -12,7 +13,8 @@ setup(name="pyqueue",
       maintainer=pyqueue.__author__,
       maintainer_email=pyqueue.__email__,
       description="Postfix queue control python tool",
-      long_description="",
+      long_description=file(os.path.join(os.path.dirname(__file__),
+                                         'README.md')).read(),
       license=pyqueue.__license__,
       platforms=['linux', 'bsd'],
       py_modules=['pyqueue', 'pyqueueshell'],
