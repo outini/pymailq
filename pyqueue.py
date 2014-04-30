@@ -297,6 +297,13 @@ class PostqueueStore(object):
             followed with ``*`` or ``!``.
             Default used regular expression is: ``r"^[A-F0-9]{10,12}[*!]?$"``.
 
+        .. attribute:: mail_addr_re
+
+            Python compiled regular expression object (:class:`re.RegexObject`)
+            provided by :meth:`re.compile` method to match email addresses.
+            Default used regular expression is:
+            ``r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+$"``
+
     .. seealso::
 
         Python modules:
@@ -306,11 +313,14 @@ class PostqueueStore(object):
 
         Postfix manual:
             `postqueue`_ -- Postfix queue control
+
+        :rfc:`3696` -- Checking and Transformation of Names
     """
     postqueue_cmd = ["/usr/sbin/postqueue", "-p"]
     spool_path = "/var/spool/postfix"
     postqueue_mailstatus = ['active', 'deferred', 'hold']
     mail_id_re = re.compile(r"^[A-F0-9]{10,12}[*!]?$")
+    mail_addr_re = re.compile(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+$")
 
     def __init__(self):
         """Init method"""
