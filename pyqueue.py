@@ -1,8 +1,6 @@
 #! /usr/bin/env python2.7
 
-"""
-Simple Postfix postqueue manipulation tool
-"""
+"""Postfix queue control python tool"""
 
 __docformat__ = 'restructuredtext en'
 __author__ = "Denis 'jawa' Pompilio"
