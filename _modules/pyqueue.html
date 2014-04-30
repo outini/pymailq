@@ -239,6 +239,7 @@
 <span class="sd">        :mod:`email` module.</span>
 
 <span class="sd">        .. seealso::</span>
+
 <span class="sd">            Postfix manual:</span>
 <span class="sd">                `postcat`_ -- Show Postfix queue file contents</span>
 <span class="sd"> </span>
@@ -344,6 +345,13 @@
 <span class="sd">            followed with ``*`` or ``!``.</span>
 <span class="sd">            Default used regular expression is: ``r&quot;^[A-F0-9]{10,12}[*!]?$&quot;``.</span>
 
+<span class="sd">        .. attribute:: mail_addr_re</span>
+
+<span class="sd">            Python compiled regular expression object (:class:`re.RegexObject`)</span>
+<span class="sd">            provided by :meth:`re.compile` method to match email addresses.</span>
+<span class="sd">            Default used regular expression is:</span>
+<span class="sd">            ``r&quot;^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+$&quot;``</span>
+
 <span class="sd">    .. seealso::</span>
 
 <span class="sd">        Python modules:</span>
@@ -353,11 +361,14 @@
 
 <span class="sd">        Postfix manual:</span>
 <span class="sd">            `postqueue`_ -- Postfix queue control</span>
+
+<span class="sd">        :rfc:`3696` -- Checking and Transformation of Names</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">postqueue_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;/usr/sbin/postqueue&quot;</span><span class="p">,</span> <span class="s">&quot;-p&quot;</span><span class="p">]</span>
     <span class="n">spool_path</span> <span class="o">=</span> <span class="s">&quot;/var/spool/postfix&quot;</span>
     <span class="n">postqueue_mailstatus</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;active&#39;</span><span class="p">,</span> <span class="s">&#39;deferred&#39;</span><span class="p">,</span> <span class="s">&#39;hold&#39;</span><span class="p">]</span>
     <span class="n">mail_id_re</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;^[A-F0-9]{10,12}[*!]?$&quot;</span><span class="p">)</span>
+    <span class="n">mail_addr_re</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+$&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Init method&quot;&quot;&quot;</span>
@@ -444,25 +455,33 @@
             <span class="n">fields</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
             <span class="k">if</span> <span class="s">&quot;(&quot;</span> <span class="o">==</span> <span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
                 <span class="c"># Store error message without parenthesis: [1:-1]</span>
+                <span class="c"># gathered errors must be associated with specific recipients</span>
+                <span class="c"># TODO: change recipients or errors structures to link these</span>
+                <span class="c">#       objects together.</span>
                 <span class="n">mail</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fields</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_mail_id</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-                    <span class="c"># postfix does not precise year in mails timestamps</span>
-                    <span class="c"># we consider mails have been sent this year</span>
-                    <span class="c"># TODO: it may be improved</span>
-                    <span class="c">#       for Jan 1st usage with mails from prev year</span>
-                    <span class="n">current_year</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">year</span>
-                    <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
-                            <span class="s">&quot;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">current_year</span><span class="p">),</span>
-                            <span class="s">&quot;%a %b </span><span class="si">%d</span><span class="s"> %H:%M:%S %Y&quot;</span><span class="p">)</span>
+                    <span class="c"># postfix does not precise year in mails timestamps so</span>
+                    <span class="c"># we consider mails have been sent this year.</span>
+                    <span class="c"># If gathered date is in the future:</span>
+                    <span class="c"># mail has been received last year (or NTP problem).</span>
+                    <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+                    <span class="n">datestr</span> <span class="o">=</span> <span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">now</span><span class="o">.</span><span class="n">year</span><span class="p">))</span>
+                    <span class="n">date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">datestr</span><span class="p">,</span> <span class="s">&quot;%a %b </span><span class="si">%d</span><span class="s"> %H:%M:%S %Y&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">date</span> <span class="o">&gt;</span> <span class="n">now</span><span class="p">:</span>
+                        <span class="n">date</span> <span class="o">=</span> <span class="n">date</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">365</span><span class="p">)</span>
 
                     <span class="n">mail</span> <span class="o">=</span> <span class="n">Mail</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">size</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
                                            <span class="n">date</span> <span class="o">=</span> <span class="n">date</span><span class="p">,</span>
                                            <span class="n">sender</span> <span class="o">=</span> <span class="n">fields</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">mails</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mail</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="c">#print &quot;to: %s&quot; % (fields[0])</span>
-                    <span class="n">mail</span><span class="o">.</span><span class="n">recipients</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fields</span><span class="p">))</span>
+                    <span class="c"># Email address validity check can be tricky. RFC3696 talks</span>
+                    <span class="c"># about. Fow now, we use a simple regular expression to</span>
+                    <span class="c"># match most of email addresses.</span>
+                    <span class="n">rcpt_email_addr</span> <span class="o">=</span> <span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">mail_addr_re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">rcpt_email_addr</span><span class="p">):</span>
+                        <span class="n">mail</span><span class="o">.</span><span class="n">recipients</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rcpt_email_addr</span><span class="p">)</span>
 </div>
     <span class="nd">@debug</span>
 <div class="viewcode-block" id="PostqueueStore._load_from_spool"><a class="viewcode-back" href="../index.html#pyqueue.PostqueueStore._load_from_spool">[docs]</a>    <span class="k">def</span> <span class="nf">_load_from_spool</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -534,17 +553,22 @@
 <span class="sd">        .. attribute:: known_operations</span>
 
 <span class="sd">            Known Postfix administrative operations dictionnary to associate</span>
-<span class="sd">            operations to command arguments. Known associations are:</span>
-<span class="sd">            ::</span>
+<span class="sd">            operations to command arguments. Known associations are::</span>
 
 <span class="sd">                 delete: -d</span>
 <span class="sd">                   hold: -h</span>
 <span class="sd">                release: -H</span>
 <span class="sd">                requeue: -r</span>
 
-<span class="sd">            .. seealso::</span>
-<span class="sd">                Postfix manual:</span>
-<span class="sd">                    `postsuper`_ -- Postfix superintendent</span>
+<span class="sd">            .. warning::</span>
+
+<span class="sd">                Default known associations are provided for the default mails</span>
+<span class="sd">                queue administrative command `postsuper`_.</span>
+
+<span class="sd">        .. seealso::</span>
+
+<span class="sd">            Postfix manual:</span>
+<span class="sd">                `postsuper`_ -- Postfix superintendent</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">postsuper_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;postsuper&quot;</span><span class="p">]</span>
@@ -557,11 +581,18 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generic method to lead operations messages from postfix mail queue.</span>
 
-<span class="sd">        Operations can be one of Postfix known operations:</span>
-<span class="sd">        :attr:`~QueueControl.known_operations`. Operation argument is directly</span>
-<span class="sd">        converted and passed to the :attr:`~QueueControl.postsuper_cmd` command.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        Operations can be one of Postfix known operations stored in</span>
+<span class="sd">        :attr:`~QueueControl.known_operations` attribute. Operation argument is</span>
+<span class="sd">        directly converted and passed to the :attr:`~QueueControl.postsuper_cmd`</span>
+<span class="sd">        command.</span>
 
+<span class="sd">        :param str operation: Known operation from</span>
+<span class="sd">                              :attr:`~QueueControl.known_operations`.</span>
+<span class="sd">        :param list messages: List of :class:`Mail` objects targetted for</span>
+<span class="sd">                              operation.</span>
+<span class="sd">        :return: Command&#39;s *stderr* output lines</span>
+<span class="sd">        :rtype: :func:`list`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c"># Convert operation name to operation attribute. Raise KeyError.</span>
         <span class="n">operation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">known_operations</span><span class="p">[</span><span class="n">operation</span><span class="p">]</span>
 
@@ -582,27 +613,39 @@
 
         <span class="k">return</span> <span class="p">[</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">stderr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span> <span class="p">]</span>
 </div>
-<div class="viewcode-block" id="QueueControl.delete_messages"><a class="viewcode-back" href="../index.html#pyqueue.QueueControl.delete_messages">[docs]</a>    <span class="k">def</span> <span class="nf">delete_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>  <span class="c"># TODO: documentation</span>
+<div class="viewcode-block" id="QueueControl.delete_messages"><a class="viewcode-back" href="../index.html#pyqueue.QueueControl.delete_messages">[docs]</a>    <span class="k">def</span> <span class="nf">delete_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Delete several messages from postfix mail queue</span>
+<span class="sd">        Delete several messages from postfix mail queue.</span>
+
+<span class="sd">        This method is a :func:`~functools.partial` wrapper on</span>
+<span class="sd">        :meth:`~QueueControl._operate`. Passed operation is ``delete``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operate</span><span class="p">(</span><span class="s">&#39;delete&#39;</span><span class="p">,</span> <span class="n">messages</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="QueueControl.hold_messages"><a class="viewcode-back" href="../index.html#pyqueue.QueueControl.hold_messages">[docs]</a>    <span class="k">def</span> <span class="nf">hold_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>  <span class="c"># TODO: documentation</span>
+<div class="viewcode-block" id="QueueControl.hold_messages"><a class="viewcode-back" href="../index.html#pyqueue.QueueControl.hold_messages">[docs]</a>    <span class="k">def</span> <span class="nf">hold_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Hold several messages from postfix mail queue</span>
+<span class="sd">        Hold several messages from postfix mail queue.</span>
+
+<span class="sd">        This method is a :func:`~functools.partial` wrapper on</span>
+<span class="sd">        :meth:`~QueueControl._operate`. Passed operation is ``hold``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operate</span><span class="p">(</span><span class="s">&#39;hold&#39;</span><span class="p">,</span> <span class="n">messages</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="QueueControl.release_messages"><a class="viewcode-back" href="../index.html#pyqueue.QueueControl.release_messages">[docs]</a>    <span class="k">def</span> <span class="nf">release_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>  <span class="c"># TODO: documentation</span>
+<div class="viewcode-block" id="QueueControl.release_messages"><a class="viewcode-back" href="../index.html#pyqueue.QueueControl.release_messages">[docs]</a>    <span class="k">def</span> <span class="nf">release_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Release several messages from postfix mail queue</span>
+<span class="sd">        Release several messages from postfix mail queue.</span>
+
+<span class="sd">        This method is a :func:`~functools.partial` wrapper on</span>
+<span class="sd">        :meth:`~QueueControl._operate`. Passed operation is ``release``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operate</span><span class="p">(</span><span class="s">&#39;release&#39;</span><span class="p">,</span> <span class="n">messages</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="QueueControl.requeue_messages"><a class="viewcode-back" href="../index.html#pyqueue.QueueControl.requeue_messages">[docs]</a>    <span class="k">def</span> <span class="nf">requeue_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>  <span class="c"># TODO: documentation</span>
+<div class="viewcode-block" id="QueueControl.requeue_messages"><a class="viewcode-back" href="../index.html#pyqueue.QueueControl.requeue_messages">[docs]</a>    <span class="k">def</span> <span class="nf">requeue_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Requeue several messages from postfix mail queue</span>
+<span class="sd">        Requeue several messages from postfix mail queue.</span>
+
+<span class="sd">        This method is a :func:`~functools.partial` wrapper on</span>
+<span class="sd">        :meth:`~QueueControl._operate`. Passed operation is ``requeue``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operate</span><span class="p">(</span><span class="s">&#39;requeue&#39;</span><span class="p">,</span> <span class="n">messages</span><span class="p">)</span>
 
@@ -615,7 +658,7 @@
 
 <span class="sd">    .. attribute:: mails</span>
 
-<span class="sd">        Currently selected mails :func:`list`</span>
+<span class="sd">        Currently selected :class:`Mail` objects :func:`list`</span>
 
 <span class="sd">    .. attribute:: store</span>
 <span class="sd">    </span>
@@ -625,7 +668,7 @@
 <span class="sd">    .. attribute:: filters</span>
 <span class="sd">    </span>
 <span class="sd">        Applied filters :func:`list` on current selection. Filters list</span>
-<span class="sd">        entries are tuple containing ``(function.__name__, args, kwargs)``</span>
+<span class="sd">        entries are tuples containing ``(function.__name__, args, kwargs)``</span>
 <span class="sd">        for each applied filters. This list is filled by the</span>
 <span class="sd">        :meth:`~MailSelector.filter_registration` decorator while calling</span>
 <span class="sd">        filtering methods. It is possible to replay registered filter using</span>
@@ -642,6 +685,10 @@
 <div class="viewcode-block" id="MailSelector.filter_registration"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.filter_registration">[docs]</a>    <span class="k">def</span> <span class="nf">filter_registration</span><span class="p">(</span><span class="n">function</span><span class="p">):</span>  <span class="c"># TODO: documentation</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Decorator to register applied filter.</span>
+
+<span class="sd">        This decorated is used to wrap selection methods ``lookup_*``. It</span>
+<span class="sd">        registers a ``(function.func_name, args, kwargs)`` :class:`tuple` in</span>
+<span class="sd">        the :attr:`~MailSelector.filters` attribute.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nd">@wraps</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -650,9 +697,17 @@
             <span class="k">return</span> <span class="n">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">wrapper</span>
 </div>
-<div class="viewcode-block" id="MailSelector.reset"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c"># TODO: documentation</span>
+<div class="viewcode-block" id="MailSelector.reset"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reset mail selector with initial store mails list.</span>
+
+<span class="sd">        Selected :class:`Mail` objects are deleted and the</span>
+<span class="sd">        :attr:`~MailSelector.mails` attribute is removed for memory releasing</span>
+<span class="sd">        purpose (with help of :func:`gc.collect`). Attribute</span>
+<span class="sd">        :attr:`~MailSelector.mails` is then reinitialized a copy of</span>
+<span class="sd">        :attr:`~MailSelector.store`&#39;s :attr:`~PostqueueStore.mails` attribute.</span>
+
+<span class="sd">        Registered :attr:`~MailSelector.filters` are also emptied.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
         <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
@@ -660,9 +715,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span> <span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="o">.</span><span class="n">mails</span> <span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filters</span> <span class="o">=</span> <span class="p">[]</span>
 </div>
-<div class="viewcode-block" id="MailSelector.replay_filters"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.replay_filters">[docs]</a>    <span class="k">def</span> <span class="nf">replay_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c"># TODO: documentation</span>
+<div class="viewcode-block" id="MailSelector.replay_filters"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.replay_filters">[docs]</a>    <span class="k">def</span> <span class="nf">replay_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reset selection with store content and replay registered filters.</span>
+
+<span class="sd">        Like with the :meth:`~MailSelector.reset` method, selected</span>
+<span class="sd">        :class:`Mail` objects are deleted and reinitialized with a copy of</span>
+<span class="sd">        :attr:`~MailSelector.store`&#39;s :attr:`~PostqueueStore.mails` attribute.</span>
+
+<span class="sd">        However, registered :attr:`~MailSelector.filters` are kept and replayed</span>
+<span class="sd">        on resetted selection. Use this method to refresh your store content</span>
+<span class="sd">        while keeping your filters.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
         <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
@@ -676,16 +739,14 @@
 </div>
     <span class="nd">@debug</span>
     <span class="nd">@filter_registration</span>
-<div class="viewcode-block" id="MailSelector.lookup_status"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.lookup_status">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>  <span class="c"># TODO: documentation</span>
+<div class="viewcode-block" id="MailSelector.lookup_status"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.lookup_status">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Lookup mails with specified postqueue status.</span>
+
+<span class="sd">        :param list status: List of matching status to filter on.</span>
+<span class="sd">        :return: List of newly selected :class:`Mail` objects</span>
+<span class="sd">        :rtype: :func:`list`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">status</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
-            <span class="n">status</span> <span class="o">=</span> <span class="p">[</span><span class="n">status</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">status</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span> <span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
                        <span class="k">if</span> <span class="n">mail</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="n">status</span> <span class="p">]</span>
 
@@ -694,24 +755,42 @@
 </div>
     <span class="nd">@debug</span>
     <span class="nd">@filter_registration</span>
-<div class="viewcode-block" id="MailSelector.lookup_sender"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.lookup_sender">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_sender</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">partial</span> <span class="o">=</span> <span class="bp">False</span><span class="p">):</span>  <span class="c"># TODO: documentation</span>
+<div class="viewcode-block" id="MailSelector.lookup_sender"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.lookup_sender">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_sender</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">partial</span> <span class="o">=</span> <span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Lookup mails send from a specific sender.</span>
+
+<span class="sd">        Optionnal parameter ``partial`` allow lookup of partial sender like</span>
+<span class="sd">        ``@domain.com`` or ``sender@``. By default, ``partial`` is ``False``</span>
+<span class="sd">        and selection is made on exact sender.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">            Matches are made against :class:`Mail.sender` attribute instead of</span>
+<span class="sd">            real mail header :mailheader:`Sender`.</span>
+
+<span class="sd">        :param str sender: Sender address to lookup in :class:`Mail` selection.</span>
+<span class="sd">        :param bool partial: Allow lookup with partial match</span>
+<span class="sd">        :return: List of newly selected :class:`Mail` objects</span>
+<span class="sd">        :rtype: :func:`list`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">partial</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span> <span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
-                           <span class="k">if</span> <span class="n">sender</span> <span class="o">==</span> <span class="n">mail</span><span class="o">.</span><span class="n">sender</span> <span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">partial</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span> <span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
                            <span class="k">if</span> <span class="n">sender</span> <span class="ow">in</span> <span class="n">mail</span><span class="o">.</span><span class="n">sender</span> <span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span> <span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
+                           <span class="k">if</span> <span class="n">sender</span> <span class="o">==</span> <span class="n">mail</span><span class="o">.</span><span class="n">sender</span> <span class="p">]</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
 </div>
     <span class="nd">@debug</span>
     <span class="nd">@filter_registration</span>
-<div class="viewcode-block" id="MailSelector.lookup_error"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.lookup_error">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_msg</span><span class="p">):</span>  <span class="c"># TODO: documentation</span>
+<div class="viewcode-block" id="MailSelector.lookup_error"><a class="viewcode-back" href="../index.html#pyqueue.MailSelector.lookup_error">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_msg</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Lookup mails with specific error message (message may be partial).</span>
+
+<span class="sd">        :param str error_msg: Error message to filter on</span>
+<span class="sd">        :return: List of newly selected :class:`Mail` objects`</span>
+<span class="sd">        :rtype: :func:`list`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span> <span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
                        <span class="k">if</span> <span class="bp">True</span> <span class="ow">in</span> <span class="p">[</span> <span class="bp">True</span> <span class="k">for</span> <span class="n">err</span> <span class="ow">in</span> <span class="n">mail</span><span class="o">.</span><span class="n">errors</span>
@@ -724,10 +803,16 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Lookup mails send on specific date range.</span>
 
+<span class="sd">        Both arguments ``start`` and ``stop`` are optionnal and default is set</span>
+<span class="sd">        to ``None``. However, it is required to pass at least one of those</span>
+<span class="sd">        arguments. This method will raise :class:`~exception.TypeError` if both</span>
+<span class="sd">        arguments ``start`` and ``stop`` are set to ``None``.</span>
+
 <span class="sd">        :param datetime.datetime start: Start date</span>
+<span class="sd">                                        (default: ``datetime(1970,1,1)``)</span>
 <span class="sd">        :param datetime.datetime stop: Stop date</span>
-<span class="sd">        :return: Matching :class:`Mail` objects from</span>
-<span class="sd">                 :attr:`~PostqueueStore.mails`</span>
+<span class="sd">                                       (default: ``datetime.now()``)</span>
+<span class="sd">        :return: List of newly selected :class:`Mail` objects`</span>
 <span class="sd">        :rtype: :func:`list`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
