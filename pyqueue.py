@@ -11,6 +11,7 @@ __license__ = "GPLv2"
 __maintainer__ = "Denis 'jawa' Pompilio"
 __email__ = "denis.pompilio@gmail.com"
 __status__ = "Development"
+__version__ = "0.4"
 
 import os
 import sys
