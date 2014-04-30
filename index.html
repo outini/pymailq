@@ -200,14 +200,54 @@ tool (<a class="reference external" href="http://www.postfix.org/postqueue.1.htm
                                          third.rcpt@remote2.org</pre>
 </div>
 <p>Parsing rules are pretty simple:</p>
-<ul class="simple">
-<li>Line starts with a valid <a class="reference internal" href="#pyqueue.Mail.qid" title="pyqueue.Mail.qid"><tt class="xref py py-attr docutils literal"><span class="pre">Mail.qid</span></tt></a>: create new <a class="reference internal" href="#pyqueue.Mail" title="pyqueue.Mail"><tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt></a>
+<ul>
+<li><p class="first">Line starts with a valid <a class="reference internal" href="#pyqueue.Mail.qid" title="pyqueue.Mail.qid"><tt class="xref py py-attr docutils literal"><span class="pre">Mail.qid</span></tt></a>: create new <a class="reference internal" href="#pyqueue.Mail" title="pyqueue.Mail"><tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt></a>
 object with <a class="reference internal" href="#pyqueue.Mail.qid" title="pyqueue.Mail.qid"><tt class="xref py py-attr docutils literal"><span class="pre">qid</span></tt></a>, <a class="reference internal" href="#pyqueue.Mail.size" title="pyqueue.Mail.size"><tt class="xref py py-attr docutils literal"><span class="pre">size</span></tt></a>, <a class="reference internal" href="#pyqueue.Mail.date" title="pyqueue.Mail.date"><tt class="xref py py-attr docutils literal"><span class="pre">date</span></tt></a>
-and <a class="reference internal" href="#pyqueue.Mail.sender" title="pyqueue.Mail.sender"><tt class="xref py py-attr docutils literal"><span class="pre">sender</span></tt></a> informations from line.</li>
-<li>Line starts with a parenthesis: store error messages to last created
-<a class="reference internal" href="#pyqueue.Mail" title="pyqueue.Mail"><tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt></a> object&#8217;s <a class="reference internal" href="#pyqueue.Mail.errors" title="pyqueue.Mail.errors"><tt class="xref py py-attr docutils literal"><span class="pre">errors</span></tt></a> attribute.</li>
-<li>Any other matches: add new recipient to the <a class="reference internal" href="#pyqueue.Mail.recipients" title="pyqueue.Mail.recipients"><tt class="xref py py-attr docutils literal"><span class="pre">recipients</span></tt></a>
-attribute of the last created <a class="reference internal" href="#pyqueue.Mail" title="pyqueue.Mail"><tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt></a> object.</li>
+and <a class="reference internal" href="#pyqueue.Mail.sender" title="pyqueue.Mail.sender"><tt class="xref py py-attr docutils literal"><span class="pre">sender</span></tt></a> informations from line.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%" />
+<col width="10%" />
+<col width="8%" />
+<col width="8%" />
+<col width="7%" />
+<col width="17%" />
+<col width="28%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><p class="first last">Queue ID</p>
+</td>
+<td><p class="first last">Size</p>
+</td>
+<td colspan="4"><p class="first last">Reception date and time</p>
+</td>
+<td><p class="first last">Sender</p>
+</td>
+</tr>
+<tr class="row-even"><td><p class="first last">C0004979687</p>
+</td>
+<td><p class="first last">4769</p>
+</td>
+<td><p class="first last">Tue</p>
+</td>
+<td><p class="first last">Apr</p>
+</td>
+<td><p class="first last">29</p>
+</td>
+<td><p class="first last">06:35:05</p>
+</td>
+<td><p class="first last"><a class="reference external" href="mailto:user&#37;&#52;&#48;domain&#46;com">user<span>&#64;</span>domain<span>&#46;</span>com</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li><p class="first">Line starts with a parenthesis: store error messages to last created
+<a class="reference internal" href="#pyqueue.Mail" title="pyqueue.Mail"><tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt></a> object&#8217;s <a class="reference internal" href="#pyqueue.Mail.errors" title="pyqueue.Mail.errors"><tt class="xref py py-attr docutils literal"><span class="pre">errors</span></tt></a> attribute.</p>
+</li>
+<li><p class="first">Any other matches: add new recipient to the <a class="reference internal" href="#pyqueue.Mail.recipients" title="pyqueue.Mail.recipients"><tt class="xref py py-attr docutils literal"><span class="pre">recipients</span></tt></a>
+attribute of the last created <a class="reference internal" href="#pyqueue.Mail" title="pyqueue.Mail"><tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt></a> object.</p>
+</li>
 </ul>
 </dd></dl>
 
