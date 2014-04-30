@@ -407,25 +407,33 @@ class PostqueueStore(object):
             fields = line.split()
             if "(" == fields[0][0]:
                 # Store error message without parenthesis: [1:-1]
+                # gathered errors must be associated with specific recipients
+                # TODO: change recipients or errors structures to link these
+                #       objects together.
                 mail.errors.append(" ".join(fields)[1:-1])
             else:
                 if self._is_mail_id(fields[0]):
-                    # postfix does not precise year in mails timestamps
-                    # we consider mails have been sent this year
-                    # TODO: it may be improved
-                    #       for Jan 1st usage with mails from prev year
-                    current_year = datetime.now().year
-                    date = datetime.strptime(
-                            "%s %s" % (" ".join(fields[2:-1]), current_year),
-                            "%a %b %d %H:%M:%S %Y")
+                    # postfix does not precise year in mails timestamps so
+                    # we consider mails have been sent this year.
+                    # If gathered date is in the future:
+                    # mail has been received last year (or NTP problem).
+                    now = datetime.now()
+                    datestr = " ".join(fields[2:-1].append(now.year))
+                    date = datetime.strptime(datestr, "%a %b %d %H:%M:%S %Y")
+                    if date > now:
+                        date = date - timedelta(days=365)
 
                     mail = Mail(fields[0], size = fields[1],
                                            date = date,
                                            sender = fields[-1])
                     self.mails.append(mail)
                 else:
-                    #print "to: %s" % (fields[0])
-                    mail.recipients.append(" ".join(fields))
+                    # Email address validity check can be tricky. RFC3696 talks
+                    # about. Fow now, we use a simple regular expression to
+                    # match most of email addresses.
+                    rcpt_email_addr = " ".join(fields)
+                    if mail_addr_re.match(rcpt_email_addr):
+                        mail.recipients.append(rcpt_email_addr)
 
     @debug
     def _load_from_spool(self):
