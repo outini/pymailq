@@ -426,7 +426,7 @@ class PostqueueStore(object):
                     # If gathered date is in the future:
                     # mail has been received last year (or NTP problem).
                     now = datetime.now()
-                    datestr = " ".join(fields[2:-1].append(now.year))
+                    datestr = "{0} {1}".format(" ".join(fields[2:-1]), now.year)
                     date = datetime.strptime(datestr, "%a %b %d %H:%M:%S %Y")
                     if date > now:
                         date = date - timedelta(days=365)
@@ -440,7 +440,7 @@ class PostqueueStore(object):
                     # about. Fow now, we use a simple regular expression to
                     # match most of email addresses.
                     rcpt_email_addr = " ".join(fields)
-                    if mail_addr_re.match(rcpt_email_addr):
+                    if self.mail_addr_re.match(rcpt_email_addr):
                         mail.recipients.append(rcpt_email_addr)
 
     @debug
