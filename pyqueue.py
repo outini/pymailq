@@ -797,10 +797,23 @@ class MailSelector(object):
         return self.mails
 
 
-# MAIN #
+#
+# MAIN
+#
+# This is here for tests purpose, no administrative operations are made.
+#
+# The pyqueue.QueueControl object must be tested with specific code snippet:
+# >>> import pyqueue
+# >>> selector = MailSelector(PostqueueStore())
+# >>> selector.lookup_sender("MAILER-DAEMON")
+# >>> qcontrol = QueueControl()
+# >>> print "\n".join(qcontrol.hold_messages(selector.mails))
+# >>> print "\n".join(qcontrol.release_messages(selector.mails))
+# >>> print "\n".join(qcontrol.requeue_messages(selector.mails))
+#
 if __name__ == "__main__":
 
-    def list_preview(datas, limit = 10):
+    def list_preview(datas, limit = 5):
         """Return at most "limit" elements of datas list"""
         if len(datas) > limit:
             overhead = len(datas) - limit
@@ -819,24 +832,21 @@ if __name__ == "__main__":
 
     sender = "MAILER-DAEMON"
     print "Looking for mails from '%s'" % (sender)
-    for mail in list_preview(selector.lookup_sender(sender = sender,
-                                                    partial=True)):
-        print "%s: [%s] %s: %d errors" % (mail.date, mail.qid,
-                                          mail.sender, len(mail.errors))
-    print "Found %s mails" % (len(selector.mails))
+    for mail in list_preview(selector.lookup_sender(sender = sender)):
+        print "%s: [%s] %s: %s (%d errors)" % (mail.date, mail.qid, mail.sender,
+                                               ", ".join(mail.recipients),
+                                               len(mail.errors))
 
     errormsg = "Connection timed out"
     print "\nLooking for '%s' error message" % (errormsg)
     for mail in list_preview(selector.lookup_error(error_msg = errormsg)):
         print "%s: %s (%d errors)" % (mail.date, mail.sender, len(mail.errors))
-    print "Found %s mails" % (len(selector.mails))
 
-    stop_date = datetime.strptime("2014-04-14", "%Y-%m-%d")
-    print "\nLooking for mails older than %s" % (stop_date.isoformat())
+    stop_date = datetime.now() - timedelta(days=5)
+    print "\nLooking for mails older than %s" % (stop_date)
     for mail in list_preview(selector.lookup_date(stop = stop_date)):
         print "%s: *%s* %s (%d errors)" % (mail.date, mail.status,
                                            mail.sender, len(mail.errors))
-    print "Found %s mails" % (len(selector.mails))
 
     print "\nProceeding to selector reset (%s mails)" % (len(selector.mails))
     selector.reset()
@@ -847,7 +857,6 @@ if __name__ == "__main__":
     for mail in list_preview(selector.lookup_status(status = status)):
         print "%s: %s (%d recipients)" % (mail.date, mail.sender,
                                           len(mail.recipients))
-    print "Found %s mails" % (len(selector.mails))
 
     print "\nReplaying filters"
     selector.replay_filters()
@@ -857,14 +866,13 @@ if __name__ == "__main__":
     for mail in list_preview(selector.lookup_size(smin = 100000)):
         print "%s: [%s] %s (%dB)" % ( mail.date, mail.qid,
                                       mail.sender, mail.size )
-    print "Found %s mails" % (len(selector.mails))
 
     print "\nLooking for multiple recipients mails"
     mrcpt = [ mail for mail in pstore.mails if len(mail.recipients) > 1 ]
     for mail in list_preview(mrcpt):
-        print "%s: [%s] %s (%dB)" % ( mail.date, mail.qid,
-                                      mail.sender, mail.size )
-    print "Found %s mails" % (len(mrcpt))
+        print "%s: [%s] %s (%dB): %d recipients" % ( mail.date, mail.qid,
+                                                     mail.sender, mail.size,
+                                                     len(mail.recipients))
 
     target = pstore.mails[-1]
     print "\nDumping last mail from queue (%s)" % (target.qid)
@@ -876,7 +884,3 @@ if __name__ == "__main__":
     print "Headers infos:"
     for k,v in datas['headers'].items():
         print "    %s: %s" % (k,v)
-
-#    print "\nHolding selected mails from queue"
-#    qcontrol = QueueControl()
-#    print "\n".join(qcontrol.hold_messages(selector.mails))
