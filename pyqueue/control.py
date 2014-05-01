@@ -25,17 +25,17 @@ class QueueControl(object):
     """
     Postfix queue control using postsuper command.
 
-    The :class:`~pyqueue.QueueControl` instance defines the following
+    The :class:`~control.QueueControl` instance defines the following
     attributes:
 
         .. attribute:: postsuper_cmd
  
-            Postfix command and arguments list for mails queue administrative
-            operations. Default is ``["postsuper"]``
+            Postfix command and arguments :func:`list` for mails queue
+            administrative operations. Default is ``["postsuper"]``
 
         .. attribute:: known_operations
 
-            Known Postfix administrative operations dictionnary to associate
+            Known Postfix administrative operations :class:`dict` to associate
             operations to command arguments. Known associations are::
 
                  delete: -d
@@ -65,14 +65,14 @@ class QueueControl(object):
         Generic method to lead operations messages from postfix mail queue.
 
         Operations can be one of Postfix known operations stored in
-        :attr:`~QueueControl.known_operations` attribute. Operation argument is
-        directly converted and passed to the :attr:`~QueueControl.postsuper_cmd`
-        command.
+        :attr:`~control.QueueControl.known_operations` attribute. Operation
+        argument is directly converted and passed to the
+        :attr:`~control.QueueControl.postsuper_cmd` command.
 
         :param str operation: Known operation from
-                              :attr:`~QueueControl.known_operations`.
-        :param list messages: List of :class:`Mail` objects targetted for
-                              operation.
+                              :attr:`~control.QueueControl.known_operations`.
+        :param list messages: List of :class:`~store.Mail` objects targetted
+                              for operation.
         :return: Command's *stderr* output lines
         :rtype: :func:`list`
         """
@@ -101,7 +101,7 @@ class QueueControl(object):
         Delete several messages from postfix mail queue.
 
         This method is a :func:`~functools.partial` wrapper on
-        :meth:`~QueueControl._operate`. Passed operation is ``delete``
+        :meth:`~control.QueueControl._operate`. Passed operation is ``delete``
         """
         return self._operate('delete', messages)
 
@@ -110,7 +110,7 @@ class QueueControl(object):
         Hold several messages from postfix mail queue.
 
         This method is a :func:`~functools.partial` wrapper on
-        :meth:`~QueueControl._operate`. Passed operation is ``hold``
+        :meth:`~control.QueueControl._operate`. Passed operation is ``hold``
         """
         return self._operate('hold', messages)
 
@@ -119,7 +119,7 @@ class QueueControl(object):
         Release several messages from postfix mail queue.
 
         This method is a :func:`~functools.partial` wrapper on
-        :meth:`~QueueControl._operate`. Passed operation is ``release``
+        :meth:`~control.QueueControl._operate`. Passed operation is ``release``
         """
         return self._operate('release', messages)
 
@@ -128,6 +128,6 @@ class QueueControl(object):
         Requeue several messages from postfix mail queue.
 
         This method is a :func:`~functools.partial` wrapper on
-        :meth:`~QueueControl._operate`. Passed operation is ``requeue``
+        :meth:`~control.QueueControl._operate`. Passed operation is ``requeue``
         """
         return self._operate('requeue', messages)

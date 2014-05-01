@@ -28,59 +28,59 @@ The :mod:`pyqueue` module defines the following decorators:
 PostqueueStore Objects
 **********************
 
-.. autoclass:: pyqueue.PostqueueStore()
+.. autoclass:: pyqueue.store.PostqueueStore()
 
-The :class:`~pyqueue.PostqueueStore` instance provides the following methods:
+The :class:`~store.PostqueueStore` instance provides the following methods:
 
-    .. automethod:: PostqueueStore.load([method])
-    .. automethod:: PostqueueStore._load_from_postqueue()
-    .. automethod:: PostqueueStore._load_from_spool()
-    .. automethod:: PostqueueStore._get_postqueue_output()
-    .. automethod:: PostqueueStore._is_mail_id(mail_id)
+    .. automethod:: pyqueue.store.PostqueueStore.load([method])
+    .. automethod:: pyqueue.store.PostqueueStore._load_from_postqueue()
+    .. automethod:: pyqueue.store.PostqueueStore._load_from_spool()
+    .. automethod:: pyqueue.store.PostqueueStore._get_postqueue_output()
+    .. automethod:: pyqueue.store.PostqueueStore._is_mail_id(mail_id)
 
 QueueControl Objects
 ********************
 
-.. autoclass:: pyqueue.QueueControl()
+.. autoclass:: pyqueue.control.QueueControl()
 
-The :class:`~pyqueue.QueueControl` instance provides the following methods:
+The :class:`~control.QueueControl` instance provides the following methods:
 
-    .. automethod:: QueueControl._operate
-    .. automethod:: QueueControl.delete_messages
-    .. automethod:: QueueControl.hold_messages
-    .. automethod:: QueueControl.release_messages
-    .. automethod:: QueueControl.requeue_messages
+    .. automethod:: pyqueue.control.QueueControl._operate
+    .. automethod:: pyqueue.control.QueueControl.delete_messages
+    .. automethod:: pyqueue.control.QueueControl.hold_messages
+    .. automethod:: pyqueue.control.QueueControl.release_messages
+    .. automethod:: pyqueue.control.QueueControl.requeue_messages
 
 MailSelector Objects
 ********************
 
-.. autoclass:: pyqueue.MailSelector(store)
+.. autoclass:: pyqueue.selector.MailSelector(store)
 
-The :class:`~pyqueue.MailSelector` instance provides the following methods:
+The :class:`~selector.MailSelector` instance provides the following methods:
 
-    .. automethod:: MailSelector.filter_registration
-    .. automethod:: MailSelector.reset()
-    .. automethod:: MailSelector.replay_filters()
-    .. automethod:: MailSelector.lookup_status(status)
-    .. automethod:: MailSelector.lookup_sender(sender[, partial])
-    .. automethod:: MailSelector.lookup_error(error_msg)
-    .. automethod:: MailSelector.lookup_date([start[, stop]])
-    .. automethod:: MailSelector.lookup_size([smin[, smax]])
+    .. automethod:: pyqueue.selector.MailSelector.filter_registration
+    .. automethod:: pyqueue.selector.MailSelector.reset()
+    .. automethod:: pyqueue.selector.MailSelector.replay_filters()
+    .. automethod:: pyqueue.selector.MailSelector.lookup_status(status)
+    .. automethod:: pyqueue.selector.MailSelector.lookup_sender(sender[, partial])
+    .. automethod:: pyqueue.selector.MailSelector.lookup_error(error_msg)
+    .. automethod:: pyqueue.selector.MailSelector.lookup_date([start[, stop]])
+    .. automethod:: pyqueue.selector.MailSelector.lookup_size([smin[, smax]])
 
 Mail Objects
 ************
 
-.. autoclass:: pyqueue.Mail(mail_id[, size[, date[, sender]]])
+.. autoclass:: pyqueue.store.Mail(mail_id[, size[, date[, sender]]])
 
-The :class:`~pyqueue.Mail` instance provides the following methods:
+The :class:`~store.Mail` instance provides the following methods:
 
-    .. automethod:: Mail.parse()
-    .. automethod:: Mail.dump()
+    .. automethod:: pyqueue.store.Mail.parse()
+    .. automethod:: pyqueue.store.Mail.dump()
 
 MailHeaders Objects
 *******************
 
-.. autoclass:: pyqueue.MailHeaders()
+.. autoclass:: pyqueue.store.MailHeaders()
 
 .. External links for documentation
 .. _postqueue: http://www.postfix.org/postqueue.1.html
