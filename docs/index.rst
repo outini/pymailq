@@ -14,7 +14,10 @@ queue. It provide several classes to store, view and interact with mail queue
 using Postfix command line tools. This module is provided for automation and
 monitoring.
 
-.. seealso:: :mod:`pyqueueshell` for interactive control of Postfix mails queue.
+.. seealso::
+
+    Python module:
+        :mod:`pyqueue.shell` for interactive control of Postfix mails queue.
 
 The :mod:`pyqueue` module defines the following attribute:
 
