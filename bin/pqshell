@@ -25,44 +25,27 @@ from datetime import datetime, timedelta
 from pyqueue import store, control, selector, shell
 
 
-#
-# MAIN
-#
-# This is here for tests purpose, no administrative operations are made.
-#
-# The pyqueue.QueueControl object must be tested with specific code snippet:
-# >>> import pyqueue
-# >>> selector = MailSelector(PostqueueStore())
-# >>> selector.lookup_sender("MAILER-DAEMON")
-# >>> qcontrol = QueueControl()
-# >>> print "\n".join(qcontrol.hold_messages(selector.mails))
-# >>> print "\n".join(qcontrol.release_messages(selector.mails))
-# >>> print "\n".join(qcontrol.requeue_messages(selector.mails))
-#
-if __name__ == "__main__":
+def list_preview(datas, limit = 5):
+    """Return at most "limit" elements of datas list"""
+    if len(datas) > limit:
+        overhead = len(datas) - limit
+        print" ... Preview of first %s (%s more) ..." % (limit, overhead)
+        return datas[:limit]
+    else:
+        return datas
 
-    # Looking for "tests", shell is the default action
-    if "tests" not in sys.argv:
-        try:
-            cli = shell.PyQueueShell()
-            cli.cmdloop()
-        except KeyboardInterrupt:
-            print "\nSlapping the door is not so kind while exiting...."
-        sys.exit(0)
+def tests():
+    """This is here for tests purpose, no administrative operations are made.
 
-
-    ################################################
-    # if not shell, then pyqueue module validation
-
-    def list_preview(datas, limit = 5):
-        """Return at most "limit" elements of datas list"""
-        if len(datas) > limit:
-            overhead = len(datas) - limit
-            print" ... Preview of first %s (%s more) ..." % (limit, overhead)
-            return datas[:limit]
-        else:
-            return datas
-
+    The pyqueue.QueueControl object must be tested with specific code snippet:
+    >>> import pyqueue
+    >>> selector = MailSelector(PostqueueStore())
+    >>> selector.lookup_sender("MAILER-DAEMON")
+    >>> qcontrol = QueueControl()
+    >>> print "\n".join(qcontrol.hold_messages(selector.mails))
+    >>> print "\n".join(qcontrol.release_messages(selector.mails))
+    >>> print "\n".join(qcontrol.requeue_messages(selector.mails))
+    """
     pstore = store.PostqueueStore()
 
     print "Loading postfix queue store"
@@ -125,3 +108,23 @@ if __name__ == "__main__":
     print "Headers infos:"
     for k,v in datas['headers'].items():
         print "    %s: %s" % (k,v)
+
+    sys.exit(0)
+
+def main():
+    """main function"""
+    try:
+        cli = shell.PyQueueShell()
+        cli.cmdloop()
+    except (KeyboardInterrupt, EOFError):
+        print "\nSlapping the door is not so kind while exiting...."
+        sys.exit(0)
+
+
+if __name__ == "__main__":
+
+    # Looking for "tests", shell is the default action
+    if len(sys.argv) == 1 and sys.argv[0] == "tests":
+        tests()
+    else:
+        main()

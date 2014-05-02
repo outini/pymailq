@@ -35,8 +35,10 @@ if __name__ == '__main__':
                                              'README.md')).read(),
         license = "GPLv2",
         platforms = ['UNIX'],
+        scripts = ['bin/pqshell'],
         packages = ['pyqueue'],
         package_dir = {'pyqueue': 'pyqueue'},
+        keywords=['postfix','shell','mailq','python'],
         classifiers = [
             'Development Status :: 2 - Pre-Alpha',
             'Operating System :: POSIX :: BSD',
