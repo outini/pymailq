@@ -22,6 +22,7 @@ import re
 import cmd
 from functools import partial
 from collections import Counter
+from subprocess import CalledProcessError
 
 import store
 import selector
@@ -174,8 +175,15 @@ class PyQueueShell(cmd.Cmd, object):
 # Store commands
     def _store_load(self):
         """Load Postfix queue content"""
-        self.pstore.load()
-        return ["%d mails loaded from queue" % (len(self.pstore.mails))]
+        try:
+            self.pstore.load()
+            # Automatic load of selector if it is empty and never used.
+            if not len(self.selector.mails) and not len(self.selector.filters):
+                self.selector.reset()
+            return ["%d mails loaded from queue" % (len(self.pstore.mails))]
+        except (OSError, CalledProcessError) as error:
+            return ["*** Error: unable to load store",
+                    "   Used: {0}".format(" ".join(self.pstore.postqueue_cmd))]
 
     def _store_status(self):
         """Show store status"""

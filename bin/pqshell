@@ -117,7 +117,7 @@ def main():
         cli = shell.PyQueueShell()
         cli.cmdloop()
     except (KeyboardInterrupt, EOFError):
-        print "\nSlapping the door is not so kind while exiting...."
+        print "\nExiting shell... Bye."
         sys.exit(0)
 
 
