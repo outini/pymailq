@@ -21,12 +21,12 @@
 import re
 import cmd
 from functools import partial
-from collections import Counter
 from subprocess import CalledProcessError
 
 import store
 import selector
 import control
+import utils
 
 
 try:
@@ -294,87 +294,9 @@ class PyQueueShell(cmd.Cmd, object):
 
 
 # Viewer commands and wrapper
-    def sorter(function):
-        """
-        Result sorter decorator.
-
-        This decorator inspect decorated function arguments and search for
-        known keyword to sort decorated function result.
-
-        
-        """
-        def wrapper(self, *args, **kwargs):
-            args = list(args)  # conversion need for arguments cleaning
-            sortkey = "date"  # default sort by date
-            reverse = True  # default sorting is desc
-            if "sortby" in args:
-                sortby_idx = args.index('sortby')
-                args.pop(sortby_idx)  # pop option, next arg is value
-
-                try:
-                    sortkey = args.pop(sortby_idx)
-                except IndexError:
-                    raise SyntaxError("sortby requires a field")
-
-                if "asc" in args:
-                    args.pop(args.index('asc'))
-                    reverse=False
-                elif "desc" in args:
-                    args.pop(args.index('desc'))
-
-            elements = function(self, *args, **kwargs)
-
-            try:
-                sorted_elements = sorted(elements,
-                                         key=lambda x: getattr(x, sortkey),
-                                         reverse=reverse)
-            except AttributeError:
-                msg = "elements cannot be sorted by %s" % (sortkey)
-                raise SyntaxError(msg)
-
-            return sorted_elements
-        wrapper.__doc__ = function.__doc__
-        return wrapper
-
-    def ranker(function):
-        """Result ranker decorator"""
-        def wrapper(self, *args, **kwargs):
-            args = list(args)  # conversion need for arguments cleaning
-            rankkey = None
-            if "rankby" in args:
-                rankby_idx = args.index('rankby')
-                args.pop(rankby_idx)  # pop option, next arg is value
-
-                try:
-                    rankkey = args.pop(rankby_idx)
-                except IndexError:
-                    raise SyntaxError("rankby requires a field")
-
-            elements = function(self, *args, **kwargs)
-
-            if rankkey is not None:
-                try:
-                    rank = Counter()
-                    for element in elements:
-                        rank[getattr(element, rankkey)] += 1
-
-                    # XXX: headers are taken in elements display limit :(
-                    ranked_elements = ['%-40s  count' % (rankkey), '='*48]
-                    for entry in rank.most_common():
-                        key, value = entry
-                        ranked_elements.append('%-40s  %s' % (key, value))
-                    return ranked_elements
-
-                except AttributeError:
-                    msg = "elements cannot be ranked by %s" %(rankkey)
-                    raise SyntaxError(msg)
-
-            return elements
-        wrapper.__doc__ = function.__doc__
-        return wrapper
-
     def viewer(function):
-        """Result viewer decorator"""
+        """Result viewer decorator
+        """
         def wrapper(self, *args, **kwargs):
             args = list(args)  # conversion need for arguments cleaning
             limit = None
@@ -411,7 +333,7 @@ class PyQueueShell(cmd.Cmd, object):
             outformat_attrs = self.format_parser.findall(outformat)
             formatted = []
             for element in elements[:limit]:
-                if isinstance(element, pyqueue.Mail):
+                if isinstance(element, store.Mail):
                     attrs = {}
                     for att in outformat_attrs:
                         attrs[att[1:-1]] = getattr(element, att[1:-1], "-")
@@ -462,8 +384,8 @@ class PyQueueShell(cmd.Cmd, object):
         print "\n".join(lines)
 
     @viewer
-    @ranker
-    @sorter
+    @utils.ranker
+    @utils.sorter
     def _show_selected(self):
         """
         Show selected mails
