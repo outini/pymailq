@@ -31,8 +31,8 @@ class MailHeaders(object):
     """
     Simple object to store mail headers.
 
-    Object's attributes are dynamicly created while parent :class:`Mail`
-    object's method :meth:`~Mail.parse` is called. Those attributes are
+    Object's attributes are dynamicly created while parent :class:`~store.Mail`
+    object's method :meth:`~store.Mail.parse` is called. Those attributes are
     retrieved with help of :func:`~email.message_from_string` method provided
     by the :mod:`email` module.
 
@@ -70,31 +70,32 @@ class Mail(object):
     content. This object functionnalities are mainly based on :mod:`email`
     module's provided class and methods. However,
     :class:`email.message.Message` instance's stored informations are
-    extracted to extend :class:`Mail` instances attributes.
+    extracted to extend :class:`~store.Mail` instances attributes.
 
-    Initialization of :class:`~pyqueue.Mail` instances are made the following
+    Initialization of :class:`~store.Mail` instances are made the following
     way:
 
-    :param str mail_id: Mail Postfix queue ID string
-    :param int size: Mail size in Bytes
-    :param datetime.datetime date: Mail :class:`datetime.datetime` object of
-                                   reception time by Postfix
-    :param str sender: Mail sender string as seen by Postfix
+    :param str mail_id: Mail's queue ID string
+    :param int size: Mail size in Bytes (Default: ``0``)
+    :param datetime.datetime date:  Acceptance date and time in mails queue.
+                                    (Default: :data:`None`)
+    :param str sender: Mail sender string as seen in mails queue.
+                       (Default: empty :func:`str`)
 
     The :class:`~pyqueue.Mail` class defines the following attributes:
 
         .. attribute:: qid
 
             Mail Postfix queue ID string, validated by
-            :meth:`~PostqueueStore._is_mail_id` method.
+            :meth:`~store.PostqueueStore._is_mail_id` method.
 
         .. attribute:: size
 
-            Mail size in bytes. :attr:`size` expected type is :func:`int`.
+            Mail size in bytes. Expected type is :func:`int`.
 
         .. attribute:: parsed
 
-            :func:`bool` value to track if Mail content has been loaded from
+            :func:`bool` value to track if mail's content has been loaded from
             corresponding spool file.
 
         .. attribute:: parse_error
@@ -103,27 +104,28 @@ class Mail(object):
 
         .. attribute:: date
 
-            Mail :class:`datetime.datetime` object of reception time by Postfix.
+            :class:`~datetime.datetime` object of acceptance date and time in
+            mails queue.
 
         .. attribute:: status
     
-            Mail Postfix queue status :func:`str`. 
+            Mail's queue status :func:`str`. 
 
         .. attribute:: sender
 
-            Mail sender :func:`str` as seen by Postfix.
+            Mail's sender :func:`str` as seen in mails queue.
 
         .. attribute:: recipients
 
-            Recipients :func:`list` as seen by Postfix.
+            Recipients :func:`list` as seen in mails queue.
 
         .. attribute:: errors
 
-            Mail deliver errors :func:`list` provided by Postfix.
+            Mail deliver errors :func:`list` as seen in mails queue.
 
         .. attribute:: head
 
-            Mail headers :class:`~pyqueue.MailHeaders` structure.
+            Mail's headers :class:`~store.MailHeaders` structure.
 
         .. attribute:: postcat_cmd
 
@@ -203,11 +205,11 @@ class Mail(object):
 
         Mails informations are splitted in two parts in dictionnary.
         ``postqueue`` key regroups every informations directly gathered from
-        Postfix queue, while ``headers`` regroups :class:`MailHeaders`
-        attributes converted from mail content with the :meth:`~Mail.parse`
-        method.
+        Postfix queue, while ``headers`` regroups :class:`~store.MailHeaders`
+        attributes converted from mail content with the
+        :meth:`~store.Mail.parse` method.
 
-        If mail has not been parsed with the :meth:`~Mail.parse` method,
+        If mail has not been parsed with the :meth:`~store.Mail.parse` method,
         informations under the ``headers`` key will be empty.
 
         :return: Mail gathered informations
@@ -230,27 +232,27 @@ class PostqueueStore(object):
     """
     Postfix mails queue informations storage.
 
-    The :class:`~pyqueue.PostqueueStore` provides methods to load Postfix
+    The :class:`~store.PostqueueStore` provides methods to load Postfix
     queued mails informations into Python structures. Thoses structures are
-    based on :class:`~pyqueue.Mail` and :class:`~pyqueue.MailHeaders` classes
-    which can be processed by a :class:`~pyqueue.MailSelector` instance.
+    based on :class:`~store.Mail` and :class:`~store.MailHeaders` classes
+    which can be processed by a :class:`~selector.MailSelector` instance.
 
-    The :class:`~pyqueue.PostqueueStore` class defines the following attributes:
+    The :class:`~store.PostqueueStore` class defines the following attributes:
 
         .. attribute:: mails
 
-            Loaded :class:`Mail` objects :func:`list`.
+            Loaded :class:`~store.Mail` objects :func:`list`.
 
         .. attribute:: loaded_at
 
             :class:`datetime.datetime` instance to store load date and time
             informations, useful for datas deprecation tracking. Updated on
-            :meth:`~PostqueueStore.load` call with :meth:`datetime.datetime.now`
-            method.
+            :meth:`~store.PostqueueStore.load` call with
+            :meth:`datetime.datetime.now` method.
 
         .. attribute:: postqueue_cmd
 
-            :class:`list` object to store Postfix command and arguments to view
+            :func:`list` object to store Postfix command and arguments to view
             the mails queue content.
             Default is ``["/usr/sbin/postqueue", "-p"]``.
 
@@ -267,7 +269,7 @@ class PostqueueStore(object):
         .. attribute:: mail_id_re
     
             Python compiled regular expression object (:class:`re.RegexObject`)
-            provided by :meth:`re.compile` method to match postfix IDs.
+            provided by :func:`re.compile` method to match postfix IDs.
             Recognized IDs are hexadecimals, may be 10 to 12 chars length and
             followed with ``*`` or ``!``.
             Default used regular expression is: ``r"^[A-F0-9]{10,12}[*!]?$"``.
@@ -275,7 +277,7 @@ class PostqueueStore(object):
         .. attribute:: mail_addr_re
 
             Python compiled regular expression object (:class:`re.RegexObject`)
-            provided by :meth:`re.compile` method to match email addresses.
+            provided by :func:`re.compile` method to match email addresses.
             Default used regular expression is:
             ``r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+$"``
 
@@ -336,7 +338,7 @@ class PostqueueStore(object):
 
         Validation is made using a :class:`re.RegexObject` stored in
         the :attr:`~PostqueueStore.mail_id_re` attribute of the
-        :class:`PostqueueStore` instance.
+        :class:`~store.PostqueueStore` instance.
 
         :param str mail_id: Mail Postfix queue ID string
         :return: True or false
@@ -352,9 +354,9 @@ class PostqueueStore(object):
         """
         Load content from postfix queue using postqueue command output.
 
-        Output lines from :attr:`~PostqueueStore._get_postqueue_output` are
-        parsed to build :class:`Mail` objects. Sample Postfix queue control
-        tool (`postqueue`_) output::
+        Output lines from :attr:`~store.PostqueueStore._get_postqueue_output`
+        are parsed to build :class:`~store.Mail` objects. Sample Postfix queue
+        control tool (`postqueue`_) output::
 
             C0004979687     4769 Tue Apr 29 06:35:05  sender@domain.com
             (error message from mx.remote1.org with parenthesis)
@@ -365,9 +367,10 @@ class PostqueueStore(object):
 
         Parsing rules are pretty simple:
 
-        - Line starts with a valid :attr:`Mail.qid`: create new :class:`Mail`
-          object with :attr:`~Mail.qid`, :attr:`~Mail.size`, :attr:`~Mail.date`
-          and :attr:`~Mail.sender` informations from line.
+        - Line starts with a valid :attr:`Mail.qid`: create new
+          :class:`~store.Mail` object with :attr:`~Mail.qid`,
+          :attr:`~Mail.size`, :attr:`~Mail.date` and :attr:`~Mail.sender`
+          informations from line.
 
           +-------------+------+---------------------------+-----------------+
           | Queue ID    | Size | Reception date and time   | Sender          |
@@ -376,10 +379,10 @@ class PostqueueStore(object):
           +-------------+------+-----+-----+----+----------+-----------------+
 
         - Line starts with a parenthesis: store error messages to last created
-          :class:`Mail` object's :attr:`~Mail.errors` attribute.
+          :class:`~store.Mail` object's :attr:`~Mail.errors` attribute.
 
         - Any other matches: add new recipient to the :attr:`~Mail.recipients`
-          attribute of the last created :class:`Mail` object.
+          attribute of the last created :class:`~store.Mail` object.
         """
         mail = None
         for line in self._get_postqueue_output():
@@ -423,12 +426,12 @@ class PostqueueStore(object):
         """
         Load content from postfix queue using files from spool.
         
-        path defined in :attr:`~pyqueue.PostqueueStore.postqueue_cmd`
-        attribute. Some :class:`~pyqueue.Mail` informations may be missing
-        using the :meth:`~PostqueueStore._load_from_spool` method,
-        including at least :attr:`~pyqueue.Mail.status` field.
+        Mails are loaded using the command defined in
+        :attr:`~PostqueueStore.postqueue_cmd` attribute. Some informations may
+        be missing using the :meth:`~store.PostqueueStore._load_from_spool`
+        method, including at least :attr:`Mail.status` field.
 
-        Loaded mails are stored as :class:`Mail` objects in
+        Loaded mails are stored as :class:`~store.Mail` objects in
         :attr:`~PostqueueStore.mails` attribute.
 
         .. warning::

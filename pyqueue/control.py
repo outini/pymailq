@@ -65,12 +65,12 @@ class QueueControl(object):
         Generic method to lead operations messages from postfix mail queue.
 
         Operations can be one of Postfix known operations stored in
-        :attr:`~control.QueueControl.known_operations` attribute. Operation
+        :attr:`~QueueControl.known_operations` attribute. Operation
         argument is directly converted and passed to the
-        :attr:`~control.QueueControl.postsuper_cmd` command.
+        :attr:`~QueueControl.postsuper_cmd` command.
 
         :param str operation: Known operation from
-                              :attr:`~control.QueueControl.known_operations`.
+                              :attr:`~QueueControl.known_operations`.
         :param list messages: List of :class:`~store.Mail` objects targetted
                               for operation.
         :return: Command's *stderr* output lines

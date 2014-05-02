@@ -28,25 +28,26 @@ class MailSelector(object):
     """
     Mail selector class to request mails from store matching criterias.
 
-    The :class:`MailSelector` instance provides the following attributes:
+    The :class:`~selector.MailSelector` instance provides the following
+    attributes:
 
-    .. attribute:: mails
+        .. attribute:: mails
 
-        Currently selected :class:`Mail` objects :func:`list`
+            Currently selected :class:`~store.Mail` objects :func:`list`
 
-    .. attribute:: store
+        .. attribute:: store
     
-        Linked :class:`~PostqueueStore` at the :class:`~MailSelector` instance
-        initialization.
+            Linked :class:`~store.PostqueueStore` at the
+            :class:`~selector.MailSelector` instance initialization.
 
-    .. attribute:: filters
+        .. attribute:: filters
     
-        Applied filters :func:`list` on current selection. Filters list
-        entries are tuples containing ``(function.__name__, args, kwargs)``
-        for each applied filters. This list is filled by the
-        :meth:`~MailSelector.filter_registration` decorator while calling
-        filtering methods. It is possible to replay registered filter using
-        :meth:`~MailSelector.replay_filters` method.
+            Applied filters :func:`list` on current selection. Filters list
+            entries are tuples containing ``(function.__name__, args, kwargs)``
+            for each applied filters. This list is filled by the
+            :meth:`~selector.MailSelector.filter_registration` decorator while
+            calling filtering methods. It is possible to replay registered
+            filter using :meth:`~selector.MailSelector.replay_filters` method.
     """
     def __init__(self, store):
         """Init method"""
@@ -56,12 +57,12 @@ class MailSelector(object):
 
         self.reset()
 
-    def filter_registration(function):  # TODO: documentation
+    def filter_registration(function):
         """
         Decorator to register applied filter.
 
         This decorated is used to wrap selection methods ``lookup_*``. It
-        registers a ``(function.func_name, args, kwargs)`` :class:`tuple` in
+        registers a ``(function.func_name, args, kwargs)`` :func:`tuple` in
         the :attr:`~MailSelector.filters` attribute.
         """
         @wraps(function)
@@ -75,7 +76,7 @@ class MailSelector(object):
         """
         Reset mail selector with initial store mails list.
 
-        Selected :class:`Mail` objects are deleted and the
+        Selected :class:`~store.Mail` objects are deleted and the
         :attr:`~MailSelector.mails` attribute is removed for memory releasing
         purpose (with help of :func:`gc.collect`). Attribute
         :attr:`~MailSelector.mails` is then reinitialized a copy of
@@ -93,9 +94,10 @@ class MailSelector(object):
         """
         Reset selection with store content and replay registered filters.
 
-        Like with the :meth:`~MailSelector.reset` method, selected
-        :class:`Mail` objects are deleted and reinitialized with a copy of
-        :attr:`~MailSelector.store`'s :attr:`~PostqueueStore.mails` attribute.
+        Like with the :meth:`~selector.MailSelector.reset` method, selected
+        :class:`~store.Mail` objects are deleted and reinitialized with a copy
+        of :attr:`~MailSelector.store`'s :attr:`~PostqueueStore.mails`
+        attribute.
 
         However, registered :attr:`~MailSelector.filters` are kept and replayed
         on resetted selection. Use this method to refresh your store content
@@ -118,7 +120,7 @@ class MailSelector(object):
         Lookup mails with specified postqueue status.
 
         :param list status: List of matching status to filter on.
-        :return: List of newly selected :class:`Mail` objects
+        :return: List of newly selected :class:`~store.Mail` objects
         :rtype: :func:`list`
         """
         self.mails = [ mail for mail in self.mails
@@ -139,12 +141,13 @@ class MailSelector(object):
 
         .. note::
 
-            Matches are made against :class:`Mail.sender` attribute instead of
+            Matches are made against :attr:`Mail.sender` attribute instead of
             real mail header :mailheader:`Sender`.
 
-        :param str sender: Sender address to lookup in :class:`Mail` selection.
+        :param str sender: Sender address to lookup in :class:`~store.Mail`
+                           objects selection.
         :param bool partial: Allow lookup with partial match
-        :return: List of newly selected :class:`Mail` objects
+        :return: List of newly selected :class:`~store.Mail` objects
         :rtype: :func:`list`
         """
         if partial is True:
@@ -163,7 +166,7 @@ class MailSelector(object):
         Lookup mails with specific error message (message may be partial).
 
         :param str error_msg: Error message to filter on
-        :return: List of newly selected :class:`Mail` objects`
+        :return: List of newly selected :class:`~store.Mail` objects`
         :rtype: :func:`list`
         """
         self.mails = [ mail for mail in self.mails
@@ -173,7 +176,7 @@ class MailSelector(object):
 
     @debug
     @filter_registration
-    def lookup_date(self, start = None, stop = None):   # TODO: documentation
+    def lookup_date(self, start = None, stop = None):
         """
         Lookup mails send on specific date range.
 
@@ -186,7 +189,7 @@ class MailSelector(object):
                                         (default: ``datetime(1970,1,1)``)
         :param datetime.datetime stop: Stop date
                                        (default: ``datetime.now()``)
-        :return: List of newly selected :class:`Mail` objects`
+        :return: List of newly selected :class:`~store.Mail` objects
         :rtype: :func:`list`
         """
 
@@ -208,8 +211,18 @@ class MailSelector(object):
     def lookup_size(self, smin = 0, smax = 0):  # TODO: documentation
         """
         Lookup mails send with specific size.
+
+        Both arguments ``smin`` and ``smax`` are optionnal and default is set
+        to ``0``. Maximum size is ignored if setted to ``0``. If both ``smin``
+        and ``smax`` are setted to ``0``, no filtering is done and the entire
+        :class:`~store.Mail` objects selection is returned.
+
+        :param int smin: Minimum size (Default: ``0``)
+        :param int smax: Maximum size (Default: ``0``)
+        :return: List of newly selected :class:`~store.Mail` objects
+        :rtype: :func:`list`
         """
-        if smin is 0 and smax is 0:
+        if smin == 0 and smax == 0:
             return self.mails
 
         if smax > 0:
