@@ -1,0 +1,209 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pqshell – A shell-like to interact with a Postfix mails queue &mdash; PyQueue 0.5.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/print.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.5.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/theme_extras.js"></script>
+    <link rel="top" title="PyQueue 0.5.0 documentation" href="index.html" />
+    <link rel="prev" title="pyqueue.shell – Mails queue management shell" href="shell.html" /> 
+  </head>
+  <body>
+      <div class="header"><h1 class="heading"><a href="index.html">
+          <span>PyQueue 0.5.0 documentation</span></a></h1>
+        <h2 class="heading"><span>pqshell – A shell-like to interact with a Postfix mails queue</span></h2>
+      </div>
+      <div class="topnav">
+      
+        <p>
+        «&#160;&#160;<a href="shell.html">pyqueue.shell &#8211; Mails queue management shell</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="pqshell-a-shell-like-to-interact-with-a-postfix-mails-queue">
+<h1>pqshell &#8211; A shell-like to interact with a Postfix mails queue<a class="headerlink" href="#pqshell-a-shell-like-to-interact-with-a-postfix-mails-queue" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="description">
+<h2>DESCRIPTION<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
+<p>pqshell is a shell-like to interact with Postfix mails queue. It provide simple
+means to view the queue content, filter mails on criterias like <cite>Sender</cite> or
+<cite>delivery errors</cite> and lead administrative operations.</p>
+</div>
+<div class="section" id="synopsis">
+<h2>SYNOPSIS<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div>pqshell [options]</div></blockquote>
+</div>
+<div class="section" id="features">
+<h2>FEATURES<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Asynchronous interactions with Postfix mails queue.</li>
+<li>Mails filtering on various criterias.</li>
+<li>Administrative operations on mails queue</li>
+<li>History and autocomplete via readline, if installed.</li>
+</ul>
+</div>
+<div class="section" id="options">
+<h2>OPTIONS<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
+<p>No options supported.</p>
+</div>
+<div class="section" id="shell-commands">
+<h2>SHELL COMMANDS<a class="headerlink" href="#shell-commands" title="Permalink to this headline">¶</a></h2>
+<p>An inside help is available with the help command. Each provided command takes
+subcommands and command&#8217;s help can be obtained while running it without
+argument.</p>
+<div class="section" id="store">
+<h3>store<a class="headerlink" href="#store" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Control of Postfix queue content storage</p>
+<p><strong>Subcommands</strong>:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>status</strong></dt>
+<dd>Show store status.</dd>
+<dt><strong>load</strong></dt>
+<dd>Load Postfix queue content.</dd>
+</dl>
+</div></blockquote>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python"><pre>PyQueue (sel:0)&gt; store status
+store is not loaded
+PyQueue (sel:0)&gt; store load
+590 mails loaded from queue
+PyQueue (sel:590)&gt; store status
+store loaded with 590 mails at 2014-05-05 13:43:22.592767</pre>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="select">
+<h3>select<a class="headerlink" href="#select" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Select mails from Postfix queue content</p>
+<p><strong>Subcommands</strong>:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>date</strong></dt>
+<dd><p class="first">Select mails by date.</p>
+<p class="last">Usage: <tt class="docutils literal"><span class="pre">select</span> <span class="pre">date</span> <span class="pre">X</span> <span class="pre">[Y]</span></tt></p>
+</dd>
+<dt><strong>error</strong></dt>
+<dd><p class="first">Select mails by error message. Specified error message can be
+partial and will be check against the whole error message.</p>
+<p class="last">Usage: <tt class="docutils literal"><span class="pre">select</span> <span class="pre">error</span> <span class="pre">&lt;error_msg&gt;</span></tt></p>
+</dd>
+<dt><strong>replay</strong></dt>
+<dd>Reset content of selector with store content and replay filters.</dd>
+<dt><strong>reset</strong></dt>
+<dd>Reset content of selector with store content, remove filters.</dd>
+<dt><strong>rmfilter</strong></dt>
+<dd><p class="first">Remove filter previously applied. Filters ids are used to specify
+filter to remove.</p>
+<p class="last">Usage: <tt class="docutils literal"><span class="pre">select</span> <span class="pre">rmfilter</span> <span class="pre">&lt;filterid&gt;</span></tt></p>
+</dd>
+<dt><strong>sender</strong></dt>
+<dd><p class="first">Select mails from sender.</p>
+<p class="last">Usage: <tt class="docutils literal"><span class="pre">select</span> <span class="pre">sender</span> <span class="pre">&lt;sender&gt;</span> <span class="pre">[exact]</span></tt></p>
+</dd>
+<dt><strong>size</strong></dt>
+<dd><p class="first">Select mails by size in Bytes. Signs - and + are supported, if not
+specified, search for exact size. Size range is allowed by
+using <tt class="docutils literal"><span class="pre">-</span></tt> (lesser than) and <tt class="docutils literal"><span class="pre">+</span></tt> (greater than).</p>
+<p class="last">Usage: <tt class="docutils literal"><span class="pre">select</span> <span class="pre">size</span> <span class="pre">&lt;-n|n|+n&gt;</span> <span class="pre">[-n]</span></tt></p>
+</dd>
+<dt><strong>status</strong></dt>
+<dd><p class="first">Select mails with specific postfix status.</p>
+<p class="last">Usage: <tt class="docutils literal"><span class="pre">select</span> <span class="pre">status</span> <span class="pre">&lt;status&gt;</span></tt></p>
+</dd>
+</dl>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="show">
+<h3>show<a class="headerlink" href="#show" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Display the content of current mails selection or specific mail IDs.</p>
+<dl class="docutils">
+<dt><strong>Optionnal modifiers</strong> can be provided to alter output:</dt>
+<dd><dl class="first last docutils">
+<dt><tt class="docutils literal"><span class="pre">limit</span> <span class="pre">&lt;n&gt;</span></tt></dt>
+<dd>Display the first n entries.</dd>
+<dt><tt class="docutils literal"><span class="pre">sortby</span> <span class="pre">&lt;field&gt;</span> <span class="pre">[asc|desc]</span></tt></dt>
+<dd>Sort output by field asc or desc.</dd>
+<dt><tt class="docutils literal"><span class="pre">rankby</span> <span class="pre">&lt;field&gt;</span></tt></dt>
+<dd>Produce mails ranking by field.</dd>
+</dl>
+</dd>
+</dl>
+<p><strong>Known fields:</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><tt class="docutils literal"><span class="pre">qid</span></tt> &#8211; Postqueue mail ID.</li>
+<li><tt class="docutils literal"><span class="pre">date</span></tt> &#8211; Mail date.</li>
+<li><tt class="docutils literal"><span class="pre">sender</span></tt> &#8211; Mail sender.</li>
+<li><tt class="docutils literal"><span class="pre">recipients</span></tt> &#8211; Mail recipients (list, no sort).</li>
+<li><tt class="docutils literal"><span class="pre">size</span></tt> &#8211; Mail size.</li>
+<li><tt class="docutils literal"><span class="pre">errors</span></tt> &#8211; Postqueue deferred error messages (list, no sort).</li>
+</ul>
+</div></blockquote>
+<p><strong>Subcommands:</strong></p>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>filters</strong></dt>
+<dd><p class="first">Show filters applied on current mails selection.</p>
+<p class="last">Usage: <tt class="docutils literal"><span class="pre">show</span> <span class="pre">filters</span></tt></p>
+</dd>
+<dt><strong>selected</strong></dt>
+<dd><p class="first">Show selected mails.</p>
+<p class="last">Usage: <tt class="docutils literal"><span class="pre">show</span> <span class="pre">selected</span> <span class="pre">[modifiers]</span></tt></p>
+</dd>
+</dl>
+</div></blockquote>
+</div></blockquote>
+</div>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        «&#160;&#160;<a href="shell.html">pyqueue.shell &#8211; Mails queue management shell</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2014, Denis &#39;jawa&#39; Pompilio.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
