@@ -39,8 +39,8 @@ if __name__ == '__main__':
         packages = ['pyqueue'],
         package_dir = {'pyqueue': 'pyqueue'},
         data_files = [('share/doc/pyqueue',['README.md', 'LICENSE']),
-                      ('share/man/man1/', ['man/pqshell.1'])]
-        keywords=['postfix','shell','mailq','python','pqshell','postqueue'],
+                      ('share/man/man1/', ['man/pqshell.1'])],
+        keywords = ['postfix','shell','mailq','python','pqshell','postqueue'],
         classifiers = [
             'Development Status :: 2 - Pre-Alpha',
             'Operating System :: POSIX :: BSD',
