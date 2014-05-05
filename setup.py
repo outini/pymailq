@@ -22,9 +22,10 @@ import os
 from distutils.core import setup
 
 if __name__ == '__main__':
+    release = file(os.path.join(os.path.dirname(__file__), "VERSION")).read()
     setup(
         name = "pyqueue",
-        version = "0.5",
+        version = ".".join(release.split('.')[0:2]),
         url = "https://github.com/outini/pyqueue",
         author = "Denis Pompilio (jawa)",
         author_email = "denis.pompilio@gmail.com",
