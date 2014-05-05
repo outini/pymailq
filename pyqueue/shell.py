@@ -182,8 +182,7 @@ class PyQueueShell(cmd.Cmd, object):
                 self.selector.reset()
             return ["%d mails loaded from queue" % (len(self.pstore.mails))]
         except (OSError, CalledProcessError) as error:
-            return ["*** Error: unable to load store",
-                    "   Used: {0}".format(" ".join(self.pstore.postqueue_cmd))]
+            return ["*** Error: unable to load store", "    {0}".format(error)]
 
     def _store_status(self):
         """Show store status"""
