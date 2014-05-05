@@ -215,10 +215,11 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    ('index', 'pyqueueshell', u'PyQueue Documentation',
-     [u'Denis \'jawa\' Pompilio'], 1)
-]
+man_pages = [(
+    'pqshell', 'pqshell',
+    'A shell-like to interact with a Postfix mails queue',
+    [u'Denis Pompilio (jawa) <denis.pompilio@gmail.com>'], 1
+    )]
 
 # If true, show URL addresses after external links.
 #man_show_urls = False

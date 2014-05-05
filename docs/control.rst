@@ -1,8 +1,9 @@
 pyqueue.control -- Mails queue adminitrative operations
 =======================================================
 
-:mod:`control` Module
-*********************
+The :mod:`control` module define a basic python class to simplify
+administrative operations against the mails queue. This module is mainly based
+on the `postsuper`_ administrative tool functionnalities.
 
 :class:`~control.QueueControl` Objects
 --------------------------------------

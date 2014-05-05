@@ -1,8 +1,8 @@
 pyqueue.store -- Mails queue storage objects
 ============================================
 
-:mod:`~pyqueue.store` Module
-****************************
+The :mod:`store` module provide several objects to convert mails queue content
+into python structures.
 
 :class:`~store.PostqueueStore` Objects
 --------------------------------------

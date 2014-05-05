@@ -28,3 +28,4 @@ The :mod:`pyqueue` package provides the following submodules:
     selector
     control
     shell
+    pqshell

@@ -1,8 +1,8 @@
 pyqueue.selector -- Mails queue filtering
 =========================================
 
-:mod:`selector` Module
-**********************
+The :mod:`selector` module mainly provide a selector class to interact with
+structures from the :mod:`store` module.
 
 :class:`~selector.MailSelector` Objects
 ---------------------------------------
