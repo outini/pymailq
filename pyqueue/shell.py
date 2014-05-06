@@ -22,17 +22,14 @@ import re
 import cmd
 from functools import partial
 from subprocess import CalledProcessError
-
-import store
-import selector
-import control
-import utils
+import shlex
+from pyqueue import store, control, selector, utils
 
 
 try:
     import readline
 except ImportError as error:
-    print "Python readline is not available, shell capabilities are limited."
+    print("Python readline is not available, shell capabilities are limited.")
 
 class PyQueueShell(cmd.Cmd, object):
     """PyQueue shell for interactive mode"""
@@ -51,13 +48,10 @@ class PyQueueShell(cmd.Cmd, object):
 
     def __init__(self):
         """Init method"""
-
         cmd.Cmd.__init__(self)
-        self.intro = "Welcome to PyQueue shell."
 
-        # EOF action are registered here to hide these from user
+        # EOF action is registered here to hide it from user
         self.do_EOF = self.do_exit
-        self.help_EOF = self.help_exit
 
         for command in self.commands_info:
             setattr(self, "help_%s" % (command), partial(self._help_, command))
@@ -83,21 +77,30 @@ class PyQueueShell(cmd.Cmd, object):
         pass
 
     def help_help(self):
-        print "Show available commands"
-
-    def __can_exit(self):
-        return True
+        print("Show available commands")
 
     def do_exit(self, arg):
-        if self.__can_exit() is True:
-            return True
+        return True
 
     def help_exit(self):
-        print "Exit PyQueue shell (or use Ctrl-D)"
+        print("Exit PyQueue shell (or use Ctrl-D)")
+
+    def cmdloop_nointerrupt(self):
+        """Specific cmdloop to handle KeyboardInterrupt"""
+        can_exit = False
+        # intro message is not in self.intro not to display it each time
+        # cmdloop is restarted
+        print("Welcome to PyQueue shell.")
+        while can_exit is not True:
+            try:
+                self.cmdloop()
+                can_exit = True
+            except (KeyboardInterrupt):
+                print("^C")
 
     def postloop(self):
         cmd.Cmd.postloop(self)
-        print "\nExiting shell... Bye."
+        print("\nExiting shell... Bye.")
 
     # PyQueue methods help
     def __parse_docstring(self, docstring):
@@ -115,16 +118,17 @@ class PyQueueShell(cmd.Cmd, object):
         doc = self.commands_info.get(
                 command, getattr(self, "do_%s" % (command)).__doc__)
         for line in self.__parse_docstring(doc):
-            print line
+            print(line)
 
-        print "Subcommands:"
+        print("Subcommands:")
         for method in dir(self):
             if method.startswith("_%s_" % (command)):
                 docstr = getattr(self, method).__doc__
                 doclines = self.__parse_docstring(docstr)
-                print "  %-10s %s" % (method[len(command)+2:], doclines.pop(0))
+                print("  %-10s %s" % (method[len(command)+2:],
+                                      doclines.pop(0)))
                 for line in doclines:
-                    print "  %-10s %s" % ("", line)
+                    print("  %-10s %s" % ("", line))
 
 #
 # PyQueue methods
@@ -144,25 +148,27 @@ class PyQueueShell(cmd.Cmd, object):
     def __do(self, cmd_category, str_arg):
         """Generic do_* method to call cmd categories"""
 
-        args = str_arg.split()
+        args = shlex.split(str_arg)
         if not len(args):
             getattr(self, "help_%s" % (cmd_category))()
             return None
 
         command = args.pop(0)
         method = "_%s_%s" % (cmd_category, command)
+        print("args:", str(method))
         try:
             lines = getattr(self, method)(*args)
             if lines is not None and len(lines):
-                print '\n'.join(lines)
-        except AttributeError:
-            print "%s has no subcommand: %s" % (cmd_category, command)
+                print('\n'.join(lines))
+        #except AttributeError as error:
+        #    print(error)
+        #    print("%s has no subcommand: %s" % (cmd_category, command))
         except (SyntaxError, TypeError) as error:
             # Rewording Python TypeError message for cli display
             msg = error.message
             if "%s()" % (method) in msg:
                 msg = "%s command %s" %(cmd_category, msg[len(method)+3:])
-            print "*** Syntax error:", msg
+            print("*** Syntax error:", msg)
 
     def __complete(self, cmd_category, text, line, begidx, endidx):
         """Generic command completion method"""
@@ -363,24 +369,24 @@ class PyQueueShell(cmd.Cmd, object):
         ..size          Mail size
         ..errors        Postqueue deferred error messages (list, no sort)
         """
-        args = str_arg.split()
+        args = shlex.split(str_arg)
         if not len(args):
             return self.help_show()
 
         subcmd = args.pop(0)
         try:
             lines = getattr(self, "_show_%s" % (subcmd))(*args)
-        except TypeError, AttributeError:
-            print "*** Syntax error: show {0}".format(str_arg)
+        except (TypeError, AttributeError):
+            print("*** Syntax error: show {0}".format(str_arg))
             return self.help_show()
         except (SyntaxError, TypeError) as error:
             # Rewording Python TypeError message for cli display
             msg = error.message
             if "%s()" % (method) in msg:
                 msg = "%s command %s" %(cmd_category, msg[len(method)+3:])
-            print "*** Syntax error:", msg
+            print("*** Syntax error:", msg)
 
-        print "\n".join(lines)
+        print("\n".join(lines))
 
     @viewer
     @utils.ranker

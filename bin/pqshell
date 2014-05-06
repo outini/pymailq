@@ -29,7 +29,7 @@ def list_preview(datas, limit = 5):
     """Return at most "limit" elements of datas list"""
     if len(datas) > limit:
         overhead = len(datas) - limit
-        print" ... Preview of first %s (%s more) ..." % (limit, overhead)
+        print(" ... Preview of first %s (%s more) ..." % (limit, overhead))
         return datas[:limit]
     else:
         return datas
@@ -42,83 +42,80 @@ def tests():
     >>> selector = MailSelector(PostqueueStore())
     >>> selector.lookup_sender("MAILER-DAEMON")
     >>> qcontrol = QueueControl()
-    >>> print "\n".join(qcontrol.hold_messages(selector.mails))
-    >>> print "\n".join(qcontrol.release_messages(selector.mails))
-    >>> print "\n".join(qcontrol.requeue_messages(selector.mails))
+    >>> print("\n".join(qcontrol.hold_messages(selector.mails)))
+    >>> print("\n".join(qcontrol.release_messages(selector.mails)))
+    >>> print("\n".join(qcontrol.requeue_messages(selector.mails)))
     """
     pstore = store.PostqueueStore()
 
-    print "Loading postfix queue store"
+    print("Loading postfix queue store")
     pstore.load()
-    print "Loaded %d mails" % (len(pstore.mails))
+    print("Loaded %d mails" % (len(pstore.mails)))
 
     selector = selector.MailSelector(pstore)
 
     sender = "MAILER-DAEMON"
-    print "Looking for mails from '%s'" % (sender)
+    print("Looking for mails from '%s'" % (sender))
     for mail in list_preview(selector.lookup_sender(sender = sender)):
-        print "%s: [%s] %s: %s (%d errors)" % (mail.date, mail.qid, mail.sender,
+        print("%s: [%s] %s: %s (%d errors)" % (mail.date, mail.qid, mail.sender,
                                                ", ".join(mail.recipients),
-                                               len(mail.errors))
+                                               len(mail.errors)))
 
     errormsg = "Connection timed out"
-    print "\nLooking for '%s' error message" % (errormsg)
+    print("\nLooking for '%s' error message" % (errormsg))
     for mail in list_preview(selector.lookup_error(error_msg = errormsg)):
-        print "%s: %s (%d errors)" % (mail.date, mail.sender, len(mail.errors))
+        print("%s: %s (%d errors)" % (mail.date, mail.sender,
+                                      len(mail.errors)))
 
     stop_date = datetime.now() - timedelta(days=5)
-    print "\nLooking for mails older than %s" % (stop_date)
+    print("\nLooking for mails older than %s" % (stop_date))
     for mail in list_preview(selector.lookup_date(stop = stop_date)):
-        print "%s: *%s* %s (%d errors)" % (mail.date, mail.status,
-                                           mail.sender, len(mail.errors))
+        print("%s: *%s* %s (%d errors)" % (mail.date, mail.status,
+                                           mail.sender, len(mail.errors)))
 
-    print "\nProceeding to selector reset (%s mails)" % (len(selector.mails))
+    print("\nProceeding to selector reset (%s mails)" % (len(selector.mails)))
     selector.reset()
-    print "Selector resetted (%s mails)" % (len(selector.mails))
+    print("Selector resetted (%s mails)" % (len(selector.mails)))
 
     status = "active"
-    print "\nLooking for mails with postqueue status: %s" % (status)
+    print("\nLooking for mails with postqueue status: %s" % (status))
     for mail in list_preview(selector.lookup_status(status = status)):
-        print "%s: %s (%d recipients)" % (mail.date, mail.sender,
-                                          len(mail.recipients))
+        print("%s: %s (%d recipients)" % (mail.date, mail.sender,
+                                          len(mail.recipients)))
 
-    print "\nReplaying filters"
+    print("\nReplaying filters")
     selector.replay_filters()
-    print "Found %s mails" % (len(selector.mails))
+    print("Found %s mails" % (len(selector.mails)))
 
-    print "\nLooking for fat mails (>100000B)"
+    print("\nLooking for fat mails (>100000B)")
     for mail in list_preview(selector.lookup_size(smin = 100000)):
-        print "%s: [%s] %s (%dB)" % ( mail.date, mail.qid,
-                                      mail.sender, mail.size )
+        print("%s: [%s] %s (%dB)" % (mail.date, mail.qid,
+                                     mail.sender, mail.size))
 
-    print "\nLooking for multiple recipients mails"
+    print("\nLooking for multiple recipients mails")
     mrcpt = [ mail for mail in pstore.mails if len(mail.recipients) > 1 ]
     for mail in list_preview(mrcpt):
-        print "%s: [%s] %s (%dB): %d recipients" % ( mail.date, mail.qid,
-                                                     mail.sender, mail.size,
-                                                     len(mail.recipients))
+        print("%s: [%s] %s (%dB): %d recipients" % (mail.date, mail.qid,
+                                                    mail.sender, mail.size,
+                                                    len(mail.recipients)))
 
     target = pstore.mails[-1]
-    print "\nDumping last mail from queue (%s)" % (target.qid)
+    print("\nDumping last mail from queue (%s)" % (target.qid))
     target.parse()
     datas = target.dump()
-    print "Postqueue infos:"
+    print("Postqueue infos:")
     for k,v in datas['postqueue'].items():
-        print "    %s: %s" % (k,v)
-    print "Headers infos:"
+        print("    %s: %s" % (k,v))
+    print("Headers infos:")
     for k,v in datas['headers'].items():
-        print "    %s: %s" % (k,v)
+        print("    %s: %s" % (k,v))
 
     sys.exit(0)
 
 def main():
     """main function"""
-    try:
-        cli = shell.PyQueueShell()
-        cli.cmdloop()
-    except (KeyboardInterrupt, EOFError):
-        print "\nExiting shell... Bye."
-        sys.exit(0)
+    cli = shell.PyQueueShell()
+    cli.cmdloop_nointerrupt()
 
 
 if __name__ == "__main__":
