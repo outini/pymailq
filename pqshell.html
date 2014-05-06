@@ -8,7 +8,8 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pqshell – A shell-like to interact with a Postfix mails queue &mdash; PyQueue 0.5.0 documentation</title>
+    <title>pqshell – A shell-like to interact with a Postfix mails queue &mdash; PyQueue 0.5.1
+ documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -17,7 +18,8 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.5.0',
+        VERSION:     '0.5.1
+',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -27,12 +29,14 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/theme_extras.js"></script>
-    <link rel="top" title="PyQueue 0.5.0 documentation" href="index.html" />
+    <link rel="top" title="PyQueue 0.5.1
+ documentation" href="index.html" />
     <link rel="prev" title="pyqueue.shell – Mails queue management shell" href="shell.html" /> 
   </head>
   <body>
       <div class="header"><h1 class="heading"><a href="index.html">
-          <span>PyQueue 0.5.0 documentation</span></a></h1>
+          <span>PyQueue 0.5.1
+ documentation</span></a></h1>
         <h2 class="heading"><span>pqshell – A shell-like to interact with a Postfix mails queue</span></h2>
       </div>
       <div class="topnav">
@@ -104,7 +108,10 @@ store loaded with 590 mails at 2014-05-05 13:43:22.592767</pre>
 <div class="section" id="select">
 <h3>select<a class="headerlink" href="#select" title="Permalink to this headline">¶</a></h3>
 <blockquote>
-<div><p>Select mails from Postfix queue content</p>
+<div><p>Select mails from Postfix queue content. Filters are cumulatives and
+designed to simply implement advanced filtering with simple syntax. The
+default prompt will show how many mails are currently selected by all
+applied filters. Order of filters application is also important.</p>
 <p><strong>Subcommands</strong>:</p>
 <blockquote>
 <div><dl class="docutils">
@@ -142,19 +149,45 @@ using <tt class="docutils literal"><span class="pre">-</span></tt> (lesser than)
 </dd>
 </dl>
 </div></blockquote>
+<p><strong>Filtering Example</strong>:</p>
+<div class="highlight-python"><pre>PyQueue (sel:608)&gt; select size -5000
+PyQueue (sel:437)&gt; select sender MAILER-DAEMON
+PyQueue (sel:316)&gt; select status active
+PyQueue (sel:0)&gt;</pre>
+</div>
+<p><strong>Filters management</strong>:</p>
+<div class="highlight-python"><pre>PyQueue (sel:608)&gt; select size -5000
+PyQueue (sel:437)&gt; select sender MAILER-DAEMON
+PyQueue (sel:316)&gt; show filters
+0: select size:
+    smax: 5000
+    smin: 0
+1: select sender:
+    partial: True
+    sender: MAILER-DAEMON
+PyQueue (sel:316)&gt; select rmfilter 1
+PyQueue (sel:437)&gt; select sender greedy-sender@domain.com
+PyQueue (sel:25)&gt; select reset
+Selector resetted with store content (608 mails)
+PyQueue (sel:608)&gt;</pre>
+</div>
 </div></blockquote>
 </div>
 <div class="section" id="show">
 <h3>show<a class="headerlink" href="#show" title="Permalink to this headline">¶</a></h3>
 <blockquote>
-<div><p>Display the content of current mails selection or specific mail IDs.</p>
+<div><p>Display the content of current mails selection or specific mail IDs.
+Modifiers have been implemented to allow quick output manipulation. These
+allow you to sort, limit or even output a ranking by specific field. By
+default, output is sorted by <strong>date of acceptance</strong> in queue.</p>
 <dl class="docutils">
 <dt><strong>Optionnal modifiers</strong> can be provided to alter output:</dt>
 <dd><dl class="first last docutils">
 <dt><tt class="docutils literal"><span class="pre">limit</span> <span class="pre">&lt;n&gt;</span></tt></dt>
 <dd>Display the first n entries.</dd>
 <dt><tt class="docutils literal"><span class="pre">sortby</span> <span class="pre">&lt;field&gt;</span> <span class="pre">[asc|desc]</span></tt></dt>
-<dd>Sort output by field asc or desc.</dd>
+<dd>Sort output by field asc or desc. Default sorting is made
+descending.</dd>
 <dt><tt class="docutils literal"><span class="pre">rankby</span> <span class="pre">&lt;field&gt;</span></tt></dt>
 <dd>Produce mails ranking by field.</dd>
 </dl>
@@ -184,6 +217,31 @@ using <tt class="docutils literal"><span class="pre">-</span></tt> (lesser than)
 </dd>
 </dl>
 </div></blockquote>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python"><pre>PyQueue (sel:608)&gt; show selected limit 5
+2014-05-05 20:54:24 699C11831669 [active] jjj@dom1.com (14375B)
+2014-05-05 20:43:39 8D60C13C14C6 [deferred] bbb@dom9.com (39549B)
+2014-05-05 20:35:08 B0077198BC31 [deferred] rrr@dom2.com (4809B)
+2014-05-05 20:30:09 014E21AB4B78 [deferred] aaa@dom7.com (2450B)
+2014-05-05 20:25:04 CF1BE127A8D3 [deferred] xxx@dom2.com (4778B)
+...Preview of first 5 (603 more)...
+PyQueue (sel:608)&gt; show selected sortby sender limit 5 asc
+2014-05-02 11:36:16 40AA9149A9D7 [deferred] aaa@dom1.com (8262B)
+2014-05-01 05:30:23 5E0B2162BE63 [deferred] bbb@dom4.com (3052B)
+2014-05-02 05:30:20 653471AC5F76 [deferred] ccc@dom5.com (3052B)
+2014-05-02 09:49:01 A00D3159AEE [deferred] ddd@dom1.com (3837B)
+2014-05-05 18:18:59 98E9A790749 [deferred] ddd@dom2.com (1551B)
+...Preview of first 5 (603 more)...
+PyQueue (sel:608)&gt; show selected rankby sender limit 5
+sender                                    count
+================================================
+jjj@dom8.com                              334
+xxx@dom4.com                              43
+nnn@dom1.com                              32
+ccc@dom3.com                              14
+sss@dom5.com                              13
+...Preview of first 5 (64 more)...</pre>
+</div>
 </div></blockquote>
 </div>
 </div>

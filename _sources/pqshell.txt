@@ -58,7 +58,10 @@ store
 select
 ------
 
-    Select mails from Postfix queue content
+    Select mails from Postfix queue content. Filters are cumulatives and
+    designed to simply implement advanced filtering with simple syntax. The
+    default prompt will show how many mails are currently selected by all
+    applied filters. Order of filters application is also important.
 
     **Subcommands**:
 
@@ -102,17 +105,45 @@ select
 
             Usage: ``select status <status>``
 
+    **Filtering Example**::
+
+        PyQueue (sel:608)> select size -5000
+        PyQueue (sel:437)> select sender MAILER-DAEMON
+        PyQueue (sel:316)> select status active
+        PyQueue (sel:0)>
+
+    **Filters management**::
+
+        PyQueue (sel:608)> select size -5000
+        PyQueue (sel:437)> select sender MAILER-DAEMON
+        PyQueue (sel:316)> show filters
+        0: select size:
+            smax: 5000
+            smin: 0
+        1: select sender:
+            partial: True
+            sender: MAILER-DAEMON
+        PyQueue (sel:316)> select rmfilter 1
+        PyQueue (sel:437)> select sender greedy-sender@domain.com
+        PyQueue (sel:25)> select reset
+        Selector resetted with store content (608 mails)
+        PyQueue (sel:608)>
+
 show
 ----
 
     Display the content of current mails selection or specific mail IDs.
+    Modifiers have been implemented to allow quick output manipulation. These
+    allow you to sort, limit or even output a ranking by specific field. By
+    default, output is sorted by **date of acceptance** in queue.
 
     **Optionnal modifiers** can be provided to alter output:
         ``limit <n>``
             Display the first n entries.
 
         ``sortby <field> [asc|desc]``
-            Sort output by field asc or desc.
+            Sort output by field asc or desc. Default sorting is made
+            descending.
 
         ``rankby <field>``
             Produce mails ranking by field.
@@ -137,4 +168,30 @@ show
             Show selected mails.
 
             Usage: ``show selected [modifiers]``
- 
+
+    **Example**::
+
+        PyQueue (sel:608)> show selected limit 5
+        2014-05-05 20:54:24 699C11831669 [active] jjj@dom1.com (14375B)
+        2014-05-05 20:43:39 8D60C13C14C6 [deferred] bbb@dom9.com (39549B)
+        2014-05-05 20:35:08 B0077198BC31 [deferred] rrr@dom2.com (4809B)
+        2014-05-05 20:30:09 014E21AB4B78 [deferred] aaa@dom7.com (2450B)
+        2014-05-05 20:25:04 CF1BE127A8D3 [deferred] xxx@dom2.com (4778B)
+        ...Preview of first 5 (603 more)...
+        PyQueue (sel:608)> show selected sortby sender limit 5 asc
+        2014-05-02 11:36:16 40AA9149A9D7 [deferred] aaa@dom1.com (8262B)
+        2014-05-01 05:30:23 5E0B2162BE63 [deferred] bbb@dom4.com (3052B)
+        2014-05-02 05:30:20 653471AC5F76 [deferred] ccc@dom5.com (3052B)
+        2014-05-02 09:49:01 A00D3159AEE [deferred] ddd@dom1.com (3837B)
+        2014-05-05 18:18:59 98E9A790749 [deferred] ddd@dom2.com (1551B)
+        ...Preview of first 5 (603 more)...
+        PyQueue (sel:608)> show selected rankby sender limit 5    
+        sender                                    count
+        ================================================
+        jjj@dom8.com                              334
+        xxx@dom4.com                              43
+        nnn@dom1.com                              32
+        ccc@dom3.com                              14
+        sss@dom5.com                              13
+        ...Preview of first 5 (64 more)...
+
