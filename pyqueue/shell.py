@@ -179,10 +179,10 @@ class PyQueueShell(cmd.Cmd, object):
                  if sub.startswith(match + text) ]
 
 # Store commands
-    def _store_load(self):
+    def _store_load(self, filename = None):
         """Load Postfix queue content"""
         try:
-            self.pstore.load()
+            self.pstore.load(filename = filename)
             # Automatic load of selector if it is empty and never used.
             if not len(self.selector.mails) and not len(self.selector.filters):
                 self.selector.reset()
