@@ -47,7 +47,8 @@ http://outini.github.io/pyqueue/pqshell.html
   * **cmd** *(https://docs.python.org/2/library/cmd.html)*
   * **shlex** *(https://docs.python.org/2/library/shlex.html)*
   * **email** *(https://docs.python.org/2/library/email.html)*
-  * **collections.Counter** *(https://docs.python.org/2/library/collections.html)*
+  * **collections.Counter**
+    *(https://docs.python.org/2/library/collections.html#collections.Counter)*
 
 License
 -------
