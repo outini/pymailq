@@ -34,7 +34,7 @@ def list_preview(datas, limit = 5):
     else:
         return datas
 
-def tests():
+def tests(source = None):
     """This is here for tests purpose, no administrative operations are made.
 
     The pyqueue.QueueControl object must be tested with specific code snippet:
@@ -46,49 +46,56 @@ def tests():
     >>> print("\n".join(qcontrol.release_messages(selector.mails)))
     >>> print("\n".join(qcontrol.requeue_messages(selector.mails)))
     """
+    import pyqueue  # import pyqueue to set debug on
+    pyqueue.DEBUG = True
+
     pstore = store.PostqueueStore()
 
-    print("Loading postfix queue store")
-    pstore.load()
+    #print("Loading postfix queue store (from spool)")
+    #pstore.load(method = "spool")
+    #print("Loaded %d mails" % (len(pstore.mails)))
+
+    print("Loading postfix queue store (using postqueue)")
+    pstore.load(filename = source)
     print("Loaded %d mails" % (len(pstore.mails)))
 
-    selector = selector.MailSelector(pstore)
+    select = selector.MailSelector(pstore)
 
     sender = "MAILER-DAEMON"
     print("Looking for mails from '%s'" % (sender))
-    for mail in list_preview(selector.lookup_sender(sender = sender)):
+    for mail in list_preview(select.lookup_sender(sender = sender)):
         print("%s: [%s] %s: %s (%d errors)" % (mail.date, mail.qid, mail.sender,
                                                ", ".join(mail.recipients),
                                                len(mail.errors)))
 
     errormsg = "Connection timed out"
     print("\nLooking for '%s' error message" % (errormsg))
-    for mail in list_preview(selector.lookup_error(error_msg = errormsg)):
+    for mail in list_preview(select.lookup_error(error_msg = errormsg)):
         print("%s: %s (%d errors)" % (mail.date, mail.sender,
                                       len(mail.errors)))
 
     stop_date = datetime.now() - timedelta(days=5)
     print("\nLooking for mails older than %s" % (stop_date))
-    for mail in list_preview(selector.lookup_date(stop = stop_date)):
+    for mail in list_preview(select.lookup_date(stop = stop_date)):
         print("%s: *%s* %s (%d errors)" % (mail.date, mail.status,
                                            mail.sender, len(mail.errors)))
 
-    print("\nProceeding to selector reset (%s mails)" % (len(selector.mails)))
-    selector.reset()
-    print("Selector resetted (%s mails)" % (len(selector.mails)))
+    print("\nProceeding to selector reset (%s mails)" % (len(select.mails)))
+    select.reset()
+    print("Selector resetted (%s mails)" % (len(select.mails)))
 
     status = "active"
     print("\nLooking for mails with postqueue status: %s" % (status))
-    for mail in list_preview(selector.lookup_status(status = status)):
+    for mail in list_preview(select.lookup_status(status = status)):
         print("%s: %s (%d recipients)" % (mail.date, mail.sender,
                                           len(mail.recipients)))
 
     print("\nReplaying filters")
-    selector.replay_filters()
-    print("Found %s mails" % (len(selector.mails)))
+    select.replay_filters()
+    print("Found %s mails" % (len(select.mails)))
 
     print("\nLooking for fat mails (>100000B)")
-    for mail in list_preview(selector.lookup_size(smin = 100000)):
+    for mail in list_preview(select.lookup_size(smin = 100000)):
         print("%s: [%s] %s (%dB)" % (mail.date, mail.qid,
                                      mail.sender, mail.size))
 
@@ -121,7 +128,10 @@ def main():
 if __name__ == "__main__":
 
     # Looking for "tests", shell is the default action
-    if len(sys.argv) == 1 and sys.argv[0] == "tests":
-        tests()
+    if len(sys.argv) >= 2 and sys.argv[1] == "tests":
+        source = None
+        if len(sys.argv) >= 3:
+            source = sys.argv[2]  # load mails queue from file
+        tests(source)
     else:
         main()
