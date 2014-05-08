@@ -9,6 +9,7 @@ https://github.com/outini/pyqueue
     * Converted README to reSt format.
     * Added CHANGES file for change tracking.
     * Added mails queue loading from file for code tests and validation.
+    * Updated SPECS file for pyqueue v0.5.2
     * Corrected shell behavior for better KeyboardInterrupt handling.
     * Corrected debug display.
 
