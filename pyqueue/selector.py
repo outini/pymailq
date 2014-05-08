@@ -62,12 +62,12 @@ class MailSelector(object):
         Decorator to register applied filter.
 
         This decorated is used to wrap selection methods ``lookup_*``. It
-        registers a ``(function.func_name, args, kwargs)`` :func:`tuple` in
+        registers a ``(function.__name__, args, kwargs)`` :func:`tuple` in
         the :attr:`~MailSelector.filters` attribute.
         """
         @wraps(function)
         def wrapper(self, *args, **kwargs):
-            filterinfo = (function.func_name, args, kwargs)
+            filterinfo = (function.__name__, args, kwargs)
             self.filters.append(filterinfo)
             return function(self, *args, **kwargs)
         return wrapper
