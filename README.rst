@@ -19,8 +19,8 @@ Install pyqueue module::
 
     python setup.py install
 
-A SPECS file is also provided for RPM builds, thanks to Nils
-(*https://github.com/ahpnils*).
+A SPECS file is also provided for RPM builds, thanks to Nils Ratusznik
+<nils.github@anotherhomepage.org> (*https://github.com/ahpnils*).
 
 Requirements
 ------------

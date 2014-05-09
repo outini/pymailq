@@ -21,7 +21,7 @@ https://github.com/outini/pyqueue
 === v0.5.0 05/05/2014 ===
     * pyqueue Python module becomes Python package.
     * Added pqshell for interactive queue management.
-    * Added SPECS file for RPM packaging. Thanks to aphnil.
+    * Added SPECS file for RPM packaging. Thanks to Nils Ratusznik.
     * Added MAN page for pqshell.
     * Corrected setup.py to reflect module to package transition.
     * Corrected setup.py to ship additionnal files.
