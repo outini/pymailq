@@ -150,7 +150,7 @@ class Mail(object):
 
         # Getting optionnal status from postqueue mail_id
         postqueue_status = { '*': "active", '!': "hold" }
-        if mail_id[-1] in list(postqueue_status.keys()):
+        if mail_id[-1] in postqueue_status:
             self.qid = mail_id[:-1]
         self.status = postqueue_status.get(mail_id[-1], "deferred")
 
@@ -218,11 +218,11 @@ class Mail(object):
         datas = {'postqueue': {},
                  'headers': {}}
 
-        for attr in list(self.__dict__.keys()):
+        for attr in self.__dict__:
             if attr[0] != "_" and attr != 'head':
                 datas['postqueue'].update({ attr: getattr(self, attr) })
 
-        for header in list(self.head.__dict__.keys()):
+        for header in self.head.__dict__:
             if header[0] != "_":
                 datas['headers'].update({ header: getattr(self.head, header) })
 
