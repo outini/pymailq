@@ -421,7 +421,7 @@ class PyQueueShell(cmd.Cmd, object):
             name, _args, _kwargs = self.selector.filters[idx]
             # name should always be prefixed with lookup_
             lines.append('%d: select %s:' % (idx, name[7:]))
-            for key,value in _kwargs.items():
+            for key,value in list(_kwargs.items()):
                 lines.append("    %s: %s" % (key, value))
         return lines
 
