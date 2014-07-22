@@ -18,11 +18,18 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import sys
 import os
 from distutils.core import setup
 
 if __name__ == '__main__':
-    release = file(os.path.join(os.path.dirname(__file__), "VERSION")).read()
+    if sys.version_info.major == 3:
+        release = open(os.path.join(
+                           os.path.dirname(__file__), "VERSION"), 'r').read()
+    else:
+        release = file(os.path.join(
+                           os.path.dirname(__file__), "VERSION")).read()
+
     setup(
         name = "pyqueue",
         version = ".".join(release.split('.')[0:2]),
