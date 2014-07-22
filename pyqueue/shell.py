@@ -172,7 +172,7 @@ class PyQueueShell(cmd.Cmd, object):
         #    print("%s has no subcommand: %s" % (cmd_category, command))
         except (SyntaxError, TypeError) as error:
             # Rewording Python TypeError message for cli display
-            msg = error.message
+            msg = str(error)
             if "%s()" % (method) in msg:
                 msg = "%s command %s" %(cmd_category, msg[len(method)+3:])
             print("*** Syntax error:", msg)
@@ -388,7 +388,7 @@ class PyQueueShell(cmd.Cmd, object):
             return self.help_show()
         except (SyntaxError, TypeError) as error:
             # Rewording Python TypeError message for cli display
-            msg = error.message
+            msg = str(error)
             if "%s()" % (method) in msg:
                 msg = "%s command %s" %(cmd_category, msg[len(method)+3:])
             print("*** Syntax error:", msg)
