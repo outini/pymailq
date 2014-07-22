@@ -280,6 +280,11 @@ class PostqueueStore(object):
             provided by :func:`re.compile` method to match email addresses.
             Default used regular expression is:
             ``r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+$"``
+            
+        .. attribute:: MailClass
+
+            The class used to manipulate/parse mails individually
+            Default is `~store.Mail`.
 
     .. seealso::
 
@@ -298,6 +303,7 @@ class PostqueueStore(object):
     postqueue_mailstatus = ['active', 'deferred', 'hold']
     mail_id_re = re.compile(r"^[A-F0-9]{10,12}[*!]?$")
     mail_addr_re = re.compile(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+$")
+    MailClass = Mail
 
     def __init__(self):
         """Init method"""
@@ -423,7 +429,7 @@ class PostqueueStore(object):
                     if date > now:
                         date = date - timedelta(days=365)
 
-                    mail = Mail(fields[0], size = fields[1],
+                    mail = self.MailClass(fields[0], size = fields[1],
                                            date = date,
                                            sender = fields[-1])
                     self.mails.append(mail)
@@ -458,7 +464,7 @@ class PostqueueStore(object):
             for path, dirs, files in os.walk("%s/%s" % (self.spool_path,
                                                         status)):
                 for mail_id in files:
-                    mail = Mail(mail_id)
+                    mail = self.MailClass(mail_id)
                     mail.status = status
 
                     mail.parse()
