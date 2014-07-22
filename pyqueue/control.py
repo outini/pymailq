@@ -90,11 +90,11 @@ class QueueControl(object):
                                  stderr=subprocess.PIPE)
 
         for msg in messages:
-            child.stdin.write(msg.qid+'\n')
+            child.stdin.write((msg.qid+'\n').encode())
 
         (stdout,stderr) = child.communicate()
 
-        return [ line.strip() for line in stderr.split('\n') ]
+        return [ line.strip() for line in stderr.decode().split('\n') ]
 
     def delete_messages(self, messages):
         """
