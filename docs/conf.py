@@ -51,12 +51,7 @@ copyright = '2014, Denis \'jawa\' Pompilio'
 # built documents.
 #
 # The full version, including alpha/beta/rc tags.
-if sys.version_info.major == 3:
-    release = open(os.path.join(
-                       os.path.dirname(__file__), "..", "VERSION"), 'r').read()
-else:
-    release = file(os.path.join(
-                       os.path.dirname(__file__), "..", "VERSION")).read()
+release = open(os.path.join(os.path.dirname(__file__), "..", "VERSION")).read()
 # The short X.Y version.
 version = ".".join(release.split('.')[0:2])
 

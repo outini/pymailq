@@ -150,7 +150,7 @@ class Mail(object):
 
         # Getting optionnal status from postqueue mail_id
         postqueue_status = { '*': "active", '!': "hold" }
-        if mail_id[-1] in postqueue_status.keys():
+        if mail_id[-1] in postqueue_status:
             self.qid = mail_id[:-1]
         self.status = postqueue_status.get(mail_id[-1], "deferred")
 
@@ -179,7 +179,7 @@ class Mail(object):
         (stdout,stderr) = child.communicate()
 
         raw_content = list()
-        for line in stdout.split('\n'):
+        for line in stdout.decode().split('\n'):
             if self.size == 0 and line[0:14] == "message_size: ":
                 self.size = int(line[14:].strip().split()[0])
             elif self.date is None and line[0:13] == "create_time: ":
@@ -218,11 +218,11 @@ class Mail(object):
         datas = {'postqueue': {},
                  'headers': {}}
 
-        for attr in self.__dict__.keys():
+        for attr in self.__dict__:
             if attr[0] != "_" and attr != 'head':
                 datas['postqueue'].update({ attr: getattr(self, attr) })
 
-        for header in self.head.__dict__.keys():
+        for header in self.head.__dict__:
             if header[0] != "_":
                 datas['headers'].update({ header: getattr(self.head, header) })
 
@@ -335,7 +335,7 @@ class PostqueueStore(object):
         (stdout,stderr) = child.communicate()
 
         # return lines list without the headers and footers
-        return [line for line in stdout.split('\n')]
+        return [line.strip() for line in stdout.decode().split('\n')][1:-2]
 
     def _is_mail_id(self, mail_id):
         """

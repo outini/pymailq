@@ -23,13 +23,7 @@ import os
 from distutils.core import setup
 
 if __name__ == '__main__':
-    if sys.version_info.major == 3:
-        release = open(os.path.join(
-                           os.path.dirname(__file__), "VERSION"), 'r').read()
-    else:
-        release = file(os.path.join(
-                           os.path.dirname(__file__), "VERSION")).read()
-
+    release = open(os.path.join(os.path.dirname(__file__), "VERSION"), 'r').read()
     setup(
         name = "pyqueue",
         version = ".".join(release.split('.')[0:2]),
@@ -39,7 +33,7 @@ if __name__ == '__main__':
         maintainer = "Denis Pompilio (jawa)",
         maintainer_email = "denis.pompilio@gmail.com",
         description = "Postfix queue control python tool",
-        long_description = file(os.path.join(os.path.dirname(__file__),
+        long_description = open(os.path.join(os.path.dirname(__file__),
                                              'README.rst')).read(),
         license = "GPLv2",
         platforms = ['UNIX'],
