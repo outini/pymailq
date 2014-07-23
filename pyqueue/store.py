@@ -241,7 +241,7 @@ class PostqueueStore(object):
 
         .. attribute:: mails
 
-            Loaded :class:`~store.Mail` objects :func:`list`.
+            Loaded :class:`MailClass` objects :func:`list`.
 
         .. attribute:: loaded_at
 
@@ -283,8 +283,8 @@ class PostqueueStore(object):
             
         .. attribute:: MailClass
 
-            The class used to manipulate/parse mails individually
-            Default is `~store.Mail`.
+            The class used to manipulate/parse mails individually.
+            Default is :class:`~store.Mail`.
 
     .. seealso::
 
