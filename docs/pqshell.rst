@@ -1,4 +1,4 @@
-pqshell -- A shell-like to interact with a Postfix mails queue 
+pqshell -- A shell-like to interact with a Postfix mails queue
 ==============================================================
 
 DESCRIPTION
@@ -185,7 +185,7 @@ show
         2014-05-02 09:49:01 A00D3159AEE [deferred] ddd@dom1.com (3837B)
         2014-05-05 18:18:59 98E9A790749 [deferred] ddd@dom2.com (1551B)
         ...Preview of first 5 (603 more)...
-        PyQueue (sel:608)> show selected rankby sender limit 5    
+        PyQueue (sel:608)> show selected rankby sender limit 5
         sender                                    count
         ================================================
         jjj@dom8.com                              334

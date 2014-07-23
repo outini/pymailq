@@ -99,7 +99,7 @@ class Mail(object):
             corresponding spool file.
 
         .. attribute:: parse_error
-    
+
             Last encountered parse error message :func:`str`.
 
         .. attribute:: date
@@ -108,8 +108,8 @@ class Mail(object):
             mails queue.
 
         .. attribute:: status
-    
-            Mail's queue status :func:`str`. 
+
+            Mail's queue status :func:`str`.
 
         .. attribute:: sender
 
@@ -158,7 +158,7 @@ class Mail(object):
     def parse(self):
         """
         Parse message content.
-        
+
         This method use Postfix mails content parsing command defined in
         :attr:`~Mail.postcat_cmd` attribute. This command is runned using
         :class:`subprocess.Popen` instance.
@@ -171,7 +171,7 @@ class Mail(object):
 
             Postfix manual:
                 `postcat`_ -- Show Postfix queue file contents
- 
+
         """
         child = subprocess.Popen(self.postcat_cmd,
                                  stdout=subprocess.PIPE,
@@ -267,7 +267,7 @@ class PostqueueStore(object):
             Default is ``['active', 'deferred', 'hold']``.
 
         .. attribute:: mail_id_re
-    
+
             Python compiled regular expression object (:class:`re.RegexObject`)
             provided by :func:`re.compile` method to match postfix IDs.
             Recognized IDs are hexadecimals, may be 10 to 12 chars length and
@@ -280,7 +280,7 @@ class PostqueueStore(object):
             provided by :func:`re.compile` method to match email addresses.
             Default used regular expression is:
             ``r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+$"``
-            
+
         .. attribute:: MailClass
 
             The class used to manipulate/parse mails individually.
@@ -445,7 +445,7 @@ class PostqueueStore(object):
     def _load_from_spool(self):
         """
         Load content from postfix queue using files from spool.
-        
+
         Mails are loaded using the command defined in
         :attr:`~PostqueueStore.postqueue_cmd` attribute. Some informations may
         be missing using the :meth:`~store.PostqueueStore._load_from_spool`
@@ -455,7 +455,7 @@ class PostqueueStore(object):
         :attr:`~PostqueueStore.mails` attribute.
 
         .. warning::
-        
+
             Be aware that parsing mails on disk is slow and can lead to
             high load usage on system with large mails queue.
         """
@@ -480,7 +480,7 @@ class PostqueueStore(object):
     def load(self, method = "postqueue", filename = None):
         """
         Load content from postfix mails queue.
-        
+
         Mails are loaded using postqueue command line tool or reading directly
         from spool. The optionnal argument, if present, is a method string and
         specifies the method used to gather mails informations. By default,

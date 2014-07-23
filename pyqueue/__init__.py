@@ -29,7 +29,7 @@ DEBUG = False
 def debug(function):
     """
     Decorator to print some call informations and timing debug on stderr.
-    
+
     Function's name, passed args and kwargs are printed to stderr. Elapsed time
     is also print at the end of call. This decorator is based on the value of
     :data:`DEBUG`. If ``True``, the debug informations will be displayed.
@@ -53,4 +53,3 @@ def debug(function):
         return ret
 
     return run
-
