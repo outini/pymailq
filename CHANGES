@@ -1,0 +1,39 @@
+pyqueue - Simple Postfix queue management
+=========================================
+
+Contact: Denis Pompilio (jawa) <denis.pompilio@gmail.com>
+https://github.com/outini/pyqueue
+
+=== v0.5.2 ???? ===
+    * Massive code updates for Python 3 support.
+    * Converted README to reSt format.
+    * Added CHANGES file for change tracking.
+    * Added mails queue loading from file for code tests and validation.
+    * Updated SPECS file for pyqueue v0.5.2
+    * Corrected shell behavior for better KeyboardInterrupt handling.
+    * Corrected debug display.
+
+=== v0.5.1 05/05/2014 ===
+    * Added examples in pqshell MAN page.
+    * Improved documentation generation.
+    * Corrected some typos in setup.py
+
+=== v0.5.0 05/05/2014 ===
+    * pyqueue Python module becomes Python package.
+    * Added pqshell for interactive queue management.
+    * Added SPECS file for RPM packaging. Thanks to Nils Ratusznik.
+    * Added MAN page for pqshell.
+    * Corrected setup.py to reflect module to package transition.
+    * Corrected setup.py to ship additionnal files.
+    * Corrected shell's subprocess errors handling.
+    * Updated code documentation.
+
+=== v0.4 30/04/2014 ===
+    * Added COPYRIGHT and LICENSE.
+    * Added code documentation.
+    * Added setup.py for Python packaging.
+    * Corrected mails queue load error handling.
+    * Corrected mails arrival_date handling.
+
+=== 26/04/2014 ===
+    * Initial release of pyqueue.

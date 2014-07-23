@@ -241,7 +241,7 @@ class PostqueueStore(object):
 
         .. attribute:: mails
 
-            Loaded :class:`~store.Mail` objects :func:`list`.
+            Loaded :class:`MailClass` objects :func:`list`.
 
         .. attribute:: loaded_at
 
@@ -283,8 +283,8 @@ class PostqueueStore(object):
             
         .. attribute:: MailClass
 
-            The class used to manipulate/parse mails individually
-            Default is `~store.Mail`.
+            The class used to manipulate/parse mails individually.
+            Default is :class:`~store.Mail`.
 
     .. seealso::
 
@@ -320,10 +320,9 @@ class PostqueueStore(object):
         content.
 
         Command defined in :attr:`~PostqueueStore.postqueue_cmd` attribute is
-        runned using a :class:`subprocess.Popen` instance. Output headers
-        (1 line) and footers (2 lines) are excluded from result.
+        runned using a :class:`subprocess.Popen` instance.
 
-        :return: Command's output lines without headers and footers.
+        :return: Command's output lines.
         :rtype: :func:`list`
 
         .. seealso::
@@ -336,7 +335,7 @@ class PostqueueStore(object):
         (stdout,stderr) = child.communicate()
 
         # return lines list without the headers and footers
-        return [line.strip() for line in stdout.split('\n')][1:-2]
+        return [line for line in stdout.split('\n')]
 
     def _is_mail_id(self, mail_id):
         """
@@ -356,7 +355,7 @@ class PostqueueStore(object):
         return True
 
     @debug
-    def _load_from_postqueue(self):
+    def _load_from_postqueue(self, filename = None):
         """
         Load content from postfix queue using postqueue command output.
 
@@ -389,9 +388,24 @@ class PostqueueStore(object):
 
         - Any other matches: add new recipient to the :attr:`~Mail.recipients`
           attribute of the last created :class:`~store.Mail` object.
+
+        Optionnal argument ``filename`` can be set with a file containing
+        output of the `postqueue`_ command. In this case, output lines of
+        `postqueue`_ command are directly read from ``filename`` and parsed,
+        the `postqueue`_ command is never used.
         """
+        if filename is None:
+            postqueue_output = self._get_postqueue_output()
+        else:
+            postqueue_output = open(filename).readlines()
+
         mail = None
-        for line in self._get_postqueue_output():
+        for line in postqueue_output:
+            line = line.strip()
+
+            # Headers and footers start with dash (-)
+            if line.startswith('-'):
+                continue
             # Mails are blank line separated
             if not len(line):
                 continue
@@ -458,7 +472,12 @@ class PostqueueStore(object):
                     self.mails.append(mail)
 
     @debug
-    def load(self, method = "postqueue"):
+    def _load_from_file(self, filename):
+        """        """
+
+
+    @debug
+    def load(self, method = "postqueue", filename = None):
         """
         Load content from postfix mails queue.
         
@@ -478,6 +497,9 @@ class PostqueueStore(object):
         gc.collect()
 
         self.mails = []
-        getattr(self, "_load_from_{0}".format(method))()
+        if filename is None:
+            getattr(self, "_load_from_{0}".format(method))()
+        else:
+            getattr(self, "_load_from_{0}".format(method))(filename)
         self.loaded_at = datetime.now()
 

@@ -43,15 +43,20 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'PyQueue'
-copyright = u'2014, Denis \'jawa\' Pompilio'
+project = 'PyQueue'
+copyright = '2014, Denis \'jawa\' Pompilio'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # The full version, including alpha/beta/rc tags.
-release = file(os.path.join(os.path.dirname(__file__), "..", "VERSION")).read()
+if sys.version_info.major == 3:
+    release = open(os.path.join(
+                       os.path.dirname(__file__), "..", "VERSION"), 'r').read()
+else:
+    release = file(os.path.join(
+                       os.path.dirname(__file__), "..", "VERSION")).read()
 # The short X.Y version.
 version = ".".join(release.split('.')[0:2])
 
@@ -186,8 +191,8 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'PyQueue.tex', u'PyQueue Documentation',
-   u'Denis \'jawa\' Pompilio', 'manual'),
+  ('index', 'PyQueue.tex', 'PyQueue Documentation',
+   'Denis \'jawa\' Pompilio', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -218,7 +223,7 @@ latex_documents = [
 man_pages = [(
     'pqshell', 'pqshell',
     'A shell-like to interact with a Postfix mails queue',
-    [u'Denis Pompilio (jawa) <denis.pompilio@gmail.com>'], 1
+    ['Denis Pompilio (jawa) <denis.pompilio@gmail.com>'], 1
     )]
 
 # If true, show URL addresses after external links.
@@ -231,8 +236,8 @@ man_pages = [(
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'PyQueue', u'PyQueue Documentation',
-   u'Denis \'jawa\' Pompilio', 'PyQueue', 'One line description of project.',
+  ('index', 'PyQueue', 'PyQueue Documentation',
+   'Denis \'jawa\' Pompilio', 'PyQueue', 'One line description of project.',
    'Miscellaneous'),
 ]
 

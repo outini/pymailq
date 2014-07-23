@@ -3,14 +3,14 @@
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 
 Name:           pyqueue
-Version:        0.4
+Version:        0.5.2
 Release:        1%{?dist}
-Summary:        Postfix queue control python tool
+Summary:        Simple Postfix queue management
 
 Group:          Development/Languages
 License:        GPVLv2
 URL:            https://github.com/outini/pyqueue/
-Source0:        https://github.com/outini/pyqueue/archive/0.4.tar.gz
+Source0:        https://github.com/outini/pyqueue/archive/v0.5.2.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch
@@ -45,5 +45,6 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu May 08 2014 Denis Pompilio <denis.pompilio@gmail.com> - 0.5.2-1
 * Fri May 02 2014 Nils Ratusznik <nils.github@anotherhomepage.org> - 0.4-1
 - Initial package

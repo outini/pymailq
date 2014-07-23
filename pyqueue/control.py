@@ -90,7 +90,7 @@ class QueueControl(object):
                                  stderr=subprocess.PIPE)
 
         for msg in messages:
-            print >>child.stdin, msg.qid
+            child.stdin.write(msg.qid)
 
         (stdout,stderr) = child.communicate()
 

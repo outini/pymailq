@@ -36,19 +36,19 @@ def debug(function):
     """
     @wraps(function)
     def run(*args, **kwargs):
-        name = function.func_name
+        name = function.__name__
         if DEBUG is True:
-            print >> sys.stderr, "[DEBUG] Running {0}".format(name)
-            print >> sys.stderr, "[DEBUG]     args: {0}".format(args)
-            print >> sys.stderr, "[DEBUG]   kwargs: {0}".format(kwargs)
+            sys.stderr.write("[DEBUG] Running {0}\n".format(name))
+            sys.stderr.write("[DEBUG]     args: {0}\n".format(args))
+            sys.stderr.write("[DEBUG]   kwargs: {0}\n".format(kwargs))
             start = datetime.now()
 
         ret = function(*args, **kwargs)
 
         if DEBUG is True:
             stop = datetime.now()
-            print >> sys.stderr, "[DEBUG] Exectime of {0}: {1} seconds".format(
-                    name, (stop - start).total_seconds())
+            sys.stderr.write("[DEBUG] Exectime of {0}: {1} seconds\n".format(
+                                        name, (stop - start).total_seconds()))
 
         return ret
 
