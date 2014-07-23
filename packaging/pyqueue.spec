@@ -2,15 +2,15 @@
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 
-Name:           pyqueue
+Name:           pymailq
 Version:        0.5.2
 Release:        1%{?dist}
 Summary:        Simple Postfix queue management
 
 Group:          Development/Languages
 License:        GPVLv2
-URL:            https://github.com/outini/pyqueue/
-Source0:        https://github.com/outini/pyqueue/archive/v0.5.2.tar.gz
+URL:            https://github.com/outini/pymailq/
+Source0:        https://github.com/outini/pymailq/archive/v0.5.2.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:      noarch

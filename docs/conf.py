@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# PyQueue documentation build configuration file, created by
+# PyMailq documentation build configuration file, created by
 # sphinx-quickstart on Thu Apr 17 19:26:49 2014.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -12,7 +12,7 @@
 # serve to show the default.
 
 import sys, os
-sys.path.insert(0, os.path.abspath("../pyqueue"))
+sys.path.insert(0, os.path.abspath("../pymailq"))
 sys.path.insert(0, os.path.abspath(".."))
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -43,7 +43,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'PyQueue'
+project = 'PyMailq'
 copyright = '2014, Denis \'jawa\' Pompilio'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -167,7 +167,7 @@ html_static_path = ['static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'PyQueuedoc'
+htmlhelp_basename = 'PyMailqdoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -186,7 +186,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'PyQueue.tex', 'PyQueue Documentation',
+  ('index', 'PyMailq.tex', 'PyMailq Documentation',
    'Denis \'jawa\' Pompilio', 'manual'),
 ]
 
@@ -231,8 +231,8 @@ man_pages = [(
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'PyQueue', 'PyQueue Documentation',
-   'Denis \'jawa\' Pompilio', 'PyQueue', 'One line description of project.',
+  ('index', 'PyMailq', 'PyMailq Documentation',
+   'Denis \'jawa\' Pompilio', 'PyMailq', 'One line description of project.',
    'Miscellaneous'),
 ]
 

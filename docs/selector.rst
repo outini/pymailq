@@ -1,4 +1,4 @@
-pyqueue.selector -- Mails queue filtering
+pymailq.selector -- Mails queue filtering
 =========================================
 
 The :mod:`selector` module mainly provide a selector class to interact with

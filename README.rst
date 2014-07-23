@@ -1,13 +1,13 @@
-pyqueue - Simple Postfix queue management
+pymailq - Simple Postfix queue management
 ==========================================
 
 * *Author:* Denis 'jawa' Pompilio <denis.pompilio@gmail.com>
 * *Contact:* Denis 'jawa' Pompilio <denis.pompilio@gmail.com>
-* *Sources:* https://github.com/outini/pyqueue/
+* *Sources:* https://github.com/outini/pymailq/
 
-A full content documentation, is online at http://outini.github.io/pyqueue/.
+A full content documentation, is online at http://outini.github.io/pymailq/.
 
-The pyqueue module makes it easy to view and control Postfix mails queue. It
+The pymailq module makes it easy to view and control Postfix mails queue. It
 provide several classes to store, view and interact with mail queue using
 Postfix command line tools. This module is provided for automation and
 monitoring developments.
@@ -15,7 +15,7 @@ monitoring developments.
 Installation
 ------------
 
-Install pyqueue module::
+Install pymailq module::
 
     python setup.py install
 
@@ -33,7 +33,7 @@ This module actually support the following Python versions:
 A shell is provided for interactive administration. Based on Python *cmd*
 module, *readline* is highly recommended to access shell's full features. A
 full documentation on shell's usage is available at
-http://outini.github.io/pyqueue/pqshell.html
+http://outini.github.io/pymailq/pqshell.html
 
 **Used Python modules:**
 

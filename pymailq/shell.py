@@ -1,10 +1,10 @@
 #
-#    Postfix queue control python tool (pyqueue)
+#    Postfix queue control python tool (pymailq)
 #
 #    Copyright (C) 2014 Denis Pompilio (jawa) <denis.pompilio@gmail.com>
 #    Copyright (C) 2014 Jocelyn Delalande <jdelalande@oasiswork.fr>
 #
-#    This file is part of pyqueue
+#    This file is part of pymailq
 #
 #    This program is free software; you can redistribute it and/or
 #    modify it under the terms of the GNU General Public License
@@ -24,7 +24,7 @@ import cmd
 from functools import partial
 from subprocess import CalledProcessError
 import shlex
-from pyqueue import store, control, selector, utils
+from pymailq import store, control, selector, utils
 
 
 try:
@@ -36,8 +36,8 @@ class StoreNotLoaded(Exception):
     def __str__(self):
         return 'The store is not loaded'
 
-class PyQueueShell(cmd.Cmd, object):
-    """PyQueue shell for interactive mode"""
+class PyMailqShell(cmd.Cmd, object):
+    """PyMailq shell for interactive mode"""
 
     # Automatic building of supported methods and documentation
     commands_info = {
@@ -90,14 +90,14 @@ class PyQueueShell(cmd.Cmd, object):
         return True
 
     def help_exit(self):
-        print("Exit PyQueue shell (or use Ctrl-D)")
+        print("Exit PyMailq shell (or use Ctrl-D)")
 
     def cmdloop_nointerrupt(self):
         """Specific cmdloop to handle KeyboardInterrupt"""
         can_exit = False
         # intro message is not in self.intro not to display it each time
         # cmdloop is restarted
-        print("Welcome to PyQueue shell.")
+        print("Welcome to PyMailq shell.")
         while can_exit is not True:
             try:
                 self.cmdloop()
@@ -109,7 +109,7 @@ class PyQueueShell(cmd.Cmd, object):
         cmd.Cmd.postloop(self)
         print("\nExiting shell... Bye.")
 
-    # PyQueue methods help
+    # PyMailq methods help
     def __parse_docstring(self, docstring):
         doclines = [ line.strip() for line in docstring.split('\n')
                      if len(line.strip()) ]
@@ -138,14 +138,14 @@ class PyQueueShell(cmd.Cmd, object):
                     print("  %-10s %s" % ("", line))
 
 #
-# PyQueue methods
+# PyMailq methods
 #
 
     @property
     def prompt(self):
         """Dynamic prompt with usefull informations"""
 
-        prompt = ['PyQueue']
+        prompt = ['PyMailq']
         if self.selector is not None:
             prompt.append(' (sel:%d)' % (len(self.selector.mails)))
         prompt.append('> ')

@@ -1,9 +1,9 @@
 #
-#    Postfix queue control python tool (pyqueue)
+#    Postfix queue control python tool (pymailq)
 #
 #    Copyright (C) 2014 Denis Pompilio (jawa) <denis.pompilio@gmail.com>
 #
-#    This file is part of pyqueue
+#    This file is part of pymailq
 #
 #    This program is free software; you can redistribute it and/or
 #    modify it under the terms of the GNU General Public License
@@ -24,7 +24,7 @@ import re
 import subprocess
 import email
 from datetime import datetime, timedelta
-from pyqueue import debug
+from pymailq import debug
 
 
 class MailHeaders(object):
@@ -82,7 +82,7 @@ class Mail(object):
     :param str sender: Mail sender string as seen in mails queue.
                        (Default: empty :func:`str`)
 
-    The :class:`~pyqueue.Mail` class defines the following attributes:
+    The :class:`~pymailq.Mail` class defines the following attributes:
 
         .. attribute:: qid
 

@@ -1,11 +1,11 @@
 #! /usr/bin/env python2.7
 
 #
-#    Postfix queue control python tool (pyqueue)
+#    Postfix queue control python tool (pymailq)
 #
 #    Copyright (C) 2014 Denis Pompilio (jawa) <denis.pompilio@gmail.com>
 #
-#    This file is part of pyqueue
+#    This file is part of pymailq
 #
 #    This program is free software; you can redistribute it and/or
 #    modify it under the terms of the GNU General Public License
@@ -22,7 +22,7 @@
 
 import sys
 from datetime import datetime, timedelta
-from pyqueue import store, control, selector, shell
+from pymailq import store, control, selector, shell
 
 
 def list_preview(datas, limit = 5):
@@ -37,8 +37,8 @@ def list_preview(datas, limit = 5):
 def tests(source = None):
     """This is here for tests purpose, no administrative operations are made.
 
-    The pyqueue.QueueControl object must be tested with specific code snippet:
-    >>> import pyqueue
+    The pymailq.QueueControl object must be tested with specific code snippet:
+    >>> import pymailq
     >>> selector = MailSelector(PostqueueStore())
     >>> selector.lookup_sender("MAILER-DAEMON")
     >>> qcontrol = QueueControl()
@@ -46,8 +46,8 @@ def tests(source = None):
     >>> print("\n".join(qcontrol.release_messages(selector.mails)))
     >>> print("\n".join(qcontrol.requeue_messages(selector.mails)))
     """
-    import pyqueue  # import pyqueue to set debug on
-    pyqueue.DEBUG = True
+    import pymailq  # import pymailq to set debug on
+    pymailq.DEBUG = True
 
     pstore = store.PostqueueStore()
 
@@ -121,7 +121,7 @@ def tests(source = None):
 
 def main():
     """main function"""
-    cli = shell.PyQueueShell()
+    cli = shell.PyMailqShell()
     cli.cmdloop_nointerrupt()
 
 

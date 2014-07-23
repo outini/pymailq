@@ -48,11 +48,11 @@ store
 
     **Example**::
 
-        PyQueue (sel:0)> store status
+        PyMailq (sel:0)> store status
         store is not loaded
-        PyQueue (sel:0)> store load
+        PyMailq (sel:0)> store load
         590 mails loaded from queue
-        PyQueue (sel:590)> store status
+        PyMailq (sel:590)> store status
         store loaded with 590 mails at 2014-05-05 13:43:22.592767
 
 select
@@ -107,27 +107,27 @@ select
 
     **Filtering Example**::
 
-        PyQueue (sel:608)> select size -5000
-        PyQueue (sel:437)> select sender MAILER-DAEMON
-        PyQueue (sel:316)> select status active
-        PyQueue (sel:0)>
+        PyMailq (sel:608)> select size -5000
+        PyMailq (sel:437)> select sender MAILER-DAEMON
+        PyMailq (sel:316)> select status active
+        PyMailq (sel:0)>
 
     **Filters management**::
 
-        PyQueue (sel:608)> select size -5000
-        PyQueue (sel:437)> select sender MAILER-DAEMON
-        PyQueue (sel:316)> show filters
+        PyMailq (sel:608)> select size -5000
+        PyMailq (sel:437)> select sender MAILER-DAEMON
+        PyMailq (sel:316)> show filters
         0: select size:
             smax: 5000
             smin: 0
         1: select sender:
             partial: True
             sender: MAILER-DAEMON
-        PyQueue (sel:316)> select rmfilter 1
-        PyQueue (sel:437)> select sender greedy-sender@domain.com
-        PyQueue (sel:25)> select reset
+        PyMailq (sel:316)> select rmfilter 1
+        PyMailq (sel:437)> select sender greedy-sender@domain.com
+        PyMailq (sel:25)> select reset
         Selector resetted with store content (608 mails)
-        PyQueue (sel:608)>
+        PyMailq (sel:608)>
 
 show
 ----
@@ -171,21 +171,21 @@ show
 
     **Example**::
 
-        PyQueue (sel:608)> show selected limit 5
+        PyMailq (sel:608)> show selected limit 5
         2014-05-05 20:54:24 699C11831669 [active] jjj@dom1.com (14375B)
         2014-05-05 20:43:39 8D60C13C14C6 [deferred] bbb@dom9.com (39549B)
         2014-05-05 20:35:08 B0077198BC31 [deferred] rrr@dom2.com (4809B)
         2014-05-05 20:30:09 014E21AB4B78 [deferred] aaa@dom7.com (2450B)
         2014-05-05 20:25:04 CF1BE127A8D3 [deferred] xxx@dom2.com (4778B)
         ...Preview of first 5 (603 more)...
-        PyQueue (sel:608)> show selected sortby sender limit 5 asc
+        PyMailq (sel:608)> show selected sortby sender limit 5 asc
         2014-05-02 11:36:16 40AA9149A9D7 [deferred] aaa@dom1.com (8262B)
         2014-05-01 05:30:23 5E0B2162BE63 [deferred] bbb@dom4.com (3052B)
         2014-05-02 05:30:20 653471AC5F76 [deferred] ccc@dom5.com (3052B)
         2014-05-02 09:49:01 A00D3159AEE [deferred] ddd@dom1.com (3837B)
         2014-05-05 18:18:59 98E9A790749 [deferred] ddd@dom2.com (1551B)
         ...Preview of first 5 (603 more)...
-        PyQueue (sel:608)> show selected rankby sender limit 5
+        PyMailq (sel:608)> show selected rankby sender limit 5
         sender                                    count
         ================================================
         jjj@dom8.com                              334
