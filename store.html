@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyqueue.store – Mails queue storage objects &mdash; PyQueue 0.5.1
+    <title>pyqueue.store – Mails queue storage objects &mdash; PyQueue 0.5.2
  documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
@@ -18,7 +18,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.5.1
+        VERSION:     '0.5.2
 ',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -29,14 +29,14 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/theme_extras.js"></script>
-    <link rel="top" title="PyQueue 0.5.1
+    <link rel="top" title="PyQueue 0.5.2
  documentation" href="index.html" />
     <link rel="next" title="pyqueue.selector – Mails queue filtering" href="selector.html" />
     <link rel="prev" title="pyqueue – Simple Postfix queue management" href="index.html" /> 
   </head>
   <body>
       <div class="header"><h1 class="heading"><a href="index.html">
-          <span>PyQueue 0.5.1
+          <span>PyQueue 0.5.2
  documentation</span></a></h1>
         <h2 class="heading"><span>pyqueue.store – Mails queue storage objects</span></h2>
       </div>
@@ -74,7 +74,7 @@ which can be processed by a <a class="reference internal" href="selector.html#se
 <div><dl class="attribute">
 <dt id="PostqueueStore.mails">
 <tt class="descname">mails</tt><a class="headerlink" href="#PostqueueStore.mails" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loaded <tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt> objects <a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">list()</span></tt></a>.</p>
+<dd><p>Loaded <a class="reference internal" href="#PostqueueStore.MailClass" title="PostqueueStore.MailClass"><tt class="xref py py-class docutils literal"><span class="pre">MailClass</span></tt></a> objects <a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">list()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -125,6 +125,13 @@ Default used regular expression is: <tt class="docutils literal"><span class="pr
 provided by <a class="reference external" href="http://docs.python.org/2.7/library/re.html#re.compile" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">re.compile()</span></tt></a> method to match email addresses.
 Default used regular expression is:
 <tt class="docutils literal"><span class="pre">r&quot;^[A-Za-z0-9._%+-]+&#64;[A-Za-z0-9.-]+\.[A-Za-z]+$&quot;</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="PostqueueStore.MailClass">
+<tt class="descname">MailClass</tt><a class="headerlink" href="#PostqueueStore.MailClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>The class used to manipulate/parse mails individually.
+Default is <tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt>.</p>
 </dd></dl>
 
 </div></blockquote>
@@ -230,6 +237,10 @@ informations from line.</p>
 attribute of the last created <tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt> object.</p>
 </li>
 </ul>
+<p>Optionnal argument <tt class="docutils literal"><span class="pre">filename</span></tt> can be set with a file containing
+output of the <a class="reference external" href="http://www.postfix.org/postqueue.1.html">postqueue</a> command. In this case, output lines of
+<a class="reference external" href="http://www.postfix.org/postqueue.1.html">postqueue</a> command are directly read from <tt class="docutils literal"><span class="pre">filename</span></tt> and parsed,
+the <a class="reference external" href="http://www.postfix.org/postqueue.1.html">postqueue</a> command is never used.</p>
 </dd></dl>
 
 <dl class="method">
@@ -257,13 +268,12 @@ high load usage on system with large mails queue.</p>
 <a class="reference internal" href="#PostqueueStore.postqueue_cmd" title="PostqueueStore.postqueue_cmd"><tt class="xref py py-attr docutils literal"><span class="pre">postqueue_cmd</span></tt></a> attribute to view the mails queue
 content.</p>
 <p>Command defined in <a class="reference internal" href="#PostqueueStore.postqueue_cmd" title="PostqueueStore.postqueue_cmd"><tt class="xref py py-attr docutils literal"><span class="pre">postqueue_cmd</span></tt></a> attribute is
-runned using a <a class="reference external" href="http://docs.python.org/2.7/library/subprocess.html#subprocess.Popen" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">subprocess.Popen</span></tt></a> instance. Output headers
-(1 line) and footers (2 lines) are excluded from result.</p>
+runned using a <a class="reference external" href="http://docs.python.org/2.7/library/subprocess.html#subprocess.Popen" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">subprocess.Popen</span></tt></a> instance.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Command&#8217;s output lines without headers and footers.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Command&#8217;s output lines.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">list()</span></tt></a></td>
 </tr>

@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyqueue.selector – Mails queue filtering &mdash; PyQueue 0.5.1
+    <title>pyqueue.selector – Mails queue filtering &mdash; PyQueue 0.5.2
  documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
@@ -18,7 +18,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '0.5.1
+        VERSION:     '0.5.2
 ',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -29,14 +29,14 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/theme_extras.js"></script>
-    <link rel="top" title="PyQueue 0.5.1
+    <link rel="top" title="PyQueue 0.5.2
  documentation" href="index.html" />
     <link rel="next" title="pyqueue.control – Mails queue adminitrative operations" href="control.html" />
     <link rel="prev" title="pyqueue.store – Mails queue storage objects" href="store.html" /> 
   </head>
   <body>
       <div class="header"><h1 class="heading"><a href="index.html">
-          <span>PyQueue 0.5.1
+          <span>PyQueue 0.5.2
  documentation</span></a></h1>
         <h2 class="heading"><span>pyqueue.selector – Mails queue filtering</span></h2>
       </div>
@@ -102,7 +102,7 @@ filter using <a class="reference internal" href="#selector.MailSelector.replay_f
 <tt class="descclassname">MailSelector.</tt><tt class="descname">filter_registration</tt><big>(</big><em>function</em><big>)</big><a class="reference internal" href="_modules/selector.html#MailSelector.filter_registration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selector.MailSelector.filter_registration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorator to register applied filter.</p>
 <p>This decorated is used to wrap selection methods <tt class="docutils literal"><span class="pre">lookup_*</span></tt>. It
-registers a <tt class="docutils literal"><span class="pre">(function.func_name,</span> <span class="pre">args,</span> <span class="pre">kwargs)</span></tt> <a class="reference external" href="http://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">tuple()</span></tt></a> in
+registers a <tt class="docutils literal"><span class="pre">(function.__name__,</span> <span class="pre">args,</span> <span class="pre">kwargs)</span></tt> <a class="reference external" href="http://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">tuple()</span></tt></a> in
 the <a class="reference internal" href="#MailSelector.filters" title="MailSelector.filters"><tt class="xref py py-attr docutils literal"><span class="pre">filters</span></tt></a> attribute.</p>
 </dd></dl>
 
