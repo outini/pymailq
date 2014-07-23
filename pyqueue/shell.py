@@ -2,6 +2,7 @@
 #    Postfix queue control python tool (pyqueue)
 #
 #    Copyright (C) 2014 Denis Pompilio (jawa) <denis.pompilio@gmail.com>
+#    Copyright (C) 2014 Jocelyn Delalande <jdelalande@oasiswork.fr>
 #
 #    This file is part of pyqueue
 #
@@ -31,6 +32,10 @@ try:
 except ImportError as error:
     print("Python readline is not available, shell capabilities are limited.")
 
+class StoreNotLoaded(Exception):
+    def __str__(self):
+        return 'The store is not loaded'
+
 class PyQueueShell(cmd.Cmd, object):
     """PyQueue shell for interactive mode"""
 
@@ -39,12 +44,14 @@ class PyQueueShell(cmd.Cmd, object):
         'store': 'Control of Postfix queue content storage',
         'select': 'Select mails from Postfix queue content',
         'inspect': 'Mail content inspector',
+        'super' : 'call postsuper commands'
         }
 
     # XXX: do_* methods are parsed before init and must be declared here
     do_store = None
     do_select = None
     do_show = None
+    do_super = None
 
     def __init__(self):
         """Init method"""
@@ -417,3 +424,43 @@ class PyQueueShell(cmd.Cmd, object):
             for key,value in _kwargs.items():
                 lines.append("    %s: %s" % (key, value))
         return lines
+
+    # Postsuper generic command
+    def _super__do(self, cmd, action_name):
+        if not self.pstore.loaded_at:
+            raise(StoreNotLoaded)
+        if self.selector.mails is None:
+            handled_c = 0
+        else:
+            f = getattr(self.qcontrol, '%s_messages' % cmd)
+            f(self.selector.mails)
+            handled_c = len(self.selector.mails)
+            # reloads the data
+            self._store_load()
+            self._select_reset()
+
+        return ['{} {} mails'.format(action_name, handled_c)]
+
+    def _super_delete(self):
+        """Deletes the mails in current selection
+        ..Usage: super delete
+        """
+        return self._super__do('delete', 'Deleted')
+
+    def _super_hold(self):
+        """Put on hold the mails in current selection
+        ..Usage: super hold
+        """
+        return self._super__do('hold', 'Put on hold')
+
+    def _super_release(self):
+        """Releases from hold the mails in current selection
+        ..Usage: super release
+        """
+        return self._super__do('release', 'Released')
+
+    def _super_requeue(self):
+        """requeue the mails in current selection
+        ..Usage: super requeue
+        """
+        return self._super__do('requeue', 'Requeued')
