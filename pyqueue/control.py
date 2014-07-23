@@ -29,7 +29,7 @@ class QueueControl(object):
     attributes:
 
         .. attribute:: postsuper_cmd
- 
+
             Postfix command and arguments :func:`list` for mails queue
             administrative operations. Default is ``["postsuper"]``
 
@@ -90,7 +90,7 @@ class QueueControl(object):
                                  stderr=subprocess.PIPE)
 
         for msg in messages:
-            child.stdin.write(msg.qid)
+            child.stdin.write(msg.qid+'\n')
 
         (stdout,stderr) = child.communicate()
 
