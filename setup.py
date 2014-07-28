@@ -23,10 +23,10 @@ import os
 from distutils.core import setup
 
 if __name__ == '__main__':
-    release = open(os.path.join(os.path.dirname(__file__), "VERSION"), 'r').read()
+    release = open(os.path.join(os.path.dirname(__file__), "VERSION"), 'r').read().strip()
     setup(
         name = "pymailq",
-        version = ".".join(release.split('.')[0:2]),
+        version = ".".join(release.split('.')),
         url = "https://github.com/outini/pymailq",
         author = "Denis Pompilio (jawa)",
         author_email = "denis.pompilio@gmail.com",
