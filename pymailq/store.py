@@ -1,9 +1,9 @@
 #
-#    Postfix queue control python tool (pyqueue)
+#    Postfix queue control python tool (pymailq)
 #
 #    Copyright (C) 2014 Denis Pompilio (jawa) <denis.pompilio@gmail.com>
 #
-#    This file is part of pyqueue
+#    This file is part of pymailq
 #
 #    This program is free software; you can redistribute it and/or
 #    modify it under the terms of the GNU General Public License
@@ -24,7 +24,7 @@ import re
 import subprocess
 import email
 from datetime import datetime, timedelta
-from pyqueue import debug
+from pymailq import debug
 
 
 class MailHeaders(object):
@@ -82,7 +82,7 @@ class Mail(object):
     :param str sender: Mail sender string as seen in mails queue.
                        (Default: empty :func:`str`)
 
-    The :class:`~pyqueue.Mail` class defines the following attributes:
+    The :class:`~pymailq.Mail` class defines the following attributes:
 
         .. attribute:: qid
 
@@ -99,7 +99,7 @@ class Mail(object):
             corresponding spool file.
 
         .. attribute:: parse_error
-    
+
             Last encountered parse error message :func:`str`.
 
         .. attribute:: date
@@ -108,8 +108,8 @@ class Mail(object):
             mails queue.
 
         .. attribute:: status
-    
-            Mail's queue status :func:`str`. 
+
+            Mail's queue status :func:`str`.
 
         .. attribute:: sender
 
@@ -150,7 +150,7 @@ class Mail(object):
 
         # Getting optionnal status from postqueue mail_id
         postqueue_status = { '*': "active", '!': "hold" }
-        if mail_id[-1] in postqueue_status.keys():
+        if mail_id[-1] in postqueue_status:
             self.qid = mail_id[:-1]
         self.status = postqueue_status.get(mail_id[-1], "deferred")
 
@@ -158,7 +158,7 @@ class Mail(object):
     def parse(self):
         """
         Parse message content.
-        
+
         This method use Postfix mails content parsing command defined in
         :attr:`~Mail.postcat_cmd` attribute. This command is runned using
         :class:`subprocess.Popen` instance.
@@ -171,7 +171,7 @@ class Mail(object):
 
             Postfix manual:
                 `postcat`_ -- Show Postfix queue file contents
- 
+
         """
         child = subprocess.Popen(self.postcat_cmd,
                                  stdout=subprocess.PIPE,
@@ -179,7 +179,7 @@ class Mail(object):
         (stdout,stderr) = child.communicate()
 
         raw_content = list()
-        for line in stdout.split('\n'):
+        for line in stdout.decode().split('\n'):
             if self.size == 0 and line[0:14] == "message_size: ":
                 self.size = int(line[14:].strip().split()[0])
             elif self.date is None and line[0:13] == "create_time: ":
@@ -218,11 +218,11 @@ class Mail(object):
         datas = {'postqueue': {},
                  'headers': {}}
 
-        for attr in self.__dict__.keys():
+        for attr in self.__dict__:
             if attr[0] != "_" and attr != 'head':
                 datas['postqueue'].update({ attr: getattr(self, attr) })
 
-        for header in self.head.__dict__.keys():
+        for header in self.head.__dict__:
             if header[0] != "_":
                 datas['headers'].update({ header: getattr(self.head, header) })
 
@@ -267,7 +267,7 @@ class PostqueueStore(object):
             Default is ``['active', 'deferred', 'hold']``.
 
         .. attribute:: mail_id_re
-    
+
             Python compiled regular expression object (:class:`re.RegexObject`)
             provided by :func:`re.compile` method to match postfix IDs.
             Recognized IDs are hexadecimals, may be 10 to 12 chars length and
@@ -280,7 +280,7 @@ class PostqueueStore(object):
             provided by :func:`re.compile` method to match email addresses.
             Default used regular expression is:
             ``r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+$"``
-            
+
         .. attribute:: MailClass
 
             The class used to manipulate/parse mails individually.
@@ -335,7 +335,7 @@ class PostqueueStore(object):
         (stdout,stderr) = child.communicate()
 
         # return lines list without the headers and footers
-        return [line for line in stdout.split('\n')]
+        return [line.strip() for line in stdout.decode().split('\n')][1:-2]
 
     def _is_mail_id(self, mail_id):
         """
@@ -445,7 +445,7 @@ class PostqueueStore(object):
     def _load_from_spool(self):
         """
         Load content from postfix queue using files from spool.
-        
+
         Mails are loaded using the command defined in
         :attr:`~PostqueueStore.postqueue_cmd` attribute. Some informations may
         be missing using the :meth:`~store.PostqueueStore._load_from_spool`
@@ -455,7 +455,7 @@ class PostqueueStore(object):
         :attr:`~PostqueueStore.mails` attribute.
 
         .. warning::
-        
+
             Be aware that parsing mails on disk is slow and can lead to
             high load usage on system with large mails queue.
         """
@@ -480,7 +480,7 @@ class PostqueueStore(object):
     def load(self, method = "postqueue", filename = None):
         """
         Load content from postfix mails queue.
-        
+
         Mails are loaded using postqueue command line tool or reading directly
         from spool. The optionnal argument, if present, is a method string and
         specifies the method used to gather mails informations. By default,

@@ -1,9 +1,9 @@
 #
-#    Postfix queue control python tool (pyqueue)
+#    Postfix queue control python tool (pymailq)
 #
 #    Copyright (C) 2014 Denis Pompilio (jawa) <denis.pompilio@gmail.com>
 #
-#    This file is part of pyqueue
+#    This file is part of pymailq
 #
 #    This program is free software; you can redistribute it and/or
 #    modify it under the terms of the GNU General Public License
@@ -23,30 +23,24 @@ import os
 from distutils.core import setup
 
 if __name__ == '__main__':
-    if sys.version_info.major == 3:
-        release = open(os.path.join(
-                           os.path.dirname(__file__), "VERSION"), 'r').read()
-    else:
-        release = file(os.path.join(
-                           os.path.dirname(__file__), "VERSION")).read()
-
+    release = open(os.path.join(os.path.dirname(__file__), "VERSION"), 'r').read().strip()
     setup(
-        name = "pyqueue",
-        version = ".".join(release.split('.')[0:2]),
-        url = "https://github.com/outini/pyqueue",
+        name = "pymailq",
+        version = ".".join(release.split('.')),
+        url = "https://github.com/outini/pymailq",
         author = "Denis Pompilio (jawa)",
         author_email = "denis.pompilio@gmail.com",
         maintainer = "Denis Pompilio (jawa)",
         maintainer_email = "denis.pompilio@gmail.com",
         description = "Postfix queue control python tool",
-        long_description = file(os.path.join(os.path.dirname(__file__),
+        long_description = open(os.path.join(os.path.dirname(__file__),
                                              'README.rst')).read(),
         license = "GPLv2",
         platforms = ['UNIX'],
         scripts = ['bin/pqshell'],
-        packages = ['pyqueue'],
-        package_dir = {'pyqueue': 'pyqueue'},
-        data_files = [('share/doc/pyqueue',['README.rst', 'LICENSE']),
+        packages = ['pymailq'],
+        package_dir = {'pymailq': 'pymailq'},
+        data_files = [('share/doc/pymailq',['README.rst', 'LICENSE']),
                       ('share/man/man1/', ['man/pqshell.1'])],
         keywords = ['postfix','shell','mailq','python','pqshell','postqueue'],
         classifiers = [

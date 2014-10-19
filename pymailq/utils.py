@@ -1,9 +1,9 @@
 #
-#    Postfix queue control python tool (pyqueue)
+#    Postfix queue control python tool (pymailq)
 #
 #    Copyright (C) 2014 Denis Pompilio (jawa) <denis.pompilio@gmail.com>
 #
-#    This file is part of pyqueue
+#    This file is part of pymailq
 #
 #    This program is free software; you can redistribute it and/or
 #    modify it under the terms of the GNU General Public License
@@ -28,7 +28,7 @@ def sorter(function):
     This decorator inspect decorated function arguments and search for
     known keyword to sort decorated function result.
 
-    
+
     """
     @wraps(function)
     def wrapper(*args, **kwargs):

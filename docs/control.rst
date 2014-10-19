@@ -1,4 +1,4 @@
-pyqueue.control -- Mails queue adminitrative operations
+pymailq.control -- Mails queue adminitrative operations
 =======================================================
 
 The :mod:`control` module define a basic python class to simplify

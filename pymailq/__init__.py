@@ -1,9 +1,9 @@
 #
-#    Postfix queue control python tool (pyqueue)
+#    Postfix queue control python tool (pymailq)
 #
 #    Copyright (C) 2014 Denis Pompilio (jawa) <denis.pompilio@gmail.com>
 #
-#    This file is part of pyqueue
+#    This file is part of pymailq
 #
 #    This program is free software; you can redistribute it and/or
 #    modify it under the terms of the GNU General Public License
@@ -29,7 +29,7 @@ DEBUG = False
 def debug(function):
     """
     Decorator to print some call informations and timing debug on stderr.
-    
+
     Function's name, passed args and kwargs are printed to stderr. Elapsed time
     is also print at the end of call. This decorator is based on the value of
     :data:`DEBUG`. If ``True``, the debug informations will be displayed.
@@ -53,4 +53,3 @@ def debug(function):
         return ret
 
     return run
-

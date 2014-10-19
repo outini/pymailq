@@ -1,9 +1,9 @@
 #
-#    Postfix queue control python tool (pyqueue)
+#    Postfix queue control python tool (pymailq)
 #
 #    Copyright (C) 2014 Denis Pompilio (jawa) <denis.pompilio@gmail.com>
 #
-#    This file is part of pyqueue
+#    This file is part of pymailq
 #
 #    This program is free software; you can redistribute it and/or
 #    modify it under the terms of the GNU General Public License
@@ -90,11 +90,11 @@ class QueueControl(object):
                                  stderr=subprocess.PIPE)
 
         for msg in messages:
-            child.stdin.write(msg.qid+'\n')
+            child.stdin.write((msg.qid+'\n').encode())
 
         (stdout,stderr) = child.communicate()
 
-        return [ line.strip() for line in stderr.split('\n') ]
+        return [ line.strip() for line in stderr.decode().split('\n') ]
 
     def delete_messages(self, messages):
         """

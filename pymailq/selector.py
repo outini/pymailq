@@ -1,9 +1,9 @@
 #
-#    Postfix queue control python tool (pyqueue)
+#    Postfix queue control python tool (pymailq)
 #
 #    Copyright (C) 2014 Denis Pompilio (jawa) <denis.pompilio@gmail.com>
 #
-#    This file is part of pyqueue
+#    This file is part of pymailq
 #
 #    This program is free software; you can redistribute it and/or
 #    modify it under the terms of the GNU General Public License
@@ -21,7 +21,7 @@
 import gc
 from functools import wraps
 from datetime import datetime
-from pyqueue import debug
+from pymailq import debug
 
 
 class MailSelector(object):
@@ -36,12 +36,12 @@ class MailSelector(object):
             Currently selected :class:`~store.Mail` objects :func:`list`
 
         .. attribute:: store
-    
+
             Linked :class:`~store.PostqueueStore` at the
             :class:`~selector.MailSelector` instance initialization.
 
         .. attribute:: filters
-    
+
             Applied filters :func:`list` on current selection. Filters list
             entries are tuples containing ``(function.__name__, args, kwargs)``
             for each applied filters. This list is filled by the

@@ -1,10 +1,14 @@
-pyqueue - Simple Postfix queue management
+pymailq - Simple mail queue management
 =========================================
 
 Contact: Denis Pompilio (jawa) <denis.pompilio@gmail.com>
-https://github.com/outini/pyqueue
+https://github.com/outini/pymailq
 
-=== v0.5.2 ???? ===
+== v0.5.3 19/10/2014 ===
+    * Complete support for python2.7 and python3
+    * Project renamed to PyMailq
+
+=== v0.5.2 23/07/2014 ===
     * Massive code updates for Python 3 support.
     * Converted README to reSt format.
     * Added CHANGES file for change tracking.
