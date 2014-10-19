@@ -4,7 +4,7 @@ pymailq - Simple mail queue management
 Contact: Denis Pompilio (jawa) <denis.pompilio@gmail.com>
 https://github.com/outini/pymailq
 
-== v0.5.3 <tobereleased> ===
+== v0.5.3 19/10/2014 ===
     * Complete support for python2.7 and python3
     * Project renamed to PyMailq
 
