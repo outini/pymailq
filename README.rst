@@ -19,8 +19,8 @@ Install pymailq module::
 
     python setup.py install
 
-A SPECS file is also provided for RPM builds, thanks to Nils Ratusznik
-<nils.github@anotherhomepage.org> (*https://github.com/ahpnils*).
+A SPEC file is also provided for RPM builds (currently tested only on Fedora), 
+thanks to Nils Ratusznik (*https://github.com/ahpnils*).
 
 Requirements
 ------------
