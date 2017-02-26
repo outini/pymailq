@@ -180,7 +180,7 @@ class MailSelector(object):
         """
         Lookup mails send on specific date range(s).
 
-        The ``start_stop_list`` argument is optional and defaults to None. 
+        The ``start_stop_list`` argument is optional and defaults to None.
 
         :param list((datetime.date, datetime.date),...) start_stop_list: List of tuples
         representing time ranges ``[(start,stop),...]``

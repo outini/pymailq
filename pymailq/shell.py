@@ -300,7 +300,6 @@ class PyMailqShell(cmd.Cmd, object):
                  ..YYYY-MM-DD..YYYY-MM-DD (within a date range)
                  ..+YYYY-MM-DD (after a certain date)
                  ..-YYYY-MM-DD (before a certain date)
-                 
         """
         from datetime import datetime
         from pprint import pprint
