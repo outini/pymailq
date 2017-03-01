@@ -176,33 +176,33 @@ class MailSelector(object):
 
     @debug
     @filter_registration
-    def lookup_date(self, start = None, stop = None):
+    def lookup_date(self, start_stop_list=None):
         """
-        Lookup mails send on specific date range.
+        Lookup mails send on specific date range(s).
 
-        Both arguments ``start`` and ``stop`` are optionnal and default is set
-        to ``None``. However, it is required to pass at least one of those
-        arguments. This method will raise :class:`~exception.TypeError` if both
-        arguments ``start`` and ``stop`` are set to ``None``.
+        The ``start_stop_list`` argument is optional and defaults to None.
 
-        :param datetime.datetime start: Start date
-                                        (default: ``datetime(1970,1,1)``)
-        :param datetime.datetime stop: Stop date
-                                       (default: ``datetime.now()``)
+        :param list((datetime.date, datetime.date),...) start_stop_list: List of tuples
+        representing time ranges ``[(start,stop),...]``
+        This method will raise :class:`~exception.TypeError` if both
+        elements ``start`` and ``stop`` are set to ``None``.
+
         :return: List of newly selected :class:`~store.Mail` objects
         :rtype: :func:`list`
         """
+        kept_mails={}
+        for (start,stop) in start_stop_list:
+          if start is None and stop is None:
+              raise TypeError("Required arguments 'start' or 'stop' not found")
 
-        if start is None and stop is None:
-            raise TypeError("Required arguments 'start' or 'stop' not found")
+          if start is None:
+              start = datetime.min.date()
+          if stop is None:
+              stop = datetime.max.date()
 
-        if start is None:
-            start = datetime(1970,1,1)
-        if stop is None:
-            stop = datetime.now()
-
-        self.mails = [ mail for mail in self.mails
-                       if mail.date >= start and mail.date <= stop ]
+          kept_mails.update(dict(( (mail.qid ,mail) for mail in self.mails
+                         if mail.date.date() >= start and mail.date.date() <= stop )))
+        self.mails=kept_mails.values()
 
         return self.mails
 
