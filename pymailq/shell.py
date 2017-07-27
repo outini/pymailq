@@ -24,6 +24,7 @@ import cmd
 from functools import partial
 from subprocess import CalledProcessError
 import shlex
+import inspect
 from pymailq import store, control, selector, utils
 
 
@@ -31,10 +32,13 @@ try:
     import readline
 except ImportError as error:
     print("Python readline is not available, shell capabilities are limited.")
+    readline = None
+
 
 class StoreNotLoaded(Exception):
     def __str__(self):
         return 'The store is not loaded'
+
 
 class PyMailqShell(cmd.Cmd, object):
     """PyMailq shell for interactive mode"""
@@ -44,7 +48,7 @@ class PyMailqShell(cmd.Cmd, object):
         'store': 'Control of Postfix queue content storage',
         'select': 'Select mails from Postfix queue content',
         'inspect': 'Mail content inspector',
-        'super' : 'call postsuper commands'
+        'super': 'call postsuper commands'
         }
 
     # XXX: do_* methods are parsed before init and must be declared here
@@ -61,11 +65,11 @@ class PyMailqShell(cmd.Cmd, object):
         self.do_EOF = self.do_exit
 
         for command in self.commands_info:
-            setattr(self, "help_%s" % (command), partial(self._help_, command))
-            setattr(self, "do_%s" % (command), partial(self.__do, command))
-            setattr(self, "complete_%s" % (command),
+            setattr(self, "help_%s" % (command,), partial(self._help_, command))
+            setattr(self, "do_%s" % (command,), partial(self.__do, command))
+            setattr(self, "complete_%s" % (command,),
                           partial(self.__complete, command))
-        # show command is specific and cannot be build dynamicly
+        # show command is specific and cannot be build dynamically
         setattr(self, "help_show", partial(self._help_, "show"))
         setattr(self, "complete_show", partial(self.__complete, "show"))
 
@@ -81,15 +85,22 @@ class PyMailqShell(cmd.Cmd, object):
 
     # Internal functions
     def emptyline(self):
+        """Action on empty lines"""
         pass
 
-    def help_help(self):
+    @staticmethod
+    def help_help():
+        """Help of command help"""
         print("Show available commands")
 
-    def do_exit(self, arg):
+    @staticmethod
+    def do_exit(arg):
+        """Action on exit"""
         return True
 
-    def help_exit(self):
+    @staticmethod
+    def help_exit():
+        """Help of command exit"""
         print("Exit PyMailq shell (or use Ctrl-D)")
 
     def cmdloop_nointerrupt(self):
@@ -102,36 +113,23 @@ class PyMailqShell(cmd.Cmd, object):
             try:
                 self.cmdloop()
                 can_exit = True
-            except (KeyboardInterrupt):
+            except KeyboardInterrupt:
                 print("^C")
 
     def postloop(self):
         cmd.Cmd.postloop(self)
         print("\nExiting shell... Bye.")
 
-    # PyMailq methods help
-    def __parse_docstring(self, docstring):
-        doclines = [ line.strip() for line in docstring.split('\n')
-                     if len(line.strip()) ]
-        parsed_lines = []
-        for line in doclines:
-            indent = ""
-            if line.startswith('..'):
-                line = "  " + line[2:]  # indentation required
-            parsed_lines.append("%s%s" % (indent, line))
-        return parsed_lines
-
     def _help_(self, command):
-        doc = self.commands_info.get(
-                command, getattr(self, "do_%s" % (command)).__doc__)
-        for line in self.__parse_docstring(doc):
-            print(line)
+        docstr = self.commands_info.get(
+                command, getattr(self, "do_%s" % (command,)).__doc__)
+        print(inspect.cleandoc(docstr))
 
         print("Subcommands:")
         for method in dir(self):
-            if method.startswith("_%s_" % (command)):
+            if method.startswith("_%s_" % (command,)):
                 docstr = getattr(self, method).__doc__
-                doclines = self.__parse_docstring(docstr)
+                doclines = inspect.cleandoc(docstr)
                 print("  %-10s %s" % (method[len(command)+2:],
                                       doclines.pop(0)))
                 for line in doclines:
@@ -157,7 +155,7 @@ class PyMailqShell(cmd.Cmd, object):
 
         args = shlex.split(str_arg)
         if not len(args):
-            getattr(self, "help_%s" % (cmd_category))()
+            getattr(self, "help_%s" % (cmd_category,))()
             return None
 
         command = args.pop(0)
@@ -167,26 +165,37 @@ class PyMailqShell(cmd.Cmd, object):
             lines = getattr(self, method)(*args)
             if lines is not None and len(lines):
                 print('\n'.join(lines))
-        #except AttributeError as error:
-        #    print(error)
-        #    print("%s has no subcommand: %s" % (cmd_category, command))
-        except (SyntaxError, TypeError) as error:
+        # except AttributeError as error:
+        #     print(error)
+        #     print("%s has no subcommand: %s" % (cmd_category, command))
+        except (SyntaxError, TypeError) as exc:
             # Rewording Python TypeError message for cli display
-            msg = str(error)
-            if "%s()" % (method) in msg:
-                msg = "%s command %s" %(cmd_category, msg[len(method)+3:])
+            msg = str(exc)
+            if "%s()" % (method,) in msg:
+                msg = "%s command %s" % (cmd_category, msg[len(method)+3:])
             print("*** Syntax error:", msg)
 
     def __complete(self, cmd_category, text, line, begidx, endidx):
         """Generic command completion method"""
         # TODO: find a way to stop completion if no more arguments
         #       It will probably not be possible to build it in auto :/
-        match = "_%s_" % (cmd_category)
-        return [ sub[len(match):] for sub in dir(self)
-                 if sub.startswith(match + text) ]
+        #print("\n{0}: [{1}] [{2}]".format(cmd_category, text, line))
+        #print(line.split())
+        #completion_infos = {
+        #        'show': {('filters', 'selected'): None},
+        #        'select': {}
+        #        }
+
+        match = "_%s_" % (cmd_category,)
+        msub = line.split(" ")[-1]
+        if msub == cmd_category:
+            msub = ""
+
+        return [sub[len(match):] for sub in dir(self)
+                if sub.startswith(match + msub)]
 
 # Store commands
-    def _store_load(self, filename = None):
+    def _store_load(self, filename=None):
         """Load Postfix queue content"""
         try:
             self.pstore.load(filename = filename)
@@ -194,8 +203,8 @@ class PyMailqShell(cmd.Cmd, object):
             if not len(self.selector.mails) and not len(self.selector.filters):
                 self.selector.reset()
             return ["%d mails loaded from queue" % (len(self.pstore.mails))]
-        except (OSError, CalledProcessError) as error:
-            return ["*** Error: unable to load store", "    {0}".format(error)]
+        except (OSError, CalledProcessError) as exc:
+            return ["*** Error: unable to load store", "    %s" % (exc,)]
 
     def _store_status(self):
         """Show store status"""

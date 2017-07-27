@@ -92,9 +92,9 @@ class QueueControl(object):
         for msg in messages:
             child.stdin.write((msg.qid+'\n').encode())
 
-        (stdout,stderr) = child.communicate()
+        (stdout, stderr) = child.communicate()
 
-        return [ line.strip() for line in stderr.decode().split('\n') ]
+        return [line.strip() for line in stderr.decode().split('\n')]
 
     def delete_messages(self, messages):
         """

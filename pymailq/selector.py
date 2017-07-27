@@ -87,7 +87,7 @@ class MailSelector(object):
         del self.mails
         gc.collect()
 
-        self.mails = [ mail for mail in self.store.mails ]
+        self.mails = [mail for mail in self.store.mails]
         self.filters = []
 
     def replay_filters(self):
@@ -106,8 +106,8 @@ class MailSelector(object):
         del self.mails
         gc.collect()
 
-        self.mails = [ mail for mail in self.store.mails ]
-        filters = [ entry for entry in self.filters ]
+        self.mails = [mail for mail in self.store.mails]
+        filters = [entry for entry in self.filters]
         for filterinfo in filters:
             name, args, kwargs = filterinfo
             getattr(self, name)(*args, **kwargs)
@@ -123,15 +123,15 @@ class MailSelector(object):
         :return: List of newly selected :class:`~store.Mail` objects
         :rtype: :func:`list`
         """
-        self.mails = [ mail for mail in self.mails
-                       if mail.status in status ]
+        self.mails = [mail for mail in self.mails
+                      if mail.status in status]
 
         return self.mails
 
 
     @debug
     @filter_registration
-    def lookup_sender(self, sender, partial = False):
+    def lookup_sender(self, sender, partial=False):
         """
         Lookup mails send from a specific sender.
 
@@ -151,11 +151,11 @@ class MailSelector(object):
         :rtype: :func:`list`
         """
         if partial is True:
-            self.mails = [ mail for mail in self.mails
-                           if sender in mail.sender ]
+            self.mails = [mail for mail in self.mails
+                          if sender in mail.sender]
         else:
-            self.mails = [ mail for mail in self.mails
-                           if sender == mail.sender ]
+            self.mails = [mail for mail in self.mails
+                          if sender == mail.sender]
 
         return self.mails
 
@@ -169,14 +169,14 @@ class MailSelector(object):
         :return: List of newly selected :class:`~store.Mail` objects`
         :rtype: :func:`list`
         """
-        self.mails = [ mail for mail in self.mails
-                       if True in [ True for err in mail.errors
-                                    if error_msg in err ] ]
+        self.mails = [mail for mail in self.mails
+                      if True in [True for err in mail.errors
+                                  if error_msg in err]]
         return self.mails
 
     @debug
     @filter_registration
-    def lookup_date(self, start_stop_list=None):
+    def lookup_date(self, start=None, stop=None):
         """
         Lookup mails send on specific date range(s).
 
@@ -191,24 +191,22 @@ class MailSelector(object):
         :rtype: :func:`list`
         """
         kept_mails={}
-        for (start,stop) in start_stop_list:
-          if start is None and stop is None:
-              raise TypeError("Required arguments 'start' or 'stop' not found")
+        if start is None and stop is None:
+            raise TypeError("Required arguments 'start' or 'stop' not found")
 
-          if start is None:
-              start = datetime.min.date()
-          if stop is None:
-              stop = datetime.max.date()
+        if start is None:
+            start = datetime(1970,1,1)
+        if stop is None:
+            stop = datetime.now()
 
-          kept_mails.update(dict(( (mail.qid ,mail) for mail in self.mails
-                         if mail.date.date() >= start and mail.date.date() <= stop )))
-        self.mails=kept_mails.values()
+        self.mails = [mail for mail in self.mails
+                      if start <= mail.date <= stop]
 
         return self.mails
 
     @debug
     @filter_registration
-    def lookup_size(self, smin = 0, smax = 0):  # TODO: documentation
+    def lookup_size(self, smin=0, smax=0):  # TODO: documentation
         """
         Lookup mails send with specific size.
 
@@ -226,7 +224,7 @@ class MailSelector(object):
             return self.mails
 
         if smax > 0:
-            self.mails = [ mail for mail in self.mails if mail.size <= smax ]
-        self.mails = [ mail for mail in self.mails if mail.size >= smin ]
+            self.mails = [mail for mail in self.mails if mail.size <= smax]
+        self.mails = [mail for mail in self.mails if mail.size >= smin]
 
         return self.mails

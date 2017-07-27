@@ -46,7 +46,7 @@ def sorter(function):
 
             if "asc" in args:
                 args.pop(args.index('asc'))
-                reverse=False
+                reverse = False
             elif "desc" in args:
                 args.pop(args.index('desc'))
 
@@ -57,12 +57,13 @@ def sorter(function):
                                      key=lambda x: getattr(x, sortkey),
                                      reverse=reverse)
         except AttributeError:
-            msg = "elements cannot be sorted by %s" % (sortkey)
+            msg = "elements cannot be sorted by %s" % sortkey
             raise SyntaxError(msg)
 
         return sorted_elements
     wrapper.__doc__ = function.__doc__
     return wrapper
+
 
 def ranker(function):
     """Result ranker decorator
@@ -89,14 +90,14 @@ def ranker(function):
                     rank[getattr(element, rankkey)] += 1
 
                 # XXX: headers are taken in elements display limit :(
-                ranked_elements = ['%-40s  count' % (rankkey), '='*48]
+                ranked_elements = ['%-40s  count' % rankkey, '='*48]
                 for entry in rank.most_common():
                     key, value = entry
                     ranked_elements.append('%-40s  %s' % (key, value))
                 return ranked_elements
 
             except AttributeError:
-                msg = "elements cannot be ranked by %s" %(rankkey)
+                msg = "elements cannot be ranked by %s" % rankkey
                 raise SyntaxError(msg)
 
         return elements

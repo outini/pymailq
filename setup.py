@@ -18,32 +18,31 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-import sys
 import os
 from distutils.core import setup
 
 if __name__ == '__main__':
-    release = open(os.path.join(os.path.dirname(__file__), "VERSION"), 'r').read().strip()
+    readme_file = os.path.join(os.path.dirname(__file__), 'README.rst')
+    release = "0.5.4"
     setup(
-        name = "pymailq",
-        version = ".".join(release.split('.')),
-        url = "https://github.com/outini/pymailq",
-        author = "Denis Pompilio (jawa)",
-        author_email = "denis.pompilio@gmail.com",
-        maintainer = "Denis Pompilio (jawa)",
-        maintainer_email = "denis.pompilio@gmail.com",
-        description = "Postfix queue control python tool",
-        long_description = open(os.path.join(os.path.dirname(__file__),
-                                             'README.rst')).read(),
-        license = "GPLv2",
-        platforms = ['UNIX'],
-        scripts = ['bin/pqshell'],
-        packages = ['pymailq'],
-        package_dir = {'pymailq': 'pymailq'},
-        data_files = [('share/doc/pymailq',['README.rst', 'LICENSE']),
-                      ('share/man/man1/', ['man/pqshell.1'])],
-        keywords = ['postfix','shell','mailq','python','pqshell','postqueue'],
-        classifiers = [
+        name="pymailq",
+        version=".".join(release.split('.')),
+        url="https://github.com/outini/pymailq",
+        author="Denis Pompilio (jawa)",
+        author_email="denis.pompilio@gmail.com",
+        maintainer="Denis Pompilio (jawa)",
+        maintainer_email="denis.pompilio@gmail.com",
+        description="Postfix queue control python tool",
+        long_description=open(readme_file).read(),
+        license="GPLv2",
+        platforms=['UNIX'],
+        scripts=['bin/pqshell'],
+        packages=['pymailq'],
+        package_dir={'pymailq': 'pymailq'},
+        data_files=[('share/doc/pymailq', ['README.rst', 'LICENSE']),
+                    ('share/man/man1/', ['man/pqshell.1'])],
+        keywords=['postfix', 'shell', 'mailq', 'python', 'pqshell', 'postqueue'],
+        classifiers=[
             'Development Status :: 2 - Pre-Alpha',
             'Operating System :: POSIX :: BSD',
             'Operating System :: POSIX :: Linux',

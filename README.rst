@@ -1,9 +1,8 @@
 pymailq - Simple Postfix queue management
-==========================================
+=========================================
 
-* *Author:* Denis 'jawa' Pompilio <denis.pompilio@gmail.com>
-* *Contact:* Denis 'jawa' Pompilio <denis.pompilio@gmail.com>
-* *Sources:* https://github.com/outini/pymailq/
+| **Contact:** Denis 'jawa' Pompilio <denis.pompilio@gmail.com>
+| **Sources:** https://github.com/outini/pymailq/
 
 A full content documentation, is online at http://outini.github.io/pymailq/.
 
@@ -15,12 +14,16 @@ monitoring developments.
 Installation
 ------------
 
-Install pymailq module::
+Install pymailq module from https://pypi.python.org::
+
+    pip install pymailq
+
+Install pymailq module from sources::
 
     python setup.py install
 
-A SPEC file is also provided for RPM builds (currently tested only on Fedora), 
-thanks to Nils Ratusznik (*https://github.com/ahpnils*).
+A SPEC file is also provided for RPM builds (currently tested only on Fedora),
+thanks to Nils Ratusznik (https://github.com/ahpnils).
 
 Requirements
 ------------
@@ -34,21 +37,6 @@ A shell is provided for interactive administration. Based on Python *cmd*
 module, *readline* is highly recommended to access shell's full features. A
 full documentation on shell's usage is available at
 http://outini.github.io/pymailq/pqshell.html
-
-**Used Python modules:**
-
-  * **os** *(https://docs.python.org/2/library/os.html)*
-  * **sys** *(https://docs.python.org/2/library/sys.html)*
-  * **datetime** *(https://docs.python.org/2/library/datetime.html)*
-  * **functools** *(https://docs.python.org/2/library/functools.html)*
-  * **subprocess** *(https://docs.python.org/2/library/subprocess.html)*
-  * **gc** *(https://docs.python.org/2/library/gc.html)*
-  * **re** *(https://docs.python.org/2/library/re.html)*
-  * **cmd** *(https://docs.python.org/2/library/cmd.html)*
-  * **shlex** *(https://docs.python.org/2/library/shlex.html)*
-  * **email** *(https://docs.python.org/2/library/email.html)*
-  * **collections.Counter**
-    *(https://docs.python.org/2/library/collections.html#collections.Counter)*
 
 License
 -------

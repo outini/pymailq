@@ -26,6 +26,7 @@ from datetime import datetime
 #: Boolean to control activation of the :func:`debug` decorator.
 DEBUG = False
 
+
 def debug(function):
     """
     Decorator to print some call informations and timing debug on stderr.
