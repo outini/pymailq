@@ -20,6 +20,7 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+MANIFEST
 
 # Installer logs
 pip-log.txt
@@ -54,3 +55,6 @@ docs/gh_pages/
 
 # Vim swap files
 .*.swp
+
+# pycharm project
+.idea
