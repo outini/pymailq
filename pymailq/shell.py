@@ -129,7 +129,7 @@ class PyMailqShell(cmd.Cmd, object):
         for method in dir(self):
             if method.startswith("_%s_" % (command,)):
                 docstr = getattr(self, method).__doc__
-                doclines = inspect.cleandoc(docstr)
+                doclines = inspect.cleandoc(docstr).split('\n')
                 print("  %-10s %s" % (method[len(command)+2:],
                                       doclines.pop(0)))
                 for line in doclines:
@@ -179,8 +179,8 @@ class PyMailqShell(cmd.Cmd, object):
         """Generic command completion method"""
         # TODO: find a way to stop completion if no more arguments
         #       It will probably not be possible to build it in auto :/
-        #print("\n{0}: [{1}] [{2}]".format(cmd_category, text, line))
-        #print(line.split())
+        print("\n{0}: [{1}] [{2}]".format(cmd_category, text, line))
+        print(line.split())
         #completion_infos = {
         #        'show': {('filters', 'selected'): None},
         #        'select': {}
@@ -402,16 +402,16 @@ class PyMailqShell(cmd.Cmd, object):
         """
         Generic viewer utility
         Optionnal modifiers can be provided to alter output:
-        ..limit <n>                     display the first n entries
-        ..sortby <field> [asc|desc]     sort output by field asc or desc
-        ..rankby <field>                Produce mails ranking by field
+          limit <n>                     display the first n entries
+          sortby <field> [asc|desc]     sort output by field asc or desc
+          rankby <field>                Produce mails ranking by field
         Known fields:
-        ..qid           Postqueue mail ID
-        ..date          Mail date
-        ..sender        Mail sender
-        ..recipients    Mail recipients (list, no sort)
-        ..size          Mail size
-        ..errors        Postqueue deferred error messages (list, no sort)
+          qid           Postqueue mail ID
+          date          Mail date
+          sender        Mail sender
+          recipients    Mail recipients (list, no sort)
+          size          Mail size
+          errors        Postqueue deferred error messages (list, no sort)
         """
         args = shlex.split(str_arg)
         if not len(args):
@@ -438,7 +438,7 @@ class PyMailqShell(cmd.Cmd, object):
     def _show_selected(self):
         """
         Show selected mails
-        ..Usage: show selected [modifiers]
+          Usage: show selected [modifiers]
         """
         if self.selector.mails is None:
             return []
@@ -448,7 +448,7 @@ class PyMailqShell(cmd.Cmd, object):
     def _show_filters(self):
         """
         Show filters applied on current mails selection
-        ..Usage: show filters
+          Usage: show filters
         """
         if not len(self.selector.filters):
             return ["No filters applied on current selection"]
