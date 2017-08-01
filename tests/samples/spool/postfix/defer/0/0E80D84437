@@ -1,0 +1,8 @@
+
+<user-1@test-domain.tld>: deferred transport
+recipient=user-1@test-domain.tld
+offset=206
+status=4.3.2
+action=delayed
+reason=Error message number 6
+
