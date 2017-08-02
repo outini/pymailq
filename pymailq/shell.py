@@ -54,7 +54,6 @@ class PyMailqShell(cmd.Cmd):
     # XXX: do_* methods are parsed before init and must be declared here
     do_store = None
     do_select = None
-    do_show = None
     do_super = None
 
     def __init__(self, completekey='tab', stdin=None, stdout=None):
@@ -428,7 +427,7 @@ class PyMailqShell(cmd.Cmd):
         except (TypeError, AttributeError):
             self.respond("*** Syntax error: show {0}".format(str_arg))
             return self.help_show()
-        except (SyntaxError, TypeError) as error:
+        except SyntaxError as error:
             # Rewording Python TypeError message for cli display
             msg = str(error)
             if "%s()" % (subcmd) in msg:
