@@ -40,7 +40,7 @@ class StoreNotLoaded(Exception):
         return 'The store is not loaded'
 
 
-class PyMailqShell(cmd.Cmd, object):
+class PyMailqShell(cmd.Cmd):
     """PyMailq shell for interactive mode"""
 
     # Automatic building of supported methods and documentation
@@ -83,6 +83,10 @@ class PyMailqShell(cmd.Cmd, object):
                 'brief': "{date} {qid} [{status}] {sender} ({size}B)",
                 }
 
+    def respond(self, answer):
+        """Send reponse"""
+        self.stdout.write(str(answer) + '\n')
+
     # Internal functions
     def emptyline(self):
         """Action on empty lines"""
@@ -91,7 +95,7 @@ class PyMailqShell(cmd.Cmd, object):
     @staticmethod
     def help_help():
         """Help of command help"""
-        print("Show available commands")
+        self.respond("Show available commands")
 
     @staticmethod
     def do_exit(arg):
@@ -101,39 +105,39 @@ class PyMailqShell(cmd.Cmd, object):
     @staticmethod
     def help_exit():
         """Help of command exit"""
-        print("Exit PyMailq shell (or use Ctrl-D)")
+        self.respond("Exit PyMailq shell (or use Ctrl-D)")
 
     def cmdloop_nointerrupt(self):
         """Specific cmdloop to handle KeyboardInterrupt"""
         can_exit = False
         # intro message is not in self.intro not to display it each time
         # cmdloop is restarted
-        print("Welcome to PyMailq shell.")
+        self.respond("Welcome to PyMailq shell.")
         while can_exit is not True:
             try:
                 self.cmdloop()
                 can_exit = True
             except KeyboardInterrupt:
-                print("^C")
+                self.respond("^C")
 
     def postloop(self):
         cmd.Cmd.postloop(self)
-        print("\nExiting shell... Bye.")
+        self.respond("\nExiting shell... Bye.")
 
     def _help_(self, command):
         docstr = self.commands_info.get(
                 command, getattr(self, "do_%s" % (command,)).__doc__)
-        print(inspect.cleandoc(docstr))
+        self.respond(inspect.cleandoc(docstr))
 
-        print("Subcommands:")
+        self.respond("Subcommands:")
         for method in dir(self):
             if method.startswith("_%s_" % (command,)):
                 docstr = getattr(self, method).__doc__
                 doclines = inspect.cleandoc(docstr).split('\n')
-                print("  %-10s %s" % (method[len(command)+2:],
+                self.respond("  %-10s %s" % (method[len(command)+2:],
                                       doclines.pop(0)))
                 for line in doclines:
-                    print("  %-10s %s" % ("", line))
+                    self.respond("  %-10s %s" % ("", line))
 
 #
 # PyMailq methods
@@ -160,27 +164,26 @@ class PyMailqShell(cmd.Cmd, object):
 
         command = args.pop(0)
         method = "_%s_%s" % (cmd_category, command)
-        print("args:", str(method))
         try:
             lines = getattr(self, method)(*args)
             if lines is not None and len(lines):
-                print('\n'.join(lines))
+                self.respond('\n'.join(lines))
         # except AttributeError as error:
-        #     print(error)
-        #     print("%s has no subcommand: %s" % (cmd_category, command))
+        #     self.respond(error)
+        #     self.respond("%s has no subcommand: %s" % (cmd_category, command))
         except (SyntaxError, TypeError) as exc:
             # Rewording Python TypeError message for cli display
             msg = str(exc)
             if "%s()" % (method,) in msg:
                 msg = "%s command %s" % (cmd_category, msg[len(method)+3:])
-            print("*** Syntax error:", msg)
+            self.respond("*** Syntax error:", msg)
 
     def __complete(self, cmd_category, text, line, begidx, endidx):
         """Generic command completion method"""
         # TODO: find a way to stop completion if no more arguments
         #       It will probably not be possible to build it in auto :/
-        print("\n{0}: [{1}] [{2}]".format(cmd_category, text, line))
-        print(line.split())
+        self.respond("\n{0}: [{1}] [{2}]".format(cmd_category, text, line))
+        self.respond(line.split())
         #completion_infos = {
         #        'show': {('filters', 'selected'): None},
         #        'select': {}
@@ -311,27 +314,25 @@ class PyMailqShell(cmd.Cmd, object):
                  ..-YYYY-MM-DD (before a certain date)
         """
         from datetime import datetime
-        from pprint import pprint
-        start_stop_list=[]
         for date in dates:
-          start=None
-          stop=None
-          if '..' in date:
-            d=date.split('..')
-            start=d[0]
-            stop=d[-1]
-          elif date[0] == '+' or date[0] == '-':
-            stop=date[1:]
-          else:
-            start=date
-            stop=date
+            start = None
+            stop = None
+            if '..' in date:
+              d = date.split('..')
+              start = d[0]
+              stop = d[-1]
+            elif date[0] == '+' or date[0] == '-':
+              stop = date[1:]
+            else:
+              start = date
+              stop = date
 
-          start=datetime.strptime(start,"%Y-%m-%d").date() or datetime.min.date()
-          stop=datetime.strptime(stop,"%Y-%m-%d").date() or datetime.max.date()
-          start_stop_list.append((start,stop))
-          
-        pprint(start_stop_list)
-        self.selector.lookup_date(start_stop_list=start_stop_list)
+            start = datetime.strptime(start, "%Y-%m-%d").date() or \
+                    datetime.min.date()
+            stop = datetime.strptime(stop, "%Y-%m-%d").date() or \
+                   datetime.max.date()
+
+        self.selector.lookup_date(start, stop)
 
     def _select_error(self, error_msg):
         """
@@ -421,16 +422,17 @@ class PyMailqShell(cmd.Cmd, object):
         try:
             lines = getattr(self, "_show_%s" % (subcmd))(*args)
         except (TypeError, AttributeError):
-            print("*** Syntax error: show {0}".format(str_arg))
+            self.respond("*** Syntax error: show {0}".format(str_arg))
             return self.help_show()
         except (SyntaxError, TypeError) as error:
             # Rewording Python TypeError message for cli display
             msg = str(error)
             if "%s()" % (method) in msg:
                 msg = "%s command %s" %(cmd_category, msg[len(method)+3:])
-            print("*** Syntax error:", msg)
+            self.respond("*** Syntax error:", msg)
+            return self.help_show()
 
-        print("\n".join(lines))
+        self.respond("\n".join(lines))
 
     @viewer
     @utils.ranker
