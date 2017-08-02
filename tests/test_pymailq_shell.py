@@ -43,6 +43,7 @@ def answer():
 def test_shell_init():
     """Test shell.PyMailqShell object"""
     assert hasattr(PQSHELL, "cmdloop_nointerrupt")
+    assert PQSHELL.prompt == "PyMailq (sel:0)> "
 
 
 def test_empty_line():
@@ -124,6 +125,18 @@ def test_shell_show_selected_limit():
     assert len(reply.split('\n')) == 3
 
 
+def test_shell_show_selected_sorted():
+    """Test 'show selected sortby sender limit 2' command"""
+    PQSHELL.onecmd("show selected sortby sender asc limit 2")
+    reply = answer()
+    assert "Preview of first 2" in reply
+    assert len(reply.split('\n')) == 3
+    PQSHELL.onecmd("show selected sortby sender desc limit 2")
+    reply = answer()
+    assert "Preview of first 2" in reply
+    assert len(reply.split('\n')) == 3
+
+
 def test_shell_show_selected_rankby():
     """Test 'show selected rankby' command"""
     PQSHELL.onecmd("show selected rankby sender limit 2")
@@ -153,10 +166,22 @@ def test_shell_select_invalid():
     assert "has no subcommand:" in answer()
 
 
+def test_shell_select_status():
+    """Test 'select status' command"""
+    PQSHELL.onecmd("select status deferred")
+    assert not len(answer())
+
+
 def test_shell_select_replay():
     """Test 'select replay' command"""
     PQSHELL.onecmd("select replay")
     assert "Selector resetted and filters replayed" in answer()
+
+
+def test_shell_select_rmfilter():
+    """Test 'select rmfilter' command"""
+    PQSHELL.onecmd("select rmfilter 1")
+    assert not len(answer())
 
 
 def test_shell_select_reset():
