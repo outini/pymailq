@@ -57,9 +57,9 @@ class PyMailqShell(cmd.Cmd, object):
     do_show = None
     do_super = None
 
-    def __init__(self):
+    def __init__(self, completekey='tab', stdin=None, stdout=None):
         """Init method"""
-        cmd.Cmd.__init__(self)
+        cmd.Cmd.__init__(self, completekey, stdin, stdout)
 
         # EOF action is registered here to hide it from user
         self.do_EOF = self.do_exit
