@@ -185,13 +185,7 @@ class MailSelector(object):
 
         :return: List of newly selected :class:`~store.Mail` objects
         :rtype: :func:`list`
-
-        :raise TypeError: Both start and stop are None.
         """
-        kept_mails={}
-        if start is None and stop is None:
-            raise TypeError("Required arguments 'start' or 'stop' not found")
-
         if start is None:
             start = datetime(1970,1,1)
         if stop is None:
