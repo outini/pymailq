@@ -180,15 +180,13 @@ class MailSelector(object):
         """
         Lookup mails send on specific date range(s).
 
-        The ``start_stop_list`` argument is optional and defaults to None.
-
-        :param list((datetime.date, datetime.date),...) start_stop_list: List of tuples
-        representing time ranges ``[(start,stop),...]``
-        This method will raise :class:`~exception.TypeError` if both
-        elements ``start`` and ``stop`` are set to ``None``.
+        :param datetime.date start: Start date (Default: None)
+        :param datetime.date start: Start date (Default: None)
 
         :return: List of newly selected :class:`~store.Mail` objects
         :rtype: :func:`list`
+
+        :raise TypeError: Both start and stop are None.
         """
         kept_mails={}
         if start is None and stop is None:
