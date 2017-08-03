@@ -194,7 +194,6 @@ class PyMailqShell(cmd.Cmd):
         return [sub[len(match):] for sub in dir(self)
                 if sub.startswith(match + msub)]
 
-# Store commands
     def _store_load(self, filename=None):
         """Load Postfix queue content"""
         try:
@@ -213,7 +212,6 @@ class PyMailqShell(cmd.Cmd):
         return ["store loaded with %d mails at %s" % (
                                len(self.pstore.mails), self.pstore.loaded_at)]
 
-# Selector commands
     def _select_reset(self):
         """Reset content of selector with store content"""
         self.selector.reset()
@@ -330,10 +328,8 @@ class PyMailqShell(cmd.Cmd):
         Specified error message can be partial
           Usage: select error <error_msg>
         """
-        return ["Still not implemented"]
+        self.selector.lookup_error(str(error_msg))
 
-
-# Viewer commands and wrapper
     def viewer(function):
         """Result viewer decorator
 
@@ -463,6 +459,7 @@ class PyMailqShell(cmd.Cmd):
 
     # Postsuper generic command
     def __do_super(self, cmd, action_name):
+        """Postsuper generic command"""
         if not self.pstore.loaded_at:
             raise(StoreNotLoaded)
         if self.selector.mails is None:
