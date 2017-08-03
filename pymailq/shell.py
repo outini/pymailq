@@ -459,12 +459,12 @@ class PyMailqShell(cmd.Cmd):
             return ["No filters applied on current selection"]
 
         lines = []
-        for idx in range(len(self.selector.filters)):
-            name, _args, _kwargs = self.selector.filters[idx]
+        for idx, filter in enumerate(self.selector.filters):
+            name, _args, _kwargs = filter
             # name should always be prefixed with lookup_
             lines.append('%d: select %s:' % (idx, name[7:]))
-            for key,value in _kwargs.items():
-                lines.append("    %s: %s" % (key, value))
+            for key in sorted(_kwargs):
+                lines.append("    %s: %s" % (key, _kwargs[key]))
         return lines
 
     # Postsuper generic command
