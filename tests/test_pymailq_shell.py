@@ -40,6 +40,16 @@ def answer():
     return res.strip()
 
 
+def run_cmd(command):
+    """Run command in shell
+
+    :param str command: Shell command
+    :return: Shell response as :func:`str`
+    """
+    PQSHELL.onecmd(command)
+    return answer()
+
+
 def test_shell_init():
     """Test shell.PyMailqShell object"""
     assert hasattr(PQSHELL, "cmdloop_nointerrupt")
@@ -55,223 +65,269 @@ def test_shell_exit():
 
 def test_empty_line():
     """Test empty line"""
-    PQSHELL.onecmd("")
+    resp = run_cmd("")
+    assert not len(resp)
 
 
 def test_help():
     """Test 'help' command"""
-    PQSHELL.onecmd("help")
-    assert "Documented commands" in answer()
+    resp = run_cmd("help")
+    assert "Documented commands" in resp
 
 
 def test_help_help():
     """Test 'help help' command"""
-    PQSHELL.onecmd("help help")
-    assert "Show available commands" in answer()
+    resp = run_cmd("help help")
+    assert "Show available commands" in resp
 
 
 def test_help_exit():
     """Test 'help exit' command"""
-    PQSHELL.onecmd("help exit")
-    assert "Exit PyMailq shell" in answer()
+    resp = run_cmd("help exit")
+    assert "Exit PyMailq shell" in resp
 
 
 def test_help_show():
     """Test 'help show' command"""
-    PQSHELL.onecmd("help show")
-    assert "Generic viewer utility" in answer()
+    resp = run_cmd("help show")
+    assert "Generic viewer utility" in resp
 
 
 def test_help_store():
     """Test 'help store' command"""
-    PQSHELL.onecmd("help store")
-    assert "Control of Postfix queue content storage" in answer()
+    resp = run_cmd("help store")
+    assert "Control of Postfix queue content storage" in resp
 
 
 def test_help_select():
     """Test 'help select' command"""
-    PQSHELL.onecmd("help select")
-    assert "Select mails from Postfix queue content" in answer()
+    resp = run_cmd("help select")
+    assert "Select mails from Postfix queue content" in resp
 
 
 def test_help_inspect():
     """Test 'help inspect' command"""
-    PQSHELL.onecmd("help inspect")
-    assert "Mail content inspector" in answer()
+    resp = run_cmd("help inspect")
+    assert "Mail content inspector" in resp
 
 
 def test_help_super():
     """Test 'help super' command"""
-    PQSHELL.onecmd("help super")
-    assert "Call postsuper commands" in answer()
+    resp = run_cmd("help super")
+    assert "Call postsuper commands" in resp
 
 
 def test_shell_store_status_unloaded():
     """Test 'store status' command with unloaded store"""
-    PQSHELL.onecmd("store status")
-    assert "store is not loaded" in answer()
+    resp = run_cmd("store status")
+    assert "store is not loaded" in resp
 
 
 def test_shell_store_load():
     """Test 'store load' command"""
-    PQSHELL.onecmd("store load")
-    assert "mails loaded from queue" in answer()
+    resp = run_cmd("store load")
+    assert "mails loaded from queue" in resp
 
 
 def test_shell_store_load_error():
     """Test 'store load' command"""
-    PQSHELL.onecmd("store load notfound.txt")
-    assert "*** Error: unable to load store" in answer()
+    resp = run_cmd("store load notfound.txt")
+    assert "*** Error: unable to load store" in resp
 
 
 def test_shell_store_status_loaded():
     """Test 'store status' command with loaded store"""
-    PQSHELL.onecmd("store status")
-    assert "store loaded with " in answer()
+    resp = run_cmd("store status")
+    assert "store loaded with " in resp
 
 
 def test_shell_show():
     """Test 'show' command without arguments"""
-    PQSHELL.onecmd("show")
-    assert "Generic viewer utility" in answer()
+    resp = run_cmd("show")
+    assert "Generic viewer utility" in resp
 
 
 def test_shell_show_invalid():
     """Test 'show invalid' command"""
-    PQSHELL.onecmd("show invalid")
-    assert "*** Syntax error: show invalid" in answer()
-    PQSHELL.onecmd("show selected limit invalid")
-    assert "*** Syntax error: limit modifier needs a valid number" in answer()
+    resp = run_cmd("show invalid")
+    assert "*** Syntax error: show invalid" in resp
+    resp = run_cmd("show selected limit invalid")
+    assert "*** Syntax error: limit modifier needs a valid number" in resp
 
 
 def test_shell_show_selected_limit():
     """Test 'show selected limit 2' command"""
-    PQSHELL.onecmd("show selected limit 2")
-    reply = answer()
-    assert "Preview of first 2" in reply
-    assert len(reply.split('\n')) == 3
-    PQSHELL.onecmd("show selected limit 40")
-    reply = answer()
-    assert "Preview of first 40" not in reply
-    assert len(reply.split('\n')) == 30
+    resp = run_cmd("show selected limit 2")
+    assert "Preview of first 2" in resp
+    assert len(resp.split('\n')) == 3
+    resp = run_cmd("show selected limit 40")
+    assert "Preview of first 40" not in resp
+    assert len(resp.split('\n')) == 30
 
 
 def test_shell_show_selected_sorted():
     """Test 'show selected sortby sender limit 2' command"""
-    PQSHELL.onecmd("show selected sortby sender asc limit 2")
-    reply = answer()
-    assert "Preview of first 2" in reply
-    assert len(reply.split('\n')) == 3
-    PQSHELL.onecmd("show selected sortby sender desc limit 2")
-    reply = answer()
-    assert "Preview of first 2" in reply
-    assert len(reply.split('\n')) == 3
+    resp = run_cmd("show selected sortby sender asc limit 2")
+    assert "Preview of first 2" in resp
+    assert len(resp.split('\n')) == 3
+    resp = run_cmd("show selected sortby sender desc limit 2")
+    assert "Preview of first 2" in resp
+    assert len(resp.split('\n')) == 3
 
 
 def test_shell_show_selected_rankby():
     """Test 'show selected rankby' command"""
-    PQSHELL.onecmd("show selected rankby sender limit 2")
-    reply = answer()
-    assert "sender" in reply
-    assert len(reply.split('\n')) == 5
+    resp = run_cmd("show selected rankby sender limit 2")
+    assert "sender" in resp
+    assert len(resp.split('\n')) == 5
 
 
 def test_shell_show_filters_empty():
     """Test 'show filters' command without registered filters"""
-    PQSHELL.onecmd("show filters")
-    assert "No filters applied on current selection" in answer()
+    resp = run_cmd("show filters")
+    assert "No filters applied on current selection" in resp
 
 
 def test_shell_select():
     """Test 'select' command"""
-    PQSHELL.onecmd("select")
-    assert "Select mails from Postfix queue content" in answer()
+    resp = run_cmd("select")
+    assert "Select mails from Postfix queue content" in resp
 
 
 def test_shell_select_sender():
     """Test 'select sender' command"""
-    PQSHELL.onecmd("select sender sender-1")
-    PQSHELL.onecmd("show selected")
-    reply = answer()
-    assert "sender-1@" in reply
-    assert len(reply.split('\n')) == 4
-    PQSHELL.onecmd("select sender sender-1 exact")
-    PQSHELL.onecmd("show selected")
-    assert "No element to display" in answer()
-    PQSHELL.onecmd("select sender sender-1 invalid")
-    assert "invalid keyword: invalid" in answer()
+    run_cmd("select sender sender-1")
+    resp = run_cmd("show selected")
+    assert "sender-1@" in resp
+    assert len(resp.split('\n')) == 4
+    run_cmd("select sender sender-1 exact")
+    resp = run_cmd("show selected")
+    assert "No element to display" in resp
+    resp = run_cmd("select sender sender-1 invalid")
+    assert "invalid keyword: invalid" in resp
 
 
 def test_shell_select_invalid():
     """Test 'select invalid' command"""
-    PQSHELL.onecmd("select invalid")
-    assert "has no subcommand:" in answer()
+    resp = run_cmd("select invalid")
+    assert "has no subcommand:" in resp
 
 
 def test_shell_select_status():
     """Test 'select status' command"""
-    PQSHELL.onecmd("select status deferred")
-    assert not len(answer())
+    resp = run_cmd("select status deferred")
+    assert not len(resp)
+
+
+def test_shell_select_size():
+    """Test 'select size' command"""
+    resp = run_cmd("select size XXX")
+    assert "specified sizes must be valid numbers" in resp
+    resp = run_cmd("select size 262 262")
+    assert "multiple exact sizes specified" in resp
+    resp = run_cmd("select size +262 +262")
+    assert "multiple '-' sizes specified" in resp
+    resp = run_cmd("select size -262 -262")
+    assert "multiple '+' sizes specified" in resp
+    run_cmd("store load")
+    run_cmd("select reset")
+    run_cmd("select size 262")
+    resp = run_cmd("show selected")
+    assert len(resp.split("\n")) == 8
+    run_cmd("select reset")
+    run_cmd("select size +260")
+    resp = run_cmd("show selected")
+    assert len(resp.split("\n")) == 30
+    run_cmd("select reset")
+    run_cmd("select size -262")
+    resp = run_cmd("show selected")
+    assert len(resp.split("\n")) == 10
+    run_cmd("select reset")
+    run_cmd("select size +261 -262")
+    resp = run_cmd("show selected")
+    assert len(resp.split("\n")) == 10
+
+
+def test_shell_select_date():
+    """Test 'select date' command"""
+    run_cmd("store load")
+    run_cmd("select reset")
+    run_cmd("select date 2017-07-31")
+    resp = run_cmd("show selected")
+    assert len(resp.split("\n")) == 30
+    run_cmd("select reset")
+    run_cmd("select date 2017-07-30")
+    resp = run_cmd("show selected")
+    assert "No element to display" in resp
+    run_cmd("select reset")
+    run_cmd("select date +2017-07-01")
+    resp = run_cmd("show selected")
+    assert len(resp.split("\n")) == 30
+    run_cmd("select reset")
+    run_cmd("select date +2017-08-31")
+    resp = run_cmd("show selected")
+    assert "No element to display" in resp
+    run_cmd("select reset")
+    run_cmd("select date 2017-01-01..2017-08-31")
+    resp = run_cmd("show selected")
+    assert len(resp.split("\n")) == 30
+    run_cmd("select reset")
+    run_cmd("select date -2018-01-01")
+    resp = run_cmd("show selected")
+    assert len(resp.split("\n")) == 30
+    resp = run_cmd("select date XXXX-XX-XX")
+    assert "'XXXX-XX-XX' does not match format '%Y-%m-%d'" in resp
 
 
 def test_shell_show_filters():
     """Test 'show filters' command with registered filters"""
-    expected = ("0: select sender:\n"
-                "    partial: True\n"
-                "    sender: sender-1\n"
-                "1: select sender:\n"
-                "    partial: False\n"
-                "    sender: sender-1\n"
-                "2: select status:\n"
+    run_cmd("select reset")
+    run_cmd("select status deferred")
+    expected = ("0: select status:\n"
                 "    status: deferred")
-    PQSHELL.onecmd("show filters")
-    assert expected == answer()
+    resp = run_cmd("show filters")
+    assert expected == resp
 
 
 def test_shell_select_replay():
     """Test 'select replay' command"""
-    PQSHELL.onecmd("select replay")
-    assert "Selector resetted and filters replayed" in answer()
+    resp = run_cmd("select replay")
+    assert "Selector resetted and filters replayed" in resp
 
 
 def test_shell_select_rmfilter():
     """Test 'select rmfilter' command"""
-    PQSHELL.onecmd("select rmfilter 1")
-    assert not len(answer())
-    PQSHELL.onecmd("select rmfilter 666")
-    assert "invalid filter ID: 666" in answer()
+    resp = run_cmd("select rmfilter 0")
+    assert not len(resp)
+    resp = run_cmd("select rmfilter 666")
+    assert "invalid filter ID: 666" in resp
 
 
 def test_shell_select_reset():
     """Test 'select reset' command"""
-    PQSHELL.onecmd("select reset")
-    assert "Selector resetted with store content" in answer()
+    resp = run_cmd("select reset")
+    assert "Selector resetted with store content" in resp
 
 
 def test_shell_super_delete():
     """Test 'select reset' command"""
-    PQSHELL.onecmd("super delete")
-    assert "Deleted " in answer()
+    resp = run_cmd("super delete")
+    assert "Deleted " in resp
 
 
 def test_shell_super_hold():
     """Test 'select reset' command"""
-    PQSHELL.onecmd("super hold")
-    assert "Put on hold " in answer()
+    resp = run_cmd("super hold")
+    assert "Put on hold " in resp
 
 
 def test_shell_super_release():
     """Test 'select reset' command"""
-    PQSHELL.onecmd("super release")
-    assert "Released " in answer()
+    resp = run_cmd("super release")
+    assert "Released " in resp
 
 
 def test_shell_super_requeue():
     """Test 'super requeue' command"""
-    PQSHELL.onecmd("super requeue")
-    assert "Requeued " in answer()
-
-
-def test_exit():
-    """Test 'exit' command"""
-    assert PQSHELL.onecmd("exit") is True
+    resp = run_cmd("super requeue")
+    assert "Requeued " in resp
