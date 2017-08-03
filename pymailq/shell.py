@@ -307,20 +307,23 @@ class PyMailqShell(cmd.Cmd):
               +YYYY-MM-DD (after a certain date)
               -YYYY-MM-DD (before a certain date)
         """
-        if ".." in date_spec:
-            (str_start, str_stop) = date_spec.split("..", 1)
-            start = datetime.strptime(str_start, "%Y-%m-%d")
-            stop = datetime.strptime(str_stop, "%Y-%m-%d")
-        elif date_spec.startswith("+"):
-            start = datetime.strptime(date_spec[1:], "%Y-%m-%d")
-            stop = datetime.now()
-        elif date_spec.startswith("-"):
-            start = datetime.now()
-            stop = datetime.strptime(date_spec[1:], "%Y-%m-%d")
-        else:
-            start = datetime.strptime(date_spec, "%Y-%m-%d")
-            stop = start + timedelta(1)
-        self.selector.lookup_date(start, stop)
+        try:
+            if ".." in date_spec:
+                (str_start, str_stop) = date_spec.split("..", 1)
+                start = datetime.strptime(str_start, "%Y-%m-%d")
+                stop = datetime.strptime(str_stop, "%Y-%m-%d")
+            elif date_spec.startswith("+"):
+                start = datetime.strptime(date_spec[1:], "%Y-%m-%d")
+                stop = datetime.now()
+            elif date_spec.startswith("-"):
+                start = datetime(1970, 1, 1)
+                stop = datetime.strptime(date_spec[1:], "%Y-%m-%d")
+            else:
+                start = datetime.strptime(date_spec, "%Y-%m-%d")
+                stop = start + timedelta(1)
+            self.selector.lookup_date(start, stop)
+        except ValueError as exc:
+            raise SyntaxError(str(exc))
 
     def _select_error(self, error_msg):
         """
