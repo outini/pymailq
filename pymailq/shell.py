@@ -22,6 +22,7 @@
 import re
 import cmd
 from functools import partial
+from datetime import datetime, timedelta
 from subprocess import CalledProcessError
 import shlex
 import inspect
@@ -297,37 +298,31 @@ class PyMailqShell(cmd.Cmd):
 
         self.selector.lookup_size(smin=smin, smax=smax)
 
-    def _select_date(self, *dates):
+    def _select_date(self, date_spec):
         """
         Select mails by date.
 
-        ..Usage:
-                 ..select date <DATESPEC> [DATESPEC..]
-                 ..Where <DATESPEC> can be
-                 ..YYYY-MM-DD
-                 ..YYYY-MM-DD..YYYY-MM-DD (within a date range)
-                 ..+YYYY-MM-DD (after a certain date)
-                 ..-YYYY-MM-DD (before a certain date)
+          Usage:
+            select date <DATESPEC> [DATESPEC..]
+            Where <DATESPEC> can be
+              YYYY-MM-DD
+              YYYY-MM-DD..YYYY-MM-DD (within a date range)
+              +YYYY-MM-DD (after a certain date)
+              -YYYY-MM-DD (before a certain date)
         """
-        from datetime import datetime
-        for date in dates:
-            start = None
-            stop = None
-            if '..' in date:
-              d = date.split('..')
-              start = d[0]
-              stop = d[-1]
-            elif date[0] == '+' or date[0] == '-':
-              stop = date[1:]
-            else:
-              start = date
-              stop = date
-
-            start = datetime.strptime(start, "%Y-%m-%d").date() or \
-                    datetime.min.date()
-            stop = datetime.strptime(stop, "%Y-%m-%d").date() or \
-                   datetime.max.date()
-
+        if ".." in date_spec:
+            (str_start, str_stop) = date_spec.split("..", 1)
+            start = datetime.strptime(str_start, "%Y-%m-%d")
+            stop = datetime.strptime(str_stop, "%Y-%m-%d")
+        elif date_spec.startswith("+"):
+            start = datetime.strptime(date_spec[1:], "%Y-%m-%d")
+            stop = datetime.now()
+        elif date_spec.startswith("-"):
+            start = datetime.now()
+            stop = datetime.strptime(date_spec[1:], "%Y-%m-%d")
+        else:
+            start = datetime.strptime(date_spec, "%Y-%m-%d")
+            stop = start + timedelta(1)
         self.selector.lookup_date(start, stop)
 
     def _select_error(self, error_msg):
