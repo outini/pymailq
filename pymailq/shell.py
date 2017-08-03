@@ -459,8 +459,8 @@ class PyMailqShell(cmd.Cmd):
             return ["No filters applied on current selection"]
 
         lines = []
-        for idx, filter in enumerate(self.selector.filters):
-            name, _args, _kwargs = filter
+        for idx, pqfilter in enumerate(self.selector.filters):
+            name, _args, _kwargs = pqfilter
             # name should always be prefixed with lookup_
             lines.append('%d: select %s:' % (idx, name[7:]))
             for key in sorted(_kwargs):
