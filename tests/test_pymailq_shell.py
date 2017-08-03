@@ -279,6 +279,15 @@ def test_shell_select_date():
     assert "'XXXX-XX-XX' does not match format '%Y-%m-%d'" in resp
 
 
+def test_shell_select_error():
+    """Test 'select date' command"""
+    run_cmd("store load")
+    run_cmd("select reset")
+    run_cmd("select error 'deferred transport'")
+    resp = run_cmd("show selected")
+    assert len(resp.split("\n")) == 30
+
+
 def test_shell_show_filters():
     """Test 'show filters' command with registered filters"""
     run_cmd("select reset")
