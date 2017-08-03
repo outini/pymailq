@@ -228,8 +228,8 @@ class PyMailqShell(cmd.Cmd):
     def _select_rmfilter(self, filterid):
         """
         Remove filter previously applied
-        ..Filters ids are used to specify filter to remove
-        ..Usage: select rmfilter <filterid>
+          Filters ids are used to specify filter to remove
+          Usage: select rmfilter <filterid>
         """
         try:
             idx = int(filterid)
@@ -242,14 +242,14 @@ class PyMailqShell(cmd.Cmd):
     def _select_status(self, status):
         """
         Select mails with specific postfix status
-        ..Usage: select status <status>
+          Usage: select status <status>
         """
         self.selector.lookup_status(status=status)
 
     def _select_sender(self, sender, partial=True):
         """
         Select mails from sender
-        ..Usage: select sender <sender> [exact]
+          Usage: select sender <sender> [exact]
         """
         if partial is not True:  # received from command line
             if partial != "exact":
@@ -260,9 +260,9 @@ class PyMailqShell(cmd.Cmd):
     def _select_size(self, sizeA, sizeB=None):
         """
         Select mails by size in Bytes
-        ..- and + are supported, if not specified, search for exact size
-        ..Size range is allowed by using - (lesser than) and + (greater than)
-        ..Usage: select size <-n|n|+n> [-n]
+          - and + are supported, if not specified, search for exact size
+          Size range is allowed by using - (lesser than) and + (greater than)
+          Usage: select size <-n|n|+n> [-n]
         """
         smin = None
         smax = None
@@ -301,7 +301,6 @@ class PyMailqShell(cmd.Cmd):
     def _select_date(self, date_spec):
         """
         Select mails by date.
-
           Usage:
             select date <DATESPEC> [DATESPEC..]
             Where <DATESPEC> can be
@@ -329,7 +328,7 @@ class PyMailqShell(cmd.Cmd):
         """
         Select mails by error message
         Specified error message can be partial
-        ..Usage: select error <error_msg>
+          Usage: select error <error_msg>
         """
         return ["Still not implemented"]
 
