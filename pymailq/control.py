@@ -54,11 +54,16 @@ class QueueControl(object):
                 `postsuper`_ -- Postfix superintendent
     """
 
-    postsuper_cmd = ["postsuper"]
-    known_operations = {'delete': '-d',
-                        'hold': '-h',
-                        'release': '-H',
-                        'requeue': '-r'}
+    @property
+    def postsuper_cmd(self):
+        return ["postsuper"]
+
+    @property
+    def known_operations(self):
+        return {'delete': '-d',
+                'hold': '-h',
+                'release': '-H',
+                'requeue': '-r'}
 
     def _operate(self, operation, messages):
         """
@@ -83,6 +88,10 @@ class QueueControl(object):
         for msg in messages:
             getattr(msg, "qid")
 
+        # We may modify this part to improve security.
+        # It should not be possible to inject commands, but who knows...
+        # https://www.kevinlondon.com/2015/07/26/dangerous-python-functions.html
+        # And consider the use of sh module: https://amoffat.github.io/sh/
         postsuper_cmd = self.postsuper_cmd + [operation, '-']
         child = subprocess.Popen(postsuper_cmd,
                                  stdin=subprocess.PIPE,
