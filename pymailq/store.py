@@ -462,9 +462,8 @@ class PostqueueStore(object):
             high load usage on system with large mails queue.
         """
         for status in self.postqueue_mailstatus:
-            for path, dirs, files in os.walk("%s/%s" % (self.spool_path,
-                                                        status)):
-                for mail_id in files:
+            for fs_data in os.walk("%s/%s" % (self.spool_path, status)):
+                for mail_id in fs_data[2]:
                     mail = self.MailClass(mail_id)
                     mail.status = status
 
