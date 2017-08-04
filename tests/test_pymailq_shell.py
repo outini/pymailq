@@ -175,6 +175,14 @@ def test_shell_show_invalid():
     assert "*** Syntax error: show invalid" in resp
     resp = run_cmd("show selected limit invalid")
     assert "*** Syntax error: limit modifier needs a valid number" in resp
+    resp = run_cmd("show selected rankby")
+    assert "*** Syntax error: rankby requires a field" in resp
+    resp = run_cmd("show selected rankby invalid")
+    assert "*** Syntax error: elements cannot be ranked by" in resp
+    resp = run_cmd("show selected sortby")
+    assert "*** Syntax error: sortby requires a field" in resp
+    resp = run_cmd("show selected sortby invalid")
+    assert "*** Syntax error: elements cannot be sorted by" in resp
 
 
 def test_shell_show_selected_limit():
@@ -246,11 +254,13 @@ def test_shell_select_size():
     resp = run_cmd("select size XXX")
     assert "specified sizes must be valid numbers" in resp
     resp = run_cmd("select size 262 262")
-    assert "multiple exact sizes specified" in resp
+    assert "exact size must be used alone" in resp
     resp = run_cmd("select size +262 +262")
-    assert "multiple '-' sizes specified" in resp
+    assert "multiple min sizes specified" in resp
     resp = run_cmd("select size -262 -262")
-    assert "multiple '+' sizes specified" in resp
+    assert "multiple max sizes specified" in resp
+    resp = run_cmd("select size -263 +266")
+    assert "minimum size is greater than maximum size" in resp
     run_cmd("store load")
     run_cmd("select reset")
     run_cmd("select size 262")
