@@ -215,8 +215,6 @@ class PyMailqShell(cmd.Cmd):
             }
         }
 
-        # print(text, line)
-
         args = shlex.split(line)
         command = args.pop(0)
         sub_command = ""
@@ -226,6 +224,10 @@ class PyMailqShell(cmd.Cmd):
         match = "_%s_" % (command,)
         suggests = [name[len(match):] for name in dir(self)
                     if name.startswith(match + sub_command)]
+
+        # No suggests, return None
+        if not len(suggests):
+            return None
 
         # Return multiple suggests for sub-command
         if len(suggests) > 1:
