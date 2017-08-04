@@ -177,7 +177,7 @@ class Mail(object):
         child = subprocess.Popen(self.postcat_cmd,
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE)
-        (stdout, stderr) = child.communicate()
+        stdout = child.communicate()[0]
 
         raw_content = list()
         for line in stdout.decode().split('\n'):
