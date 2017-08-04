@@ -28,12 +28,10 @@ import shlex
 import inspect
 from pymailq import store, control, selector, utils
 
-
 try:
     import readline
 except ImportError as error:
     print("Python readline is not available, shell capabilities are limited.")
-    readline = None
 
 
 class StoreNotLoaded(Exception):
@@ -336,19 +334,17 @@ class PyMailqShell(cmd.Cmd):
             for size in sizeA, sizeB:
                 if size is None:
                     continue
-                if exact is not None and (smin, smax) != (None, None):
+                if exact is not None:
                     raise SyntaxError("exact size must be used alone")
                 if size.startswith("-"):
                     if smax is not None:
-                        raise SyntaxError("multiple '+' sizes specified")
+                        raise SyntaxError("multiple max sizes specified")
                     smax = int(size[1:])
                 elif size.startswith("+"):
                     if smin is not None:
-                        raise SyntaxError("multiple '-' sizes specified")
+                        raise SyntaxError("multiple min sizes specified")
                     smin = int(size[1:])
                 else:
-                    if exact is not None:
-                        raise SyntaxError("multiple exact sizes specified")
                     exact = int(size)
         except ValueError:
             raise SyntaxError("specified sizes must be valid numbers")
@@ -360,6 +356,9 @@ class PyMailqShell(cmd.Cmd):
             smax = 0
         if smin is None:
             smin = 0
+
+        if smin > smax:
+            raise SyntaxError("minimum size is greater than maximum size")
 
         self.selector.lookup_size(smin=smin, smax=smax)
 
