@@ -63,55 +63,77 @@ def test_shell_exit():
     assert "Exiting shell... Bye." in answer()
 
 
-def test_empty_line():
+def test_shell_empty_line():
     """Test empty line"""
     resp = run_cmd("")
     assert not len(resp)
 
 
-def test_help():
+def test_shell_completion():
+    """Test shell completion"""
+    resp = PQSHELL.completenames("sho")
+    assert ["show "] == resp
+    resp = PQSHELL.completedefault("invalid", "invalid")
+    assert resp is None
+    resp = PQSHELL.completedefault("re", "select re")
+    assert ["replay", "reset"] == sorted(resp)
+    resp = PQSHELL.completedefault("sel", "show sel")
+    assert ["selected"] == resp
+    resp = PQSHELL.completedefault("", "show selected ")
+    assert ["limit", "rankby", "sortby"] == sorted(resp)
+    resp = PQSHELL.completedefault("", "show selected limit ")
+    assert ["<n> "] == resp
+    resp = PQSHELL.completedefault("", "show selected limit 5 ")
+    assert ["rankby", "sortby"] == sorted(resp)
+    resp = PQSHELL.completedefault("sen", "select sen")
+    assert ["sender "] == resp
+    resp = PQSHELL.completedefault("", "select sender ")
+    assert ["<sender> [exact]"] == resp
+
+
+def test_shell_help():
     """Test 'help' command"""
     resp = run_cmd("help")
     assert "Documented commands" in resp
 
 
-def test_help_help():
+def test_shell_help_help():
     """Test 'help help' command"""
     resp = run_cmd("help help")
     assert "Show available commands" in resp
 
 
-def test_help_exit():
+def test_shell_help_exit():
     """Test 'help exit' command"""
     resp = run_cmd("help exit")
     assert "Exit PyMailq shell" in resp
 
 
-def test_help_show():
+def test_shell_help_show():
     """Test 'help show' command"""
     resp = run_cmd("help show")
     assert "Generic viewer utility" in resp
 
 
-def test_help_store():
+def test_shell_help_store():
     """Test 'help store' command"""
     resp = run_cmd("help store")
     assert "Control of Postfix queue content storage" in resp
 
 
-def test_help_select():
+def test_shell_help_select():
     """Test 'help select' command"""
     resp = run_cmd("help select")
     assert "Select mails from Postfix queue content" in resp
 
 
-def test_help_inspect():
+def test_shell_help_inspect():
     """Test 'help inspect' command"""
     resp = run_cmd("help inspect")
     assert "Mail content inspector" in resp
 
 
-def test_help_super():
+def test_shell_help_super():
     """Test 'help super' command"""
     resp = run_cmd("help super")
     assert "Call postsuper commands" in resp
