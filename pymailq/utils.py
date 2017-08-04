@@ -44,11 +44,12 @@ def sorter(function):
             except IndexError:
                 raise SyntaxError("sortby requires a field")
 
-            if "asc" in args:
-                args.pop(args.index('asc'))
+            # third param may be asc or desc, ignore unknown values
+            if "asc" == args[sortby_idx]:
+                args.pop(sortby_idx)
                 reverse = False
-            elif "desc" in args:
-                args.pop(args.index('desc'))
+            elif "desc" == args[sortby_idx]:
+                args.pop(sortby_idx)
 
         elements = function(*args, **kwargs)
 
