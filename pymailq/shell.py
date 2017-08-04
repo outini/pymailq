@@ -67,11 +67,9 @@ class PyMailqShell(cmd.Cmd):
         for command in self.commands_info:
             setattr(self, "help_%s" % (command,), partial(self._help_, command))
             setattr(self, "do_%s" % (command,), partial(self.__do, command))
-            setattr(self, "complete_%s" % (command,),
-                          partial(self.__complete, command))
+
         # show command is specific and cannot be build dynamically
         setattr(self, "help_show", partial(self._help_, "show"))
-        setattr(self, "complete_show", partial(self.__complete, "show"))
 
         self.pstore = store.PostqueueStore()
         self.selector = selector.MailSelector(self.pstore)
@@ -175,24 +173,91 @@ class PyMailqShell(cmd.Cmd):
                 msg = "%s command %s" % (cmd_category, msg[len(method)+3:])
             self.respond("*** Syntax error: " + msg)
 
-    def __complete(self, cmd_category, text, line, begidx, endidx):
+    @staticmethod
+    def get_modifiers(match, excludes=()):
+        """Get modifiers from match
+
+        :param str match: String to match in modifiers
+        :param list excludes: Excluded modifiers
+        :return: Matched modifiers as :func:`list`
+        """
+        modifiers = {
+            'limit': ['<n>'],
+            'rankby': ['<field>'],
+            'sortby': ['<field> [asc|desc]']
+        }
+        if match in modifiers and match not in excludes:
+            return modifiers[match]
+        return [mod for mod in modifiers
+                if mod not in excludes and mod.startswith(match)]
+
+    def completenames(self, text, *ignored):
+        """Complete known commands"""
+        dotext = 'do_'+text
+        suggests = [a[3:] for a in self.get_names() if a.startswith(dotext)]
+        if len(suggests) == 1:
+            # Only one suggest, return it with a space
+            suggests[0] += " "
+        return suggests
+
+    def completedefault(self, text, line, *ignored):
         """Generic command completion method"""
-        # TODO: find a way to stop completion if no more arguments
-        #       It will probably not be possible to build it in auto :/
-        self.respond("\n{0}: [{1}] [{2}]".format(cmd_category, text, line))
-        self.respond(line.split())
-        # completion_infos = {
-        #     'show': {('filters', 'selected'): None},
-        #     'select': {}
-        #     }
+        # we may consider the use of re.match for params in completion
+        completion = {
+            'show': {'__allow_mods__': True},
+            'select': {
+                'date': ['<datespec>'],
+                'error': ['<error_msg>'],
+                'rmfilter': ['<filterid>'],
+                'sender': ['<sender> [exact]'],
+                'size': ['<-n|n|+n> [-n]'],
+                'status': ['<status>']
+            }
+        }
 
-        match = "_%s_" % (cmd_category,)
-        msub = line.split(" ")[-1]
-        if msub == cmd_category:
-            msub = ""
+        # print(text, line)
 
-        return [sub[len(match):] for sub in dir(self)
-                if sub.startswith(match + msub)]
+        args = shlex.split(line)
+        command = args.pop(0)
+        sub_command = ""
+        if len(args):
+            sub_command = args.pop(0)
+
+        match = "_%s_" % (command,)
+        suggests = [name[len(match):] for name in dir(self)
+                    if name.startswith(match + sub_command)]
+
+        # Return multiple suggests for sub-command
+        if len(suggests) > 1:
+            return suggests
+        suggest = suggests.pop(0)
+
+        exact_match = True if suggest == sub_command else False
+
+        if suggest in completion.get(command, {}):
+            if not exact_match:
+                # Sub-command takes params, suffix it with a space
+                return [suggest + " "]
+            elif not len(args):
+                # Return sub-command params
+                return completion[command][sub_command]
+        elif not exact_match:
+            # Sub-command doesn't take params, return as is
+            return [suggest]
+
+        # Command allows modifiers
+        if completion[command].get('__allow_mods__'):
+            if len(args) or not len(text):
+                match = args[-1] if len(args) else ""
+                mods = self.get_modifiers(match, excludes=args[:-1])
+                if not len(mods):
+                    mods = self.get_modifiers("", excludes=args)
+                mods[0] += " " if len(mods) == 1 else ""
+                suggests = mods
+
+        if not len(suggests):
+            return None
+        return suggests
 
     def _store_load(self, filename=None):
         """Load Postfix queue content"""
@@ -235,7 +300,7 @@ class PyMailqShell(cmd.Cmd):
             self.selector.replay_filters()
         # TODO: except should be more accurate
         except:
-            raise SyntaxError("invalid filter ID: %s" % idx)
+            raise SyntaxError("invalid filter ID: %s" % filterid)
 
     def _select_status(self, status):
         """
