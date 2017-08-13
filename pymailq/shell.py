@@ -129,7 +129,7 @@ class PyMailqShell(cmd.Cmd):
                 docstr = getattr(self, method).__doc__
                 doclines = inspect.cleandoc(docstr).split('\n')
                 self.respond("  %-10s %s" % (method[len(command)+2:],
-                                      doclines.pop(0)))
+                                             doclines.pop(0)))
                 for line in doclines:
                     self.respond("  %-10s %s" % ("", line))
 
@@ -366,12 +366,12 @@ class PyMailqShell(cmd.Cmd):
         """
         Select mails by date.
           Usage:
-            select date <DATESPEC> [DATESPEC..]
+            select date <DATESPEC>
             Where <DATESPEC> can be
-              YYYY-MM-DD
+              YYYY-MM-DD (exact date)
               YYYY-MM-DD..YYYY-MM-DD (within a date range)
-              +YYYY-MM-DD (after a certain date)
-              -YYYY-MM-DD (before a certain date)
+              +YYYY-MM-DD (after a date)
+              -YYYY-MM-DD (before a date)
         """
         try:
             if ".." in date_spec:
@@ -480,16 +480,16 @@ class PyMailqShell(cmd.Cmd):
         if not len(args):
             return self.help_show()
 
-        subcmd = args.pop(0)
+        sub_cmd = args.pop(0)
         try:
-            lines = getattr(self, "_show_%s" % (subcmd))(*args)
+            lines = getattr(self, "_show_%s" % sub_cmd)(*args)
         except (TypeError, AttributeError):
             self.respond("*** Syntax error: show {0}".format(str_arg))
             return self.help_show()
         except SyntaxError as error:
             # Rewording Python TypeError message for cli display
             msg = str(error)
-            if "%s()" % (subcmd) in msg:
+            if "%s()" % sub_cmd in msg:
                 msg = "show command %s" % msg
             self.respond("*** Syntax error: " + msg)
             return self.help_show()
@@ -527,14 +527,14 @@ class PyMailqShell(cmd.Cmd):
         return lines
 
     # Postsuper generic command
-    def __do_super(self, cmd, action_name):
+    def __do_super(self, operation, action_name):
         """Postsuper generic command"""
         if not self.pstore.loaded_at:
-            raise(StoreNotLoaded)
+            raise StoreNotLoaded
         if self.selector.mails is None:
             handled_c = 0
         else:
-            f = getattr(self.qcontrol, '%s_messages' % cmd)
+            f = getattr(self.qcontrol, '%s_messages' % operation)
             f(self.selector.mails)
             handled_c = len(self.selector.mails)
             # reloads the data
