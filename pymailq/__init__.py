@@ -23,9 +23,10 @@ from functools import wraps
 from datetime import datetime
 
 
-# Boolean to control activation of the :func:`debug` decorator.
+#: Boolean to control activation of the :func:`debug` decorator.
 DEBUG = False
 
+#: Current version of the package as :func:`str`.
 VERSION = "0.5.4"
 
 
