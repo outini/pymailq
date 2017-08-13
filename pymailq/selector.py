@@ -130,7 +130,7 @@ class MailSelector(object):
 
     @debug
     @filter_registration
-    def lookup_sender(self, sender, partial=False):
+    def lookup_sender(self, sender, exact=False):
         """
         Lookup mails send from a specific sender.
 
@@ -145,11 +145,11 @@ class MailSelector(object):
 
         :param str sender: Sender address to lookup in :class:`~store.Mail`
                            objects selection.
-        :param bool partial: Allow lookup with partial match
+        :param bool exact: Allow lookup with partial or exact match
         :return: List of newly selected :class:`~store.Mail` objects
         :rtype: :func:`list`
         """
-        if partial is True:
+        if exact is False:
             self.mails = [mail for mail in self.mails
                           if sender in mail.sender]
         else:

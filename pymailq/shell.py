@@ -309,16 +309,16 @@ class PyMailqShell(cmd.Cmd):
         """
         self.selector.lookup_status(status=status)
 
-    def _select_sender(self, sender, partial=True):
+    def _select_sender(self, sender, exact=False):
         """
         Select mails from sender
           Usage: select sender <sender> [exact]
         """
-        if partial is not True:  # received from command line
-            if partial != "exact":
-                raise SyntaxError("invalid keyword: %s" % partial)
-            partial = False
-        self.selector.lookup_sender(sender=sender, partial=partial)
+        if exact is not False:  # received from command line
+            if exact != "exact":
+                raise SyntaxError("invalid keyword: %s" % exact)
+            exact = True
+        self.selector.lookup_sender(sender=sender, exact=exact)
 
     def _select_size(self, sizeA, sizeB=None):
         """
