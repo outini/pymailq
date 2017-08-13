@@ -27,8 +27,6 @@ def sorter(function):
 
     This decorator inspect decorated function arguments and search for
     known keyword to sort decorated function result.
-
-
     """
     @wraps(function)
     def wrapper(*args, **kwargs):
