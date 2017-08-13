@@ -128,7 +128,6 @@ class MailSelector(object):
 
         return self.mails
 
-
     @debug
     @filter_registration
     def lookup_sender(self, sender, partial=False):
@@ -187,7 +186,7 @@ class MailSelector(object):
         :rtype: :func:`list`
         """
         if start is None:
-            start = datetime(1970,1,1)
+            start = datetime(1970, 1, 1)
         if stop is None:
             stop = datetime.now()
 
