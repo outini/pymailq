@@ -26,7 +26,7 @@ if __name__ == '__main__':
     release = "0.5.4"
     setup(
         name="pymailq",
-        version=".".join(release.split('.')),
+        version=release,
         url="https://github.com/outini/pymailq",
         author="Denis Pompilio (jawa)",
         author_email="denis.pompilio@gmail.com",
