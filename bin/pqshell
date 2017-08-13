@@ -20,9 +20,9 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-import sys
-from datetime import datetime, timedelta
-from pymailq import store, control, selector, shell
+import argparse
+import pymailq
+from pymailq import shell
 
 
 def main():
@@ -32,5 +32,22 @@ def main():
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Postfix queue control shell')
+    parser.add_argument('--version', dest='version', action='store_const',
+                        const=True, default=False,
+                        help='show shell version')
+    parser.add_argument('--debug', dest='debug', action='store_const',
+                        const=True, default=False,
+                        help='show shell debug and timing info')
+
+    args = parser.parse_args()
+
+    if args.version:
+        print("Shell version: %s" % pymailq.VERSION)
+        exit()
+
+    if args.debug:
+        print("Setting shell in debug mode.")
+        pymailq.DEBUG = True
 
     main()
