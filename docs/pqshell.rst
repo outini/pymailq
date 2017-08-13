@@ -68,7 +68,14 @@ select
         **date**
             Select mails by date.
 
-            Usage: ``select date X [Y]``
+            Usage: ``select date <DATESPEC>``
+
+            Where `<DATESPEC>` can be::
+
+                YYYY-MM-DD (exact date)
+                YYYY-MM-DD..YYYY-MM-DD (within a date range (included))
+                +YYYY-MM-DD (after a date (included))
+                -YYYY-MM-DD (before a date (included))
 
         **error**
             Select mails by error message. Specified error message can be

@@ -369,9 +369,9 @@ class PyMailqShell(cmd.Cmd):
             select date <DATESPEC>
             Where <DATESPEC> can be
               YYYY-MM-DD (exact date)
-              YYYY-MM-DD..YYYY-MM-DD (within a date range)
-              +YYYY-MM-DD (after a date)
-              -YYYY-MM-DD (before a date)
+              YYYY-MM-DD..YYYY-MM-DD (within a date range (included))
+              +YYYY-MM-DD (after a date (included))
+              -YYYY-MM-DD (before a date (included))
         """
         try:
             if ".." in date_spec:

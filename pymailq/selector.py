@@ -180,7 +180,7 @@ class MailSelector(object):
         Lookup mails send on specific date range(s).
 
         :param datetime.date start: Start date (Default: None)
-        :param datetime.date start: Start date (Default: None)
+        :param datetime.date stop: Stop date (Default: None)
 
         :return: List of newly selected :class:`~store.Mail` objects
         :rtype: :func:`list`
