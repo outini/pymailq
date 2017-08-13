@@ -130,7 +130,7 @@ class MailSelector(object):
 
     @debug
     @filter_registration
-    def lookup_sender(self, sender, exact=False):
+    def lookup_sender(self, sender, exact=True):
         """
         Lookup mails send from a specific sender.
 
