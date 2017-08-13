@@ -19,6 +19,7 @@
 #    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import sys
+from datetime import datetime, timedelta
 from pymailq import shell
 from unittest.mock import create_autospec, MagicMock
 
@@ -229,7 +230,7 @@ def test_shell_select_sender():
     run_cmd("select sender sender-1")
     resp = run_cmd("show selected")
     assert "sender-1@" in resp
-    assert len(resp.split('\n')) == 4
+    assert len(resp.split('\n')) == 10
     run_cmd("select sender sender-1 exact")
     resp = run_cmd("show selected")
     assert "No element to display" in resp
@@ -265,7 +266,7 @@ def test_shell_select_size():
     run_cmd("select reset")
     run_cmd("select size 262")
     resp = run_cmd("show selected")
-    assert len(resp.split("\n")) == 8
+    assert len(resp.split("\n")) == 15
     run_cmd("select reset")
     run_cmd("select size +260")
     resp = run_cmd("show selected")
@@ -273,38 +274,42 @@ def test_shell_select_size():
     run_cmd("select reset")
     run_cmd("select size -262")
     resp = run_cmd("show selected")
-    assert len(resp.split("\n")) == 10
+    assert len(resp.split("\n")) == 15
     run_cmd("select reset")
     run_cmd("select size +261 -262")
     resp = run_cmd("show selected")
-    assert len(resp.split("\n")) == 10
+    assert len(resp.split("\n")) == 15
 
 
 def test_shell_select_date():
     """Test 'select date' command"""
+    five_days = timedelta(5)
+    now = datetime.now().strftime('%Y-%m-%d')
+    five_days_ago = (datetime.now() - five_days).strftime('%Y-%m-%d')
+    in_five_days = (datetime.now() + five_days).strftime('%Y-%m-%d')
     run_cmd("store load")
     run_cmd("select reset")
-    run_cmd("select date 2017-07-31")
+    run_cmd("select date %s" % now)
     resp = run_cmd("show selected")
     assert len(resp.split("\n")) == 30
     run_cmd("select reset")
-    run_cmd("select date 2017-07-30")
+    run_cmd("select date %s" % five_days_ago)
     resp = run_cmd("show selected")
     assert "No element to display" in resp
     run_cmd("select reset")
-    run_cmd("select date +2017-07-01")
+    run_cmd("select date +%s" % five_days_ago)
     resp = run_cmd("show selected")
     assert len(resp.split("\n")) == 30
     run_cmd("select reset")
-    run_cmd("select date +2017-08-31")
+    run_cmd("select date +%s" % in_five_days)
     resp = run_cmd("show selected")
     assert "No element to display" in resp
     run_cmd("select reset")
-    run_cmd("select date 2017-01-01..2017-08-31")
+    run_cmd("select date %s..%s" % (five_days_ago, in_five_days))
     resp = run_cmd("show selected")
     assert len(resp.split("\n")) == 30
     run_cmd("select reset")
-    run_cmd("select date -2018-01-01")
+    run_cmd("select date -%s" % in_five_days)
     resp = run_cmd("show selected")
     assert len(resp.split("\n")) == 30
     resp = run_cmd("select date XXXX-XX-XX")
@@ -315,7 +320,7 @@ def test_shell_select_error():
     """Test 'select date' command"""
     run_cmd("store load")
     run_cmd("select reset")
-    run_cmd("select error 'deferred transport'")
+    run_cmd("select error 'mail transport unavailable'")
     resp = run_cmd("show selected")
     assert len(resp.split("\n")) == 30
 

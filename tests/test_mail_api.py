@@ -72,7 +72,7 @@ def test_selector_status():
 
 def test_selector_sender():
     """Test MailSelector.lookup_sender method"""
-    mails = SELECTOR.lookup_sender("sender-1", partial=True)
+    mails = SELECTOR.lookup_sender("sender-1", exact=False)
     assert type(mails) == list
     mails = SELECTOR.lookup_sender("sender-1@testsend_domain.tld")
     assert type(mails) == list

@@ -5,13 +5,28 @@ echo "default_transport = hold" >> /etc/postfix/main.cf
 /etc/init.d/postfix restart
 
 # Generate mails
-for i in `seq 30`; do
-from=sender-$(($RANDOM%10))
-to=user-$(($RANDOM%10))
-sendmail -f $from@testsend_domain.tld \
-         -r $from@testsend_domain.tld \
-         $to@test-domain.tld <<<"This is test $RANDOM"""
-echo -n "." && sleep $(($RANDOM%2))
+gen_mail() {
+    from=sender-$1
+    to=user-$2
+    msg="This is test $3"
+    sendmail -f $from@testsend_domain.tld \
+             -r $from@testsend_domain.tld \
+             $to@test-domain.tld <<<$msg
+}
+for i in `seq 5`; do
+    gen_mail 1 1 XXXXXX
+    gen_mail 1 2 XX
+    echo -n "." && sleep $(($RANDOM%2))
+done
+for i in `seq 5`; do
+    gen_mail 2 1 XXXXXX
+    gen_mail 2 3 XX
+    echo -n "." && sleep $(($RANDOM%2))
+done
+for i in `seq 5`; do
+    gen_mail 3 2 XXXXXX
+    gen_mail 4 3 XX
+    echo -n "." && sleep $(($RANDOM%2))
 done
 
 # Modify error messages
@@ -24,5 +39,6 @@ done
 # samples.
 #
 # You may deploy samples with the following commands
+# rm -r /var/spool/postfix/{deferred,defer}
 # rsync -rtv tests/samples/spool/postfix/ /var/spool/postfix/
 # chown -R postfix:postfix /var/spool/postfix/{deferred,defer}
