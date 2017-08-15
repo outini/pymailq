@@ -22,9 +22,6 @@ from datetime import datetime
 import pymailq
 from pymailq import store, control, selector
 
-
-pymailq.DEBUG = True
-
 PSTORE = store.PostqueueStore()
 SELECTOR = selector.MailSelector(PSTORE)
 QCONTROL = control.QueueControl()
@@ -32,7 +29,9 @@ QCONTROL = control.QueueControl()
 
 def test_store_load_from_postqueue():
     """Test PostqueueStore load from postqueue"""
+    pymailq.DEBUG = True
     PSTORE.load()
+    pymailq.DEBUG = False
     assert PSTORE.loaded_at is not None
 
 
@@ -106,12 +105,6 @@ def test_selector_replay_filters():
     return True
 
 
-def test_control_delete():
-    """Test QueueControl.delete_messages"""
-    result = QCONTROL.delete_messages(PSTORE.mails[0:2])
-    assert type(result) == list
-
-
 def test_control_hold():
     """Test QueueControl.hold_messages"""
     result = QCONTROL.hold_messages(PSTORE.mails[0:2])
@@ -127,4 +120,10 @@ def test_control_release():
 def test_control_requeue():
     """Test QueueControl.requeue_messages"""
     result = QCONTROL.requeue_messages(PSTORE.mails[0:2])
+    assert type(result) == list
+
+
+def test_control_delete():
+    """Test QueueControl.delete_messages"""
+    result = QCONTROL.delete_messages(PSTORE.mails[0:2])
     assert type(result) == list

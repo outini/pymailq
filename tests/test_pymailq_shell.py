@@ -21,7 +21,7 @@
 import sys
 from datetime import datetime, timedelta
 from pymailq import shell
-from unittest.mock import create_autospec, MagicMock
+from unittest.mock import create_autospec
 
 
 MOCK_STDOUT = create_autospec(sys.stdout)
@@ -31,8 +31,7 @@ PQSHELL = shell.PyMailqShell(stdout=MOCK_STDOUT)
 def answer():
     """Get shell response
 
-    :param int nr: Number of lines to return
-    :return: Output lines
+    :return: Output lines as :func:`str`
     """
     res = ""
     for call in MOCK_STDOUT.write.call_args_list:
@@ -191,9 +190,9 @@ def test_shell_show_selected_limit():
     resp = run_cmd("show selected limit 2")
     assert "Preview of first 2" in resp
     assert len(resp.split('\n')) == 3
-    resp = run_cmd("show selected limit 40")
-    assert "Preview of first 40" not in resp
-    assert len(resp.split('\n')) == 30
+    resp = run_cmd("show selected limit 10000")
+    assert "Preview of first 10000" not in resp
+    assert len(resp.split('\n')) == 600
 
 
 def test_shell_show_selected_sorted():
@@ -230,7 +229,7 @@ def test_shell_select_sender():
     run_cmd("select sender sender-1")
     resp = run_cmd("show selected")
     assert "sender-1@" in resp
-    assert len(resp.split('\n')) == 10
+    assert len(resp.split('\n')) == 200
     run_cmd("select sender sender-1 exact")
     resp = run_cmd("show selected")
     assert "No element to display" in resp
@@ -264,21 +263,21 @@ def test_shell_select_size():
     assert "minimum size is greater than maximum size" in resp
     run_cmd("store load")
     run_cmd("select reset")
-    run_cmd("select size 262")
+    run_cmd("select size 1000")
     resp = run_cmd("show selected")
-    assert len(resp.split("\n")) == 15
+    assert "No element to display" in resp
     run_cmd("select reset")
-    run_cmd("select size +260")
+    run_cmd("select size +200")
     resp = run_cmd("show selected")
-    assert len(resp.split("\n")) == 30
+    assert len(resp.split("\n")) == 600
     run_cmd("select reset")
-    run_cmd("select size -262")
+    run_cmd("select size -1000")
     resp = run_cmd("show selected")
-    assert len(resp.split("\n")) == 15
+    assert len(resp.split("\n")) == 300
     run_cmd("select reset")
-    run_cmd("select size +261 -262")
+    run_cmd("select size +200 -1000")
     resp = run_cmd("show selected")
-    assert len(resp.split("\n")) == 15
+    assert len(resp.split("\n")) == 300
 
 
 def test_shell_select_date():
@@ -291,7 +290,7 @@ def test_shell_select_date():
     run_cmd("select reset")
     run_cmd("select date %s" % now)
     resp = run_cmd("show selected")
-    assert len(resp.split("\n")) == 30
+    assert len(resp.split("\n")) == 600
     run_cmd("select reset")
     run_cmd("select date %s" % five_days_ago)
     resp = run_cmd("show selected")
@@ -299,7 +298,7 @@ def test_shell_select_date():
     run_cmd("select reset")
     run_cmd("select date +%s" % five_days_ago)
     resp = run_cmd("show selected")
-    assert len(resp.split("\n")) == 30
+    assert len(resp.split("\n")) == 600
     run_cmd("select reset")
     run_cmd("select date +%s" % in_five_days)
     resp = run_cmd("show selected")
@@ -307,11 +306,11 @@ def test_shell_select_date():
     run_cmd("select reset")
     run_cmd("select date %s..%s" % (five_days_ago, in_five_days))
     resp = run_cmd("show selected")
-    assert len(resp.split("\n")) == 30
+    assert len(resp.split("\n")) == 600
     run_cmd("select reset")
     run_cmd("select date -%s" % in_five_days)
     resp = run_cmd("show selected")
-    assert len(resp.split("\n")) == 30
+    assert len(resp.split("\n")) == 600
     resp = run_cmd("select date XXXX-XX-XX")
     assert "'XXXX-XX-XX' does not match format '%Y-%m-%d'" in resp
 
@@ -320,9 +319,9 @@ def test_shell_select_error():
     """Test 'select date' command"""
     run_cmd("store load")
     run_cmd("select reset")
-    run_cmd("select error 'mail transport unavailable'")
+    run_cmd("select error 'Test error message'")
     resp = run_cmd("show selected")
-    assert len(resp.split("\n")) == 30
+    assert len(resp.split("\n")) == 16
 
 
 def test_shell_show_filters():
@@ -355,12 +354,6 @@ def test_shell_select_reset():
     assert "Selector resetted with store content" in resp
 
 
-def test_shell_super_delete():
-    """Test 'select reset' command"""
-    resp = run_cmd("super delete")
-    assert "Deleted " in resp
-
-
 def test_shell_super_hold():
     """Test 'select reset' command"""
     resp = run_cmd("super hold")
@@ -377,3 +370,9 @@ def test_shell_super_requeue():
     """Test 'super requeue' command"""
     resp = run_cmd("super requeue")
     assert "Requeued " in resp
+
+
+def test_shell_super_delete():
+    """Test 'select reset' command"""
+    resp = run_cmd("super delete")
+    assert "Deleted " in resp
