@@ -535,11 +535,14 @@ class PyMailqShell(cmd.Cmd):
             handled_c = 0
         else:
             f = getattr(self.qcontrol, '%s_messages' % operation)
-            f(self.selector.mails)
+            try:
+                f(self.selector.mails)
+            except RuntimeError as exc:
+                return [str(exc)]
             handled_c = len(self.selector.mails)
             # reloads the data
             self._store_load()
-            self._select_reset()
+            self._select_replay()
 
         return ['{} {} mails'.format(action_name, handled_c)]
 
