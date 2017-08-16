@@ -18,6 +18,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import time
 import subprocess
 
 
@@ -27,6 +28,10 @@ class QueueControl(object):
 
     The :class:`~control.QueueControl` instance defines the following
     attributes:
+        .. attribute:: use_sudo
+
+            Boolean to control the use of `sudo` to invoke Postfix command.
+            Default is ``False``
 
         .. attribute:: postsuper_cmd
 
@@ -54,9 +59,11 @@ class QueueControl(object):
                 `postsuper`_ -- Postfix superintendent
     """
 
+    use_sudo = False
+
     @property
     def postsuper_cmd(self):
-        return ["postsuper"]
+        return ["sudo", "postsuper"] if self.use_sudo else ["postsuper"]
 
     @property
     def known_operations(self):
@@ -93,15 +100,28 @@ class QueueControl(object):
         # https://www.kevinlondon.com/2015/07/26/dangerous-python-functions.html
         # And consider the use of sh module: https://amoffat.github.io/sh/
         postsuper_cmd = self.postsuper_cmd + [operation, '-']
-        child = subprocess.Popen(postsuper_cmd,
-                                 stdin=subprocess.PIPE,
-                                 stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE)
+        try:
+            child = subprocess.Popen(postsuper_cmd,
+                                     stdin=subprocess.PIPE,
+                                     stderr=subprocess.PIPE)
+        except FileNotFoundError as exc:
+            command_str = " ".join(postsuper_cmd)
+            error_msg = "Unable to call '%s': %s" % (command_str, str(exc))
+            raise FileNotFoundError(error_msg)
 
-        for msg in messages:
-            child.stdin.write((msg.qid+'\n').encode())
+        # If permissions error, the postsuper process takes ~1s to teardown.
+        # Wait this delay and raise error message if process has stopped.
+        time.sleep(1.1)
+        child.poll()
+        if child.returncode:
+            raise RuntimeError(child.communicate()[1].strip().decode())
 
-        (stdout, stderr) = child.communicate()
+        try:
+            for msg in messages:
+                child.stdin.write((msg.qid+'\n').encode())
+            stderr = child.communicate()[1].strip()
+        except BrokenPipeError:
+            raise RuntimeError("Unexpected error: child process has crashed")
 
         return [line.strip() for line in stderr.decode().split('\n')]
 
