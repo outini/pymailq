@@ -21,7 +21,11 @@
 import sys
 from datetime import datetime, timedelta
 from pymailq import shell
-from unittest.mock import create_autospec
+
+try:
+    from unittest.mock import create_autospec
+except ImportError:
+    from mock import create_autospec
 
 
 MOCK_STDOUT = create_autospec(sys.stdout)
