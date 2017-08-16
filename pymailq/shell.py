@@ -504,9 +504,6 @@ class PyMailqShell(cmd.Cmd):
         Show selected mails
           Usage: show selected [modifiers]
         """
-        if self.selector.mails is None:
-            return []
-
         return self.selector.mails
 
     def _show_filters(self):
@@ -531,20 +528,20 @@ class PyMailqShell(cmd.Cmd):
         """Postsuper generic command"""
         if not self.pstore.loaded_at:
             raise StoreNotLoaded
-        if self.selector.mails is None:
-            handled_c = 0
+        if not len(self.selector.mails):
+            return ["No mail selected"]
         else:
-            f = getattr(self.qcontrol, '%s_messages' % operation)
+            func = getattr(self.qcontrol, '%s_messages' % operation)
             try:
-                f(self.selector.mails)
+                resp = func(self.selector.mails)
             except RuntimeError as exc:
                 return [str(exc)]
-            handled_c = len(self.selector.mails)
+
             # reloads the data
             self._store_load()
             self._select_replay()
 
-        return ['{} {} mails'.format(action_name, handled_c)]
+        return [resp[-1]]
 
     def _super_delete(self):
         """Deletes the mails in current selection
