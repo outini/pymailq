@@ -27,7 +27,7 @@ from datetime import datetime
 DEBUG = False
 
 #: Current version of the package as :func:`str`.
-VERSION = "0.5.4"
+VERSION = "0.6.0"
 
 
 def debug(function):

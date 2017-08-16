@@ -1,8 +1,19 @@
 pymailq - Simple mail queue management
-=========================================
+======================================
 
 Contact: Denis Pompilio (jawa) <denis.pompilio@gmail.com>
 https://github.com/outini/pymailq
+
+== v0.6.0 16/08/2017 ===
+    * Pqshell now have usage and options
+    * Pqshell can now show pymailq package version
+    * Pqshell can now be started in debug mode
+    * Improved shell completion with suggests and modifiers
+    * Implentation of the "mails by date" selector
+    * Reworked postsuper commands handling
+    * Better pep8 support
+    * Unit testing for python2.7 and python3
+    * Using code coverage
 
 == v0.5.3 19/10/2014 ===
     * Complete support for python2.7 and python3
