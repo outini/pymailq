@@ -1,110 +1,109 @@
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>pyqueue – Simple Postfix queue management &mdash; PyQueue 0.5.2
+    <title>pymailq – Simple Postfix queue management &#8212; PyMailq 0.6.0
  documentation</title>
-    
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/print.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '0.5.2
-',
+        URL_ROOT:    './',
+        VERSION:     '0.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/theme_extras.js"></script>
-    <link rel="top" title="PyQueue 0.5.2
- documentation" href="#" />
-    <link rel="next" title="pyqueue.store – Mails queue storage objects" href="store.html" /> 
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pymailq.store – Mails queue storage objects" href="store.html" /> 
   </head>
   <body>
-      <div class="header"><h1 class="heading"><a href="#">
-          <span>PyQueue 0.5.2
+      <div class="header" role="banner"><h1 class="heading"><a href="#">
+          <span>PyMailq 0.6.0
  documentation</span></a></h1>
-        <h2 class="heading"><span>pyqueue – Simple Postfix queue management</span></h2>
+        <h2 class="heading"><span>pymailq – Simple Postfix queue management</span></h2>
       </div>
-      <div class="topnav">
+      <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
         <a class="uplink" href="#">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="store.html">pyqueue.store &#8211; Mails queue storage objects</a>&#160;&#160;»
+        <a href="store.html">pymailq.store – Mails queue storage objects</a>&#160;&#160;»
         </p>
 
       </div>
       <div class="content">
         
         
-  <div class="section" id="module-pyqueue">
-<span id="pyqueue-simple-postfix-queue-management"></span><h1>pyqueue &#8211; Simple Postfix queue management<a class="headerlink" href="#module-pyqueue" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference internal" href="#module-pyqueue" title="pyqueue: Simple Postfix queue management XXX."><tt class="xref py py-mod docutils literal"><span class="pre">pyqueue</span></tt></a> package makes it easy to view and control Postfix mails
+  <div class="section" id="module-pymailq">
+<span id="pymailq-simple-postfix-queue-management"></span><h1>pymailq – Simple Postfix queue management<a class="headerlink" href="#module-pymailq" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference internal" href="#module-pymailq" title="pymailq: Simple Postfix queue management XXX."><code class="xref py py-mod docutils literal"><span class="pre">pymailq</span></code></a> package makes it easy to view and control Postfix mails
 queue. It provide several classes to store, view and interact with mail queue
 using Postfix command line tools. This module is provided for automation and
 monitoring.</p>
-<p>The <a class="reference internal" href="#module-pyqueue" title="pyqueue: Simple Postfix queue management XXX."><tt class="xref py py-mod docutils literal"><span class="pre">pyqueue</span></tt></a> package defines the following attribute:</p>
+<p>The <a class="reference internal" href="#module-pymailq" title="pymailq: Simple Postfix queue management XXX."><code class="xref py py-mod docutils literal"><span class="pre">pymailq</span></code></a> package defines the following attribute:</p>
 <blockquote>
 <div><dl class="data">
-<dt id="pyqueue.DEBUG">
-<tt class="descclassname">pyqueue.</tt><tt class="descname">DEBUG</tt><em class="property"> = False</em><a class="headerlink" href="#pyqueue.DEBUG" title="Permalink to this definition">¶</a></dt>
-<dd><p>Boolean to control activation of the <a class="reference internal" href="#pyqueue.debug" title="pyqueue.debug"><tt class="xref py py-func docutils literal"><span class="pre">debug()</span></tt></a> decorator.</p>
+<dt id="pymailq.DEBUG">
+<code class="descclassname">pymailq.</code><code class="descname">DEBUG</code><em class="property"> = False</em><a class="headerlink" href="#pymailq.DEBUG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boolean to control activation of the <a class="reference internal" href="#pymailq.debug" title="pymailq.debug"><code class="xref py py-func docutils literal"><span class="pre">debug()</span></code></a> decorator.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="pymailq.VERSION">
+<code class="descclassname">pymailq.</code><code class="descname">VERSION</code><em class="property"> = '0.6.0'</em><a class="headerlink" href="#pymailq.VERSION" title="Permalink to this definition">¶</a></dt>
+<dd><p>Current version of the package as <code class="xref py py-func docutils literal"><span class="pre">str()</span></code>.</p>
 </dd></dl>
 
 </div></blockquote>
-<p>The <a class="reference internal" href="#module-pyqueue" title="pyqueue: Simple Postfix queue management XXX."><tt class="xref py py-mod docutils literal"><span class="pre">pyqueue</span></tt></a> package defines the following decorators:</p>
+<p>The <a class="reference internal" href="#module-pymailq" title="pymailq: Simple Postfix queue management XXX."><code class="xref py py-mod docutils literal"><span class="pre">pymailq</span></code></a> package defines the following decorators:</p>
 <blockquote>
 <div><dl class="function">
-<dt id="pyqueue.debug">
-<tt class="descclassname">pyqueue.</tt><tt class="descname">debug</tt><big>(</big><em>function</em><big>)</big><a class="reference internal" href="_modules/pyqueue.html#debug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyqueue.debug" title="Permalink to this definition">¶</a></dt>
+<dt id="pymailq.debug">
+<code class="descclassname">pymailq.</code><code class="descname">debug</code><span class="sig-paren">(</span><em>function</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pymailq.html#debug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymailq.debug" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorator to print some call informations and timing debug on stderr.</p>
-<p>Function&#8217;s name, passed args and kwargs are printed to stderr. Elapsed time
+<p>Function’s name, passed args and kwargs are printed to stderr. Elapsed time
 is also print at the end of call. This decorator is based on the value of
-<a class="reference internal" href="#pyqueue.DEBUG" title="pyqueue.DEBUG"><tt class="xref py py-data docutils literal"><span class="pre">DEBUG</span></tt></a>. If <tt class="docutils literal"><span class="pre">True</span></tt>, the debug informations will be displayed.</p>
+<a class="reference internal" href="#pymailq.DEBUG" title="pymailq.DEBUG"><code class="xref py py-data docutils literal"><span class="pre">DEBUG</span></code></a>. If <code class="docutils literal"><span class="pre">True</span></code>, the debug informations will be displayed.</p>
 </dd></dl>
 
 </div></blockquote>
-<p>The <a class="reference internal" href="#module-pyqueue" title="pyqueue: Simple Postfix queue management XXX."><tt class="xref py py-mod docutils literal"><span class="pre">pyqueue</span></tt></a> package provides the following submodules:</p>
+<p>The <a class="reference internal" href="#module-pymailq" title="pymailq: Simple Postfix queue management XXX."><code class="xref py py-mod docutils literal"><span class="pre">pymailq</span></code></a> package provides the following submodules:</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="store.html">pyqueue.store &#8211; Mails queue storage objects</a></li>
-<li class="toctree-l1"><a class="reference internal" href="selector.html">pyqueue.selector &#8211; Mails queue filtering</a></li>
-<li class="toctree-l1"><a class="reference internal" href="control.html">pyqueue.control &#8211; Mails queue adminitrative operations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="shell.html">pyqueue.shell &#8211; Mails queue management shell</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pqshell.html">pqshell &#8211; A shell-like to interact with a Postfix mails queue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="store.html">pymailq.store – Mails queue storage objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selector.html">pymailq.selector – Mails queue filtering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="control.html">pymailq.control – Mails queue adminitrative operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="shell.html">pymailq.shell – Mails queue management shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pqshell.html">pqshell – A shell-like to interact with a Postfix mails queue</a></li>
 </ul>
 </div>
 </div>
 
 
       </div>
-      <div class="bottomnav">
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
         <a class="uplink" href="#">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="store.html">pyqueue.store &#8211; Mails queue storage objects</a>&#160;&#160;»
+        <a href="store.html">pymailq.store – Mails queue storage objects</a>&#160;&#160;»
         </p>
 
       </div>
 
-    <div class="footer">
-        &copy; Copyright 2014, Denis &#39;jawa&#39; Pompilio.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, Denis &#39;jawa&#39; Pompilio.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

@@ -1,45 +1,37 @@
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>selector &mdash; PyQueue 0.5.2
+    <title>selector &#8212; PyMailq 0.6.0
  documentation</title>
-    
     <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/print.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.5.2
-',
+        VERSION:     '0.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/theme_extras.js"></script>
-    <link rel="top" title="PyQueue 0.5.2
- documentation" href="../index.html" />
-    <link rel="up" title="Module code" href="index.html" /> 
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
   </head>
   <body>
-      <div class="header"><h1 class="heading"><a href="../index.html">
-          <span>PyQueue 0.5.2
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>PyMailq 0.6.0
  documentation</span></a></h1>
         <h2 class="heading"><span>selector</span></h2>
       </div>
-      <div class="topnav">
+      <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
         <a class="uplink" href="../index.html">Contents</a>
@@ -50,30 +42,30 @@
         
         
   <h1>Source code for selector</h1><div class="highlight"><pre>
-<span class="c">#</span>
-<span class="c">#    Postfix queue control python tool (pyqueue)</span>
-<span class="c">#</span>
-<span class="c">#    Copyright (C) 2014 Denis Pompilio (jawa) &lt;denis.pompilio@gmail.com&gt;</span>
-<span class="c">#</span>
-<span class="c">#    This file is part of pyqueue</span>
-<span class="c">#</span>
-<span class="c">#    This program is free software; you can redistribute it and/or</span>
-<span class="c">#    modify it under the terms of the GNU General Public License</span>
-<span class="c">#    as published by the Free Software Foundation; either version 2</span>
-<span class="c">#    of the License, or (at your option) any later version.</span>
-<span class="c">#</span>
-<span class="c">#    This program is distributed in the hope that it will be useful,</span>
-<span class="c">#    but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
-<span class="c">#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
-<span class="c">#    GNU General Public License for more details.</span>
-<span class="c">#</span>
-<span class="c">#    You should have received a copy of the GNU General Public License</span>
-<span class="c">#    along with this program; if not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span></span><span class="c1">#</span>
+<span class="c1">#    Postfix queue control python tool (pymailq)</span>
+<span class="c1">#</span>
+<span class="c1">#    Copyright (C) 2014 Denis Pompilio (jawa) &lt;denis.pompilio@gmail.com&gt;</span>
+<span class="c1">#</span>
+<span class="c1">#    This file is part of pymailq</span>
+<span class="c1">#</span>
+<span class="c1">#    This program is free software; you can redistribute it and/or</span>
+<span class="c1">#    modify it under the terms of the GNU General Public License</span>
+<span class="c1">#    as published by the Free Software Foundation; either version 2</span>
+<span class="c1">#    of the License, or (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1">#    This program is distributed in the hope that it will be useful,</span>
+<span class="c1">#    but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1">#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1">#    GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1">#    You should have received a copy of the GNU General Public License</span>
+<span class="c1">#    along with this program; if not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
 
 <span class="kn">import</span> <span class="nn">gc</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">pyqueue</span> <span class="kn">import</span> <span class="n">debug</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">wraps</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">pymailq</span> <span class="k">import</span> <span class="n">debug</span>
 
 
 <div class="viewcode-block" id="MailSelector"><a class="viewcode-back" href="../selector.html#selector.MailSelector">[docs]</a><span class="k">class</span> <span class="nc">MailSelector</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -88,12 +80,12 @@
 <span class="sd">            Currently selected :class:`~store.Mail` objects :func:`list`</span>
 
 <span class="sd">        .. attribute:: store</span>
-<span class="sd">    </span>
+
 <span class="sd">            Linked :class:`~store.PostqueueStore` at the</span>
 <span class="sd">            :class:`~selector.MailSelector` instance initialization.</span>
 
 <span class="sd">        .. attribute:: filters</span>
-<span class="sd">    </span>
+
 <span class="sd">            Applied filters :func:`list` on current selection. Filters list</span>
 <span class="sd">            entries are tuples containing ``(function.__name__, args, kwargs)``</span>
 <span class="sd">            for each applied filters. This list is filled by the</span>
@@ -114,16 +106,16 @@
 <span class="sd">        Decorator to register applied filter.</span>
 
 <span class="sd">        This decorated is used to wrap selection methods ``lookup_*``. It</span>
-<span class="sd">        registers a ``(function.func_name, args, kwargs)`` :func:`tuple` in</span>
+<span class="sd">        registers a ``(function.__name__, args, kwargs)`` :func:`tuple` in</span>
 <span class="sd">        the :attr:`~MailSelector.filters` attribute.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nd">@wraps</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-            <span class="n">filterinfo</span> <span class="o">=</span> <span class="p">(</span><span class="n">function</span><span class="o">.</span><span class="n">func_name</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">filterinfo</span> <span class="o">=</span> <span class="p">(</span><span class="n">function</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filterinfo</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">wrapper</span>
-</div>
+        <span class="k">return</span> <span class="n">wrapper</span></div>
+
 <div class="viewcode-block" id="MailSelector.reset"><a class="viewcode-back" href="../selector.html#selector.MailSelector.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reset mail selector with initial store mails list.</span>
@@ -139,9 +131,9 @@
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
         <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span> <span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="o">.</span><span class="n">mails</span> <span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">filters</span> <span class="o">=</span> <span class="p">[]</span>
-</div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span><span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="o">.</span><span class="n">mails</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filters</span> <span class="o">=</span> <span class="p">[]</span></div>
+
 <div class="viewcode-block" id="MailSelector.replay_filters"><a class="viewcode-back" href="../selector.html#selector.MailSelector.replay_filters">[docs]</a>    <span class="k">def</span> <span class="nf">replay_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reset selection with store content and replay registered filters.</span>
@@ -158,16 +150,16 @@
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
         <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span> <span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="o">.</span><span class="n">mails</span> <span class="p">]</span>
-        <span class="n">filters</span> <span class="o">=</span> <span class="p">[</span> <span class="n">entry</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span> <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span><span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="o">.</span><span class="n">mails</span><span class="p">]</span>
+        <span class="n">filters</span> <span class="o">=</span> <span class="p">[</span><span class="n">entry</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">filterinfo</span> <span class="ow">in</span> <span class="n">filters</span><span class="p">:</span>
             <span class="n">name</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">filterinfo</span>
             <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">filters</span> <span class="o">=</span> <span class="n">filters</span>
-</div>
-    <span class="nd">@debug</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filters</span> <span class="o">=</span> <span class="n">filters</span></div>
+
+<div class="viewcode-block" id="MailSelector.lookup_status"><a class="viewcode-back" href="../selector.html#selector.MailSelector.lookup_status">[docs]</a>    <span class="nd">@debug</span>
     <span class="nd">@filter_registration</span>
-<div class="viewcode-block" id="MailSelector.lookup_status"><a class="viewcode-back" href="../selector.html#selector.MailSelector.lookup_status">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">lookup_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Lookup mails with specified postqueue status.</span>
 
@@ -175,15 +167,14 @@
 <span class="sd">        :return: List of newly selected :class:`~store.Mail` objects</span>
 <span class="sd">        :rtype: :func:`list`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span> <span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
-                       <span class="k">if</span> <span class="n">mail</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="n">status</span> <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span><span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
+                      <span class="k">if</span> <span class="n">mail</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="n">status</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span></div>
 
-</div>
-    <span class="nd">@debug</span>
+<div class="viewcode-block" id="MailSelector.lookup_sender"><a class="viewcode-back" href="../selector.html#selector.MailSelector.lookup_sender">[docs]</a>    <span class="nd">@debug</span>
     <span class="nd">@filter_registration</span>
-<div class="viewcode-block" id="MailSelector.lookup_sender"><a class="viewcode-back" href="../selector.html#selector.MailSelector.lookup_sender">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_sender</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">partial</span> <span class="o">=</span> <span class="bp">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">lookup_sender</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sender</span><span class="p">,</span> <span class="n">exact</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Lookup mails send from a specific sender.</span>
 
@@ -198,22 +189,22 @@
 
 <span class="sd">        :param str sender: Sender address to lookup in :class:`~store.Mail`</span>
 <span class="sd">                           objects selection.</span>
-<span class="sd">        :param bool partial: Allow lookup with partial match</span>
+<span class="sd">        :param bool exact: Allow lookup with partial or exact match</span>
 <span class="sd">        :return: List of newly selected :class:`~store.Mail` objects</span>
 <span class="sd">        :rtype: :func:`list`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">partial</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span> <span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
-                           <span class="k">if</span> <span class="n">sender</span> <span class="ow">in</span> <span class="n">mail</span><span class="o">.</span><span class="n">sender</span> <span class="p">]</span>
+        <span class="k">if</span> <span class="n">exact</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span><span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
+                          <span class="k">if</span> <span class="n">sender</span> <span class="ow">in</span> <span class="n">mail</span><span class="o">.</span><span class="n">sender</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span> <span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
-                           <span class="k">if</span> <span class="n">sender</span> <span class="o">==</span> <span class="n">mail</span><span class="o">.</span><span class="n">sender</span> <span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span><span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
+                          <span class="k">if</span> <span class="n">sender</span> <span class="o">==</span> <span class="n">mail</span><span class="o">.</span><span class="n">sender</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
-</div>
-    <span class="nd">@debug</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span></div>
+
+<div class="viewcode-block" id="MailSelector.lookup_error"><a class="viewcode-back" href="../selector.html#selector.MailSelector.lookup_error">[docs]</a>    <span class="nd">@debug</span>
     <span class="nd">@filter_registration</span>
-<div class="viewcode-block" id="MailSelector.lookup_error"><a class="viewcode-back" href="../selector.html#selector.MailSelector.lookup_error">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_msg</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">lookup_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error_msg</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Lookup mails with specific error message (message may be partial).</span>
 
@@ -221,46 +212,36 @@
 <span class="sd">        :return: List of newly selected :class:`~store.Mail` objects`</span>
 <span class="sd">        :rtype: :func:`list`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span> <span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
-                       <span class="k">if</span> <span class="bp">True</span> <span class="ow">in</span> <span class="p">[</span> <span class="bp">True</span> <span class="k">for</span> <span class="n">err</span> <span class="ow">in</span> <span class="n">mail</span><span class="o">.</span><span class="n">errors</span>
-                                    <span class="k">if</span> <span class="n">error_msg</span> <span class="ow">in</span> <span class="n">err</span> <span class="p">]</span> <span class="p">]</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
-</div>
-    <span class="nd">@debug</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span><span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
+                      <span class="k">if</span> <span class="kc">True</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">True</span> <span class="k">for</span> <span class="n">err</span> <span class="ow">in</span> <span class="n">mail</span><span class="o">.</span><span class="n">errors</span>
+                                  <span class="k">if</span> <span class="n">error_msg</span> <span class="ow">in</span> <span class="n">err</span><span class="p">]]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span></div>
+
+<div class="viewcode-block" id="MailSelector.lookup_date"><a class="viewcode-back" href="../selector.html#selector.MailSelector.lookup_date">[docs]</a>    <span class="nd">@debug</span>
     <span class="nd">@filter_registration</span>
-<div class="viewcode-block" id="MailSelector.lookup_date"><a class="viewcode-back" href="../selector.html#selector.MailSelector.lookup_date">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="n">stop</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">lookup_date</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Lookup mails send on specific date range.</span>
+<span class="sd">        Lookup mails send on specific date range(s).</span>
 
-<span class="sd">        Both arguments ``start`` and ``stop`` are optionnal and default is set</span>
-<span class="sd">        to ``None``. However, it is required to pass at least one of those</span>
-<span class="sd">        arguments. This method will raise :class:`~exception.TypeError` if both</span>
-<span class="sd">        arguments ``start`` and ``stop`` are set to ``None``.</span>
+<span class="sd">        :param datetime.date start: Start date (Default: None)</span>
+<span class="sd">        :param datetime.date stop: Stop date (Default: None)</span>
 
-<span class="sd">        :param datetime.datetime start: Start date</span>
-<span class="sd">                                        (default: ``datetime(1970,1,1)``)</span>
-<span class="sd">        :param datetime.datetime stop: Stop date</span>
-<span class="sd">                                       (default: ``datetime.now()``)</span>
 <span class="sd">        :return: List of newly selected :class:`~store.Mail` objects</span>
 <span class="sd">        :rtype: :func:`list`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">stop</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;Required arguments &#39;start&#39; or &#39;stop&#39; not found&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">1970</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">stop</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="p">(</span><span class="mi">1970</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">stop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">stop</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span> <span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
-                       <span class="k">if</span> <span class="n">mail</span><span class="o">.</span><span class="n">date</span> <span class="o">&gt;=</span> <span class="n">start</span> <span class="ow">and</span> <span class="n">mail</span><span class="o">.</span><span class="n">date</span> <span class="o">&lt;=</span> <span class="n">stop</span> <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span><span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
+                      <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;=</span> <span class="n">mail</span><span class="o">.</span><span class="n">date</span> <span class="o">&lt;=</span> <span class="n">stop</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
-</div>
-    <span class="nd">@debug</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span></div>
+
+<div class="viewcode-block" id="MailSelector.lookup_size"><a class="viewcode-back" href="../selector.html#selector.MailSelector.lookup_size">[docs]</a>    <span class="nd">@debug</span>
     <span class="nd">@filter_registration</span>
-<div class="viewcode-block" id="MailSelector.lookup_size"><a class="viewcode-back" href="../selector.html#selector.MailSelector.lookup_size">[docs]</a>    <span class="k">def</span> <span class="nf">lookup_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">smin</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">smax</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>  <span class="c"># TODO: documentation</span>
+    <span class="k">def</span> <span class="nf">lookup_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">smin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">smax</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>  <span class="c1"># TODO: documentation</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Lookup mails send with specific size.</span>
 
@@ -278,14 +259,14 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
 
         <span class="k">if</span> <span class="n">smax</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span> <span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="k">if</span> <span class="n">mail</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;=</span> <span class="n">smax</span> <span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span> <span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="k">if</span> <span class="n">mail</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;=</span> <span class="n">smin</span> <span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span><span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="k">if</span> <span class="n">mail</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;=</span> <span class="n">smax</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[</span><span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="k">if</span> <span class="n">mail</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;=</span> <span class="n">smin</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span></div></div>
 </pre></div>
 
       </div>
-      <div class="bottomnav">
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
         <a class="uplink" href="../index.html">Contents</a>
@@ -293,9 +274,9 @@
 
       </div>
 
-    <div class="footer">
-        &copy; Copyright 2014, Denis &#39;jawa&#39; Pompilio.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, Denis &#39;jawa&#39; Pompilio.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

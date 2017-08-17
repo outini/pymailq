@@ -1,90 +1,91 @@
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>pyqueue.control – Mails queue adminitrative operations &mdash; PyQueue 0.5.2
+    <title>pymailq.control – Mails queue adminitrative operations &#8212; PyMailq 0.6.0
  documentation</title>
-    
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/print.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '0.5.2
-',
+        URL_ROOT:    './',
+        VERSION:     '0.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/theme_extras.js"></script>
-    <link rel="top" title="PyQueue 0.5.2
- documentation" href="index.html" />
-    <link rel="next" title="pyqueue.shell – Mails queue management shell" href="shell.html" />
-    <link rel="prev" title="pyqueue.selector – Mails queue filtering" href="selector.html" /> 
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pymailq.shell – Mails queue management shell" href="shell.html" />
+    <link rel="prev" title="pymailq.selector – Mails queue filtering" href="selector.html" /> 
   </head>
   <body>
-      <div class="header"><h1 class="heading"><a href="index.html">
-          <span>PyQueue 0.5.2
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>PyMailq 0.6.0
  documentation</span></a></h1>
-        <h2 class="heading"><span>pyqueue.control – Mails queue adminitrative operations</span></h2>
+        <h2 class="heading"><span>pymailq.control – Mails queue adminitrative operations</span></h2>
       </div>
-      <div class="topnav">
+      <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="selector.html">pyqueue.selector &#8211; Mails queue filtering</a>
+        «&#160;&#160;<a href="selector.html">pymailq.selector – Mails queue filtering</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="shell.html">pyqueue.shell &#8211; Mails queue management shell</a>&#160;&#160;»
+        <a href="shell.html">pymailq.shell – Mails queue management shell</a>&#160;&#160;»
         </p>
 
       </div>
       <div class="content">
         
         
-  <div class="section" id="pyqueue-control-mails-queue-adminitrative-operations">
-<h1>pyqueue.control &#8211; Mails queue adminitrative operations<a class="headerlink" href="#pyqueue-control-mails-queue-adminitrative-operations" title="Permalink to this headline">¶</a></h1>
-<p>The <tt class="xref py py-mod docutils literal"><span class="pre">control</span></tt> module define a basic python class to simplify
+  <div class="section" id="pymailq-control-mails-queue-adminitrative-operations">
+<h1>pymailq.control – Mails queue adminitrative operations<a class="headerlink" href="#pymailq-control-mails-queue-adminitrative-operations" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="xref py py-mod docutils literal"><span class="pre">control</span></code> module define a basic python class to simplify
 administrative operations against the mails queue. This module is mainly based
 on the <a class="reference external" href="http://www.postfix.org/postsuper.1.html">postsuper</a> administrative tool functionnalities.</p>
 <div class="section" id="queuecontrol-objects">
-<h2><a class="reference internal" href="#control.QueueControl" title="control.QueueControl"><tt class="xref py py-class docutils literal"><span class="pre">QueueControl</span></tt></a> Objects<a class="headerlink" href="#queuecontrol-objects" title="Permalink to this headline">¶</a></h2>
+<h2><a class="reference internal" href="#control.QueueControl" title="control.QueueControl"><code class="xref py py-class docutils literal"><span class="pre">QueueControl</span></code></a> Objects<a class="headerlink" href="#queuecontrol-objects" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><dl class="class">
 <dt id="control.QueueControl">
-<em class="property">class </em><tt class="descclassname">control.</tt><tt class="descname">QueueControl</tt><a class="reference internal" href="_modules/control.html#QueueControl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#control.QueueControl" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">control.</code><code class="descname">QueueControl</code><a class="reference internal" href="_modules/control.html#QueueControl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#control.QueueControl" title="Permalink to this definition">¶</a></dt>
 <dd><p>Postfix queue control using postsuper command.</p>
-<p>The <a class="reference internal" href="#control.QueueControl" title="control.QueueControl"><tt class="xref py py-class docutils literal"><span class="pre">QueueControl</span></tt></a> instance defines the following
+<p>The <a class="reference internal" href="#control.QueueControl" title="control.QueueControl"><code class="xref py py-class docutils literal"><span class="pre">QueueControl</span></code></a> instance defines the following
 attributes:</p>
 <blockquote>
 <div><dl class="attribute">
+<dt id="QueueControl.use_sudo">
+<code class="descname">use_sudo</code><a class="headerlink" href="#QueueControl.use_sudo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boolean to control the use of <cite>sudo</cite> to invoke Postfix command.
+Default is <code class="docutils literal"><span class="pre">False</span></code></p>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="QueueControl.postsuper_cmd">
-<tt class="descname">postsuper_cmd</tt><a class="headerlink" href="#QueueControl.postsuper_cmd" title="Permalink to this definition">¶</a></dt>
-<dd><p>Postfix command and arguments <a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">list()</span></tt></a> for mails queue
-administrative operations. Default is <tt class="docutils literal"><span class="pre">[&quot;postsuper&quot;]</span></tt></p>
+<code class="descname">postsuper_cmd</code><a class="headerlink" href="#QueueControl.postsuper_cmd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Postfix command and arguments <code class="xref py py-func docutils literal"><span class="pre">list()</span></code> for mails queue
+administrative operations. Default is <code class="docutils literal"><span class="pre">[&quot;postsuper&quot;]</span></code></p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="QueueControl.known_operations">
-<tt class="descname">known_operations</tt><a class="headerlink" href="#QueueControl.known_operations" title="Permalink to this definition">¶</a></dt>
-<dd><p>Known Postfix administrative operations <a class="reference external" href="http://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">dict</span></tt></a> to associate
+<code class="descname">known_operations</code><a class="headerlink" href="#QueueControl.known_operations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Known Postfix administrative operations <a class="reference external" href="https://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">dict</span></code></a> to associate
 operations to command arguments. Known associations are:</p>
-<div class="highlight-python"><pre> delete: -d
-   hold: -h
-release: -H
-requeue: -r</pre>
+<div class="highlight-default"><div class="highlight"><pre><span></span> <span class="n">delete</span><span class="p">:</span> <span class="o">-</span><span class="n">d</span>
+   <span class="n">hold</span><span class="p">:</span> <span class="o">-</span><span class="n">h</span>
+<span class="n">release</span><span class="p">:</span> <span class="o">-</span><span class="n">H</span>
+<span class="n">requeue</span><span class="p">:</span> <span class="o">-</span><span class="n">r</span>
+</pre></div>
 </div>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -93,42 +94,42 @@ queue administrative command <a class="reference external" href="http://www.post
 </div>
 </dd></dl>
 
-<div class="admonition-see-also admonition seealso">
+<div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <dl class="last docutils">
 <dt>Postfix manual:</dt>
-<dd><a class="reference external" href="http://www.postfix.org/postsuper.1.html">postsuper</a> &#8211; Postfix superintendent</dd>
+<dd><a class="reference external" href="http://www.postfix.org/postsuper.1.html">postsuper</a> – Postfix superintendent</dd>
 </dl>
 </div>
 </div></blockquote>
 </dd></dl>
 
-<p>The <a class="reference internal" href="#control.QueueControl" title="control.QueueControl"><tt class="xref py py-class docutils literal"><span class="pre">QueueControl</span></tt></a> instance provides the following methods:</p>
+<p>The <a class="reference internal" href="#control.QueueControl" title="control.QueueControl"><code class="xref py py-class docutils literal"><span class="pre">QueueControl</span></code></a> instance provides the following methods:</p>
 <blockquote>
 <div><dl class="method">
 <dt id="control.QueueControl._operate">
-<tt class="descclassname">QueueControl.</tt><tt class="descname">_operate</tt><big>(</big><em>operation</em>, <em>messages</em><big>)</big><a class="reference internal" href="_modules/control.html#QueueControl._operate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#control.QueueControl._operate" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QueueControl.</code><code class="descname">_operate</code><span class="sig-paren">(</span><em>operation</em>, <em>messages</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/control.html#QueueControl._operate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#control.QueueControl._operate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generic method to lead operations messages from postfix mail queue.</p>
 <p>Operations can be one of Postfix known operations stored in
-<a class="reference internal" href="#QueueControl.known_operations" title="QueueControl.known_operations"><tt class="xref py py-attr docutils literal"><span class="pre">known_operations</span></tt></a> attribute. Operation
+<a class="reference internal" href="#QueueControl.known_operations" title="QueueControl.known_operations"><code class="xref py py-attr docutils literal"><span class="pre">known_operations</span></code></a> attribute. Operation
 argument is directly converted and passed to the
-<a class="reference internal" href="#QueueControl.postsuper_cmd" title="QueueControl.postsuper_cmd"><tt class="xref py py-attr docutils literal"><span class="pre">postsuper_cmd</span></tt></a> command.</p>
+<a class="reference internal" href="#QueueControl.postsuper_cmd" title="QueueControl.postsuper_cmd"><code class="xref py py-attr docutils literal"><span class="pre">postsuper_cmd</span></code></a> command.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>operation</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Known operation from
-<a class="reference internal" href="#QueueControl.known_operations" title="QueueControl.known_operations"><tt class="xref py py-attr docutils literal"><span class="pre">known_operations</span></tt></a>.</li>
-<li><strong>messages</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; List of <tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt> objects targetted
+<li><strong>operation</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Known operation from
+<a class="reference internal" href="#QueueControl.known_operations" title="QueueControl.known_operations"><code class="xref py py-attr docutils literal"><span class="pre">known_operations</span></code></a>.</li>
+<li><strong>messages</strong> (<em>list</em>) – List of <code class="xref py py-class docutils literal"><span class="pre">Mail</span></code> objects targetted
 for operation.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Command&#8217;s <em>stderr</em> output lines</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Command’s <em>stderr</em> output lines</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">list()</span></tt></a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-func docutils literal"><span class="pre">list()</span></code></p>
 </td>
 </tr>
 </tbody>
@@ -137,34 +138,34 @@ for operation.</li>
 
 <dl class="method">
 <dt id="control.QueueControl.delete_messages">
-<tt class="descclassname">QueueControl.</tt><tt class="descname">delete_messages</tt><big>(</big><em>messages</em><big>)</big><a class="reference internal" href="_modules/control.html#QueueControl.delete_messages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#control.QueueControl.delete_messages" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QueueControl.</code><code class="descname">delete_messages</code><span class="sig-paren">(</span><em>messages</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/control.html#QueueControl.delete_messages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#control.QueueControl.delete_messages" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete several messages from postfix mail queue.</p>
-<p>This method is a <a class="reference external" href="http://docs.python.org/2.7/library/functools.html#functools.partial" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">partial()</span></tt></a> wrapper on
-<a class="reference internal" href="#control.QueueControl._operate" title="control.QueueControl._operate"><tt class="xref py py-meth docutils literal"><span class="pre">_operate()</span></tt></a>. Passed operation is <tt class="docutils literal"><span class="pre">delete</span></tt></p>
+<p>This method is a <a class="reference external" href="https://docs.python.org/2.7/library/functools.html#functools.partial" title="(in Python v2.7)"><code class="xref py py-func docutils literal"><span class="pre">partial()</span></code></a> wrapper on
+<a class="reference internal" href="#control.QueueControl._operate" title="control.QueueControl._operate"><code class="xref py py-meth docutils literal"><span class="pre">_operate()</span></code></a>. Passed operation is <code class="docutils literal"><span class="pre">delete</span></code></p>
 </dd></dl>
 
 <dl class="method">
 <dt id="control.QueueControl.hold_messages">
-<tt class="descclassname">QueueControl.</tt><tt class="descname">hold_messages</tt><big>(</big><em>messages</em><big>)</big><a class="reference internal" href="_modules/control.html#QueueControl.hold_messages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#control.QueueControl.hold_messages" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QueueControl.</code><code class="descname">hold_messages</code><span class="sig-paren">(</span><em>messages</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/control.html#QueueControl.hold_messages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#control.QueueControl.hold_messages" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hold several messages from postfix mail queue.</p>
-<p>This method is a <a class="reference external" href="http://docs.python.org/2.7/library/functools.html#functools.partial" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">partial()</span></tt></a> wrapper on
-<a class="reference internal" href="#control.QueueControl._operate" title="control.QueueControl._operate"><tt class="xref py py-meth docutils literal"><span class="pre">_operate()</span></tt></a>. Passed operation is <tt class="docutils literal"><span class="pre">hold</span></tt></p>
+<p>This method is a <a class="reference external" href="https://docs.python.org/2.7/library/functools.html#functools.partial" title="(in Python v2.7)"><code class="xref py py-func docutils literal"><span class="pre">partial()</span></code></a> wrapper on
+<a class="reference internal" href="#control.QueueControl._operate" title="control.QueueControl._operate"><code class="xref py py-meth docutils literal"><span class="pre">_operate()</span></code></a>. Passed operation is <code class="docutils literal"><span class="pre">hold</span></code></p>
 </dd></dl>
 
 <dl class="method">
 <dt id="control.QueueControl.release_messages">
-<tt class="descclassname">QueueControl.</tt><tt class="descname">release_messages</tt><big>(</big><em>messages</em><big>)</big><a class="reference internal" href="_modules/control.html#QueueControl.release_messages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#control.QueueControl.release_messages" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QueueControl.</code><code class="descname">release_messages</code><span class="sig-paren">(</span><em>messages</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/control.html#QueueControl.release_messages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#control.QueueControl.release_messages" title="Permalink to this definition">¶</a></dt>
 <dd><p>Release several messages from postfix mail queue.</p>
-<p>This method is a <a class="reference external" href="http://docs.python.org/2.7/library/functools.html#functools.partial" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">partial()</span></tt></a> wrapper on
-<a class="reference internal" href="#control.QueueControl._operate" title="control.QueueControl._operate"><tt class="xref py py-meth docutils literal"><span class="pre">_operate()</span></tt></a>. Passed operation is <tt class="docutils literal"><span class="pre">release</span></tt></p>
+<p>This method is a <a class="reference external" href="https://docs.python.org/2.7/library/functools.html#functools.partial" title="(in Python v2.7)"><code class="xref py py-func docutils literal"><span class="pre">partial()</span></code></a> wrapper on
+<a class="reference internal" href="#control.QueueControl._operate" title="control.QueueControl._operate"><code class="xref py py-meth docutils literal"><span class="pre">_operate()</span></code></a>. Passed operation is <code class="docutils literal"><span class="pre">release</span></code></p>
 </dd></dl>
 
 <dl class="method">
 <dt id="control.QueueControl.requeue_messages">
-<tt class="descclassname">QueueControl.</tt><tt class="descname">requeue_messages</tt><big>(</big><em>messages</em><big>)</big><a class="reference internal" href="_modules/control.html#QueueControl.requeue_messages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#control.QueueControl.requeue_messages" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">QueueControl.</code><code class="descname">requeue_messages</code><span class="sig-paren">(</span><em>messages</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/control.html#QueueControl.requeue_messages"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#control.QueueControl.requeue_messages" title="Permalink to this definition">¶</a></dt>
 <dd><p>Requeue several messages from postfix mail queue.</p>
-<p>This method is a <a class="reference external" href="http://docs.python.org/2.7/library/functools.html#functools.partial" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">partial()</span></tt></a> wrapper on
-<a class="reference internal" href="#control.QueueControl._operate" title="control.QueueControl._operate"><tt class="xref py py-meth docutils literal"><span class="pre">_operate()</span></tt></a>. Passed operation is <tt class="docutils literal"><span class="pre">requeue</span></tt></p>
+<p>This method is a <a class="reference external" href="https://docs.python.org/2.7/library/functools.html#functools.partial" title="(in Python v2.7)"><code class="xref py py-func docutils literal"><span class="pre">partial()</span></code></a> wrapper on
+<a class="reference internal" href="#control.QueueControl._operate" title="control.QueueControl._operate"><code class="xref py py-meth docutils literal"><span class="pre">_operate()</span></code></a>. Passed operation is <code class="docutils literal"><span class="pre">requeue</span></code></p>
 </dd></dl>
 
 </div></blockquote>
@@ -174,21 +175,21 @@ for operation.</li>
 
 
       </div>
-      <div class="bottomnav">
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="selector.html">pyqueue.selector &#8211; Mails queue filtering</a>
+        «&#160;&#160;<a href="selector.html">pymailq.selector – Mails queue filtering</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="shell.html">pyqueue.shell &#8211; Mails queue management shell</a>&#160;&#160;»
+        <a href="shell.html">pymailq.shell – Mails queue management shell</a>&#160;&#160;»
         </p>
 
       </div>
 
-    <div class="footer">
-        &copy; Copyright 2014, Denis &#39;jawa&#39; Pompilio.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, Denis &#39;jawa&#39; Pompilio.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

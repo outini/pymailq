@@ -1,149 +1,142 @@
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>pyqueue.selector – Mails queue filtering &mdash; PyQueue 0.5.2
+    <title>pymailq.selector – Mails queue filtering &#8212; PyMailq 0.6.0
  documentation</title>
-    
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/print.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
-        VERSION:     '0.5.2
-',
+        URL_ROOT:    './',
+        VERSION:     '0.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/theme_extras.js"></script>
-    <link rel="top" title="PyQueue 0.5.2
- documentation" href="index.html" />
-    <link rel="next" title="pyqueue.control – Mails queue adminitrative operations" href="control.html" />
-    <link rel="prev" title="pyqueue.store – Mails queue storage objects" href="store.html" /> 
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pymailq.control – Mails queue adminitrative operations" href="control.html" />
+    <link rel="prev" title="pymailq.store – Mails queue storage objects" href="store.html" /> 
   </head>
   <body>
-      <div class="header"><h1 class="heading"><a href="index.html">
-          <span>PyQueue 0.5.2
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>PyMailq 0.6.0
  documentation</span></a></h1>
-        <h2 class="heading"><span>pyqueue.selector – Mails queue filtering</span></h2>
+        <h2 class="heading"><span>pymailq.selector – Mails queue filtering</span></h2>
       </div>
-      <div class="topnav">
+      <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="store.html">pyqueue.store &#8211; Mails queue storage objects</a>
+        «&#160;&#160;<a href="store.html">pymailq.store – Mails queue storage objects</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="control.html">pyqueue.control &#8211; Mails queue adminitrative operations</a>&#160;&#160;»
+        <a href="control.html">pymailq.control – Mails queue adminitrative operations</a>&#160;&#160;»
         </p>
 
       </div>
       <div class="content">
         
         
-  <div class="section" id="pyqueue-selector-mails-queue-filtering">
-<h1>pyqueue.selector &#8211; Mails queue filtering<a class="headerlink" href="#pyqueue-selector-mails-queue-filtering" title="Permalink to this headline">¶</a></h1>
-<p>The <tt class="xref py py-mod docutils literal"><span class="pre">selector</span></tt> module mainly provide a selector class to interact with
-structures from the <tt class="xref py py-mod docutils literal"><span class="pre">store</span></tt> module.</p>
+  <div class="section" id="pymailq-selector-mails-queue-filtering">
+<h1>pymailq.selector – Mails queue filtering<a class="headerlink" href="#pymailq-selector-mails-queue-filtering" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="xref py py-mod docutils literal"><span class="pre">selector</span></code> module mainly provide a selector class to interact with
+structures from the <code class="xref py py-mod docutils literal"><span class="pre">store</span></code> module.</p>
 <div class="section" id="mailselector-objects">
-<h2><a class="reference internal" href="#selector.MailSelector" title="selector.MailSelector"><tt class="xref py py-class docutils literal"><span class="pre">MailSelector</span></tt></a> Objects<a class="headerlink" href="#mailselector-objects" title="Permalink to this headline">¶</a></h2>
+<h2><a class="reference internal" href="#selector.MailSelector" title="selector.MailSelector"><code class="xref py py-class docutils literal"><span class="pre">MailSelector</span></code></a> Objects<a class="headerlink" href="#mailselector-objects" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><dl class="class">
 <dt id="selector.MailSelector">
-<em class="property">class </em><tt class="descclassname">selector.</tt><tt class="descname">MailSelector</tt><big>(</big><em>store</em><big>)</big><a class="reference internal" href="_modules/selector.html#MailSelector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selector.MailSelector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">selector.</code><code class="descname">MailSelector</code><span class="sig-paren">(</span><em>store</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/selector.html#MailSelector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selector.MailSelector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mail selector class to request mails from store matching criterias.</p>
-<p>The <a class="reference internal" href="#selector.MailSelector" title="selector.MailSelector"><tt class="xref py py-class docutils literal"><span class="pre">MailSelector</span></tt></a> instance provides the following
+<p>The <a class="reference internal" href="#selector.MailSelector" title="selector.MailSelector"><code class="xref py py-class docutils literal"><span class="pre">MailSelector</span></code></a> instance provides the following
 attributes:</p>
 <blockquote>
 <div><dl class="attribute">
 <dt id="MailSelector.mails">
-<tt class="descname">mails</tt><a class="headerlink" href="#MailSelector.mails" title="Permalink to this definition">¶</a></dt>
-<dd><p>Currently selected <tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt> objects <a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">list()</span></tt></a></p>
+<code class="descname">mails</code><a class="headerlink" href="#MailSelector.mails" title="Permalink to this definition">¶</a></dt>
+<dd><p>Currently selected <code class="xref py py-class docutils literal"><span class="pre">Mail</span></code> objects <code class="xref py py-func docutils literal"><span class="pre">list()</span></code></p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MailSelector.store">
-<tt class="descname">store</tt><a class="headerlink" href="#MailSelector.store" title="Permalink to this definition">¶</a></dt>
-<dd><p>Linked <tt class="xref py py-class docutils literal"><span class="pre">PostqueueStore</span></tt> at the
-<a class="reference internal" href="#selector.MailSelector" title="selector.MailSelector"><tt class="xref py py-class docutils literal"><span class="pre">MailSelector</span></tt></a> instance initialization.</p>
+<code class="descname">store</code><a class="headerlink" href="#MailSelector.store" title="Permalink to this definition">¶</a></dt>
+<dd><p>Linked <code class="xref py py-class docutils literal"><span class="pre">PostqueueStore</span></code> at the
+<a class="reference internal" href="#selector.MailSelector" title="selector.MailSelector"><code class="xref py py-class docutils literal"><span class="pre">MailSelector</span></code></a> instance initialization.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MailSelector.filters">
-<tt class="descname">filters</tt><a class="headerlink" href="#MailSelector.filters" title="Permalink to this definition">¶</a></dt>
-<dd><p>Applied filters <a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">list()</span></tt></a> on current selection. Filters list
-entries are tuples containing <tt class="docutils literal"><span class="pre">(function.__name__,</span> <span class="pre">args,</span> <span class="pre">kwargs)</span></tt>
+<code class="descname">filters</code><a class="headerlink" href="#MailSelector.filters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applied filters <code class="xref py py-func docutils literal"><span class="pre">list()</span></code> on current selection. Filters list
+entries are tuples containing <code class="docutils literal"><span class="pre">(function.__name__,</span> <span class="pre">args,</span> <span class="pre">kwargs)</span></code>
 for each applied filters. This list is filled by the
-<a class="reference internal" href="#selector.MailSelector.filter_registration" title="selector.MailSelector.filter_registration"><tt class="xref py py-meth docutils literal"><span class="pre">filter_registration()</span></tt></a> decorator while
+<a class="reference internal" href="#selector.MailSelector.filter_registration" title="selector.MailSelector.filter_registration"><code class="xref py py-meth docutils literal"><span class="pre">filter_registration()</span></code></a> decorator while
 calling filtering methods. It is possible to replay registered
-filter using <a class="reference internal" href="#selector.MailSelector.replay_filters" title="selector.MailSelector.replay_filters"><tt class="xref py py-meth docutils literal"><span class="pre">replay_filters()</span></tt></a> method.</p>
+filter using <a class="reference internal" href="#selector.MailSelector.replay_filters" title="selector.MailSelector.replay_filters"><code class="xref py py-meth docutils literal"><span class="pre">replay_filters()</span></code></a> method.</p>
 </dd></dl>
 
 </div></blockquote>
 </dd></dl>
 
-<p>The <a class="reference internal" href="#selector.MailSelector" title="selector.MailSelector"><tt class="xref py py-class docutils literal"><span class="pre">MailSelector</span></tt></a> instance provides the following methods:</p>
+<p>The <a class="reference internal" href="#selector.MailSelector" title="selector.MailSelector"><code class="xref py py-class docutils literal"><span class="pre">MailSelector</span></code></a> instance provides the following methods:</p>
 <blockquote>
 <div><dl class="method">
 <dt id="selector.MailSelector.filter_registration">
-<tt class="descclassname">MailSelector.</tt><tt class="descname">filter_registration</tt><big>(</big><em>function</em><big>)</big><a class="reference internal" href="_modules/selector.html#MailSelector.filter_registration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selector.MailSelector.filter_registration" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MailSelector.</code><code class="descname">filter_registration</code><span class="sig-paren">(</span><em>function</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/selector.html#MailSelector.filter_registration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selector.MailSelector.filter_registration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorator to register applied filter.</p>
-<p>This decorated is used to wrap selection methods <tt class="docutils literal"><span class="pre">lookup_*</span></tt>. It
-registers a <tt class="docutils literal"><span class="pre">(function.__name__,</span> <span class="pre">args,</span> <span class="pre">kwargs)</span></tt> <a class="reference external" href="http://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">tuple()</span></tt></a> in
-the <a class="reference internal" href="#MailSelector.filters" title="MailSelector.filters"><tt class="xref py py-attr docutils literal"><span class="pre">filters</span></tt></a> attribute.</p>
+<p>This decorated is used to wrap selection methods <code class="docutils literal"><span class="pre">lookup_*</span></code>. It
+registers a <code class="docutils literal"><span class="pre">(function.__name__,</span> <span class="pre">args,</span> <span class="pre">kwargs)</span></code> <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)"><code class="xref py py-func docutils literal"><span class="pre">tuple()</span></code></a> in
+the <a class="reference internal" href="#MailSelector.filters" title="MailSelector.filters"><code class="xref py py-attr docutils literal"><span class="pre">filters</span></code></a> attribute.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="selector.MailSelector.reset">
-<tt class="descclassname">MailSelector.</tt><tt class="descname">reset</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/selector.html#MailSelector.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selector.MailSelector.reset" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MailSelector.</code><code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/selector.html#MailSelector.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selector.MailSelector.reset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset mail selector with initial store mails list.</p>
-<p>Selected <tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt> objects are deleted and the
-<a class="reference internal" href="#MailSelector.mails" title="MailSelector.mails"><tt class="xref py py-attr docutils literal"><span class="pre">mails</span></tt></a> attribute is removed for memory releasing
-purpose (with help of <a class="reference external" href="http://docs.python.org/2.7/library/gc.html#gc.collect" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">gc.collect()</span></tt></a>). Attribute
-<a class="reference internal" href="#MailSelector.mails" title="MailSelector.mails"><tt class="xref py py-attr docutils literal"><span class="pre">mails</span></tt></a> is then reinitialized a copy of
-<a class="reference internal" href="#MailSelector.store" title="MailSelector.store"><tt class="xref py py-attr docutils literal"><span class="pre">store</span></tt></a>&#8216;s <a class="reference internal" href="store.html#PostqueueStore.mails" title="PostqueueStore.mails"><tt class="xref py py-attr docutils literal"><span class="pre">mails</span></tt></a> attribute.</p>
-<p>Registered <a class="reference internal" href="#MailSelector.filters" title="MailSelector.filters"><tt class="xref py py-attr docutils literal"><span class="pre">filters</span></tt></a> are also emptied.</p>
+<p>Selected <code class="xref py py-class docutils literal"><span class="pre">Mail</span></code> objects are deleted and the
+<a class="reference internal" href="#MailSelector.mails" title="MailSelector.mails"><code class="xref py py-attr docutils literal"><span class="pre">mails</span></code></a> attribute is removed for memory releasing
+purpose (with help of <a class="reference external" href="https://docs.python.org/2.7/library/gc.html#gc.collect" title="(in Python v2.7)"><code class="xref py py-func docutils literal"><span class="pre">gc.collect()</span></code></a>). Attribute
+<a class="reference internal" href="#MailSelector.mails" title="MailSelector.mails"><code class="xref py py-attr docutils literal"><span class="pre">mails</span></code></a> is then reinitialized a copy of
+<a class="reference internal" href="#MailSelector.store" title="MailSelector.store"><code class="xref py py-attr docutils literal"><span class="pre">store</span></code></a>’s <a class="reference internal" href="store.html#PostqueueStore.mails" title="PostqueueStore.mails"><code class="xref py py-attr docutils literal"><span class="pre">mails</span></code></a> attribute.</p>
+<p>Registered <a class="reference internal" href="#MailSelector.filters" title="MailSelector.filters"><code class="xref py py-attr docutils literal"><span class="pre">filters</span></code></a> are also emptied.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="selector.MailSelector.replay_filters">
-<tt class="descclassname">MailSelector.</tt><tt class="descname">replay_filters</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/selector.html#MailSelector.replay_filters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selector.MailSelector.replay_filters" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MailSelector.</code><code class="descname">replay_filters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/selector.html#MailSelector.replay_filters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selector.MailSelector.replay_filters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset selection with store content and replay registered filters.</p>
-<p>Like with the <a class="reference internal" href="#selector.MailSelector.reset" title="selector.MailSelector.reset"><tt class="xref py py-meth docutils literal"><span class="pre">reset()</span></tt></a> method, selected
-<tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt> objects are deleted and reinitialized with a copy
-of <a class="reference internal" href="#MailSelector.store" title="MailSelector.store"><tt class="xref py py-attr docutils literal"><span class="pre">store</span></tt></a>&#8216;s <a class="reference internal" href="store.html#PostqueueStore.mails" title="PostqueueStore.mails"><tt class="xref py py-attr docutils literal"><span class="pre">mails</span></tt></a>
+<p>Like with the <a class="reference internal" href="#selector.MailSelector.reset" title="selector.MailSelector.reset"><code class="xref py py-meth docutils literal"><span class="pre">reset()</span></code></a> method, selected
+<code class="xref py py-class docutils literal"><span class="pre">Mail</span></code> objects are deleted and reinitialized with a copy
+of <a class="reference internal" href="#MailSelector.store" title="MailSelector.store"><code class="xref py py-attr docutils literal"><span class="pre">store</span></code></a>’s <a class="reference internal" href="store.html#PostqueueStore.mails" title="PostqueueStore.mails"><code class="xref py py-attr docutils literal"><span class="pre">mails</span></code></a>
 attribute.</p>
-<p>However, registered <a class="reference internal" href="#MailSelector.filters" title="MailSelector.filters"><tt class="xref py py-attr docutils literal"><span class="pre">filters</span></tt></a> are kept and replayed
+<p>However, registered <a class="reference internal" href="#MailSelector.filters" title="MailSelector.filters"><code class="xref py py-attr docutils literal"><span class="pre">filters</span></code></a> are kept and replayed
 on resetted selection. Use this method to refresh your store content
 while keeping your filters.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="selector.MailSelector.lookup_status">
-<tt class="descclassname">MailSelector.</tt><tt class="descname">lookup_status</tt><big>(</big><em>status</em><big>)</big><a class="reference internal" href="_modules/selector.html#MailSelector.lookup_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selector.MailSelector.lookup_status" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MailSelector.</code><code class="descname">lookup_status</code><span class="sig-paren">(</span><em>status</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/selector.html#MailSelector.lookup_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selector.MailSelector.lookup_status" title="Permalink to this definition">¶</a></dt>
 <dd><p>Lookup mails with specified postqueue status.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>status</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; List of matching status to filter on.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>status</strong> (<em>list</em>) – List of matching status to filter on.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of newly selected <tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt> objects</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of newly selected <code class="xref py py-class docutils literal"><span class="pre">Mail</span></code> objects</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">list()</span></tt></a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-func docutils literal"><span class="pre">list()</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -151,14 +144,14 @@ while keeping your filters.</p>
 
 <dl class="method">
 <dt id="selector.MailSelector.lookup_sender">
-<tt class="descclassname">MailSelector.</tt><tt class="descname">lookup_sender</tt><big>(</big><em>sender</em><span class="optional">[</span>, <em>partial</em><span class="optional">]</span><big>)</big><a class="reference internal" href="_modules/selector.html#MailSelector.lookup_sender"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selector.MailSelector.lookup_sender" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MailSelector.</code><code class="descname">lookup_sender</code><span class="sig-paren">(</span><em>sender</em><span class="optional">[</span>, <em>partial</em><span class="optional">]</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/selector.html#MailSelector.lookup_sender"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selector.MailSelector.lookup_sender" title="Permalink to this definition">¶</a></dt>
 <dd><p>Lookup mails send from a specific sender.</p>
-<p>Optionnal parameter <tt class="docutils literal"><span class="pre">partial</span></tt> allow lookup of partial sender like
-<tt class="docutils literal"><span class="pre">&#64;domain.com</span></tt> or <tt class="docutils literal"><span class="pre">sender&#64;</span></tt>. By default, <tt class="docutils literal"><span class="pre">partial</span></tt> is <tt class="docutils literal"><span class="pre">False</span></tt>
+<p>Optionnal parameter <code class="docutils literal"><span class="pre">partial</span></code> allow lookup of partial sender like
+<code class="docutils literal"><span class="pre">&#64;domain.com</span></code> or <code class="docutils literal"><span class="pre">sender&#64;</span></code>. By default, <code class="docutils literal"><span class="pre">partial</span></code> is <code class="docutils literal"><span class="pre">False</span></code>
 and selection is made on exact sender.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Matches are made against <a class="reference internal" href="store.html#Mail.sender" title="Mail.sender"><tt class="xref py py-attr docutils literal"><span class="pre">Mail.sender</span></tt></a> attribute instead of
+<p class="last">Matches are made against <a class="reference internal" href="store.html#Mail.sender" title="Mail.sender"><code class="xref py py-attr docutils literal"><span class="pre">Mail.sender</span></code></a> attribute instead of
 real mail header <em class="mailheader">Sender</em>.</p>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
@@ -166,16 +159,16 @@ real mail header <em class="mailheader">Sender</em>.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>sender</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Sender address to lookup in <tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt>
+<li><strong>sender</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Sender address to lookup in <code class="xref py py-class docutils literal"><span class="pre">Mail</span></code>
 objects selection.</li>
-<li><strong>partial</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Allow lookup with partial match</li>
+<li><strong>exact</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Allow lookup with partial or exact match</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">List of newly selected <tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt> objects</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">List of newly selected <code class="xref py py-class docutils literal"><span class="pre">Mail</span></code> objects</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">list()</span></tt></a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-func docutils literal"><span class="pre">list()</span></code></p>
 </td>
 </tr>
 </tbody>
@@ -184,17 +177,17 @@ objects selection.</li>
 
 <dl class="method">
 <dt id="selector.MailSelector.lookup_error">
-<tt class="descclassname">MailSelector.</tt><tt class="descname">lookup_error</tt><big>(</big><em>error_msg</em><big>)</big><a class="reference internal" href="_modules/selector.html#MailSelector.lookup_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selector.MailSelector.lookup_error" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MailSelector.</code><code class="descname">lookup_error</code><span class="sig-paren">(</span><em>error_msg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/selector.html#MailSelector.lookup_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selector.MailSelector.lookup_error" title="Permalink to this definition">¶</a></dt>
 <dd><p>Lookup mails with specific error message (message may be partial).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>error_msg</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Error message to filter on</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>error_msg</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Error message to filter on</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of newly selected <tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt> objects`</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of newly selected <code class="xref py py-class docutils literal"><span class="pre">Mail</span></code> objects`</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">list()</span></tt></a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><code class="xref py py-func docutils literal"><span class="pre">list()</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -202,28 +195,22 @@ objects selection.</li>
 
 <dl class="method">
 <dt id="selector.MailSelector.lookup_date">
-<tt class="descclassname">MailSelector.</tt><tt class="descname">lookup_date</tt><big>(</big><span class="optional">[</span><em>start</em><span class="optional">[</span>, <em>stop</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="reference internal" href="_modules/selector.html#MailSelector.lookup_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selector.MailSelector.lookup_date" title="Permalink to this definition">¶</a></dt>
-<dd><p>Lookup mails send on specific date range.</p>
-<p>Both arguments <tt class="docutils literal"><span class="pre">start</span></tt> and <tt class="docutils literal"><span class="pre">stop</span></tt> are optionnal and default is set
-to <tt class="docutils literal"><span class="pre">None</span></tt>. However, it is required to pass at least one of those
-arguments. This method will raise <tt class="xref py py-class docutils literal"><span class="pre">TypeError</span></tt> if both
-arguments <tt class="docutils literal"><span class="pre">start</span></tt> and <tt class="docutils literal"><span class="pre">stop</span></tt> are set to <tt class="docutils literal"><span class="pre">None</span></tt>.</p>
+<code class="descclassname">MailSelector.</code><code class="descname">lookup_date</code><span class="sig-paren">(</span><span class="optional">[</span><em>start</em><span class="optional">[</span>, <em>stop</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/selector.html#MailSelector.lookup_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selector.MailSelector.lookup_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lookup mails send on specific date range(s).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>start</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; Start date
-(default: <tt class="docutils literal"><span class="pre">datetime(1970,1,1)</span></tt>)</li>
-<li><strong>stop</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/datetime.html#datetime.datetime" title="(in Python v2.7)"><em>datetime.datetime</em></a>) &#8211; Stop date
-(default: <tt class="docutils literal"><span class="pre">datetime.now()</span></tt>)</li>
+<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/datetime.html#datetime.date" title="(in Python v2.7)"><em>datetime.date</em></a>) – Start date (Default: None)</li>
+<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/datetime.html#datetime.date" title="(in Python v2.7)"><em>datetime.date</em></a>) – Stop date (Default: None)</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">List of newly selected <tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt> objects</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">List of newly selected <code class="xref py py-class docutils literal"><span class="pre">Mail</span></code> objects</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">list()</span></tt></a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-func docutils literal"><span class="pre">list()</span></code></p>
 </td>
 </tr>
 </tbody>
@@ -232,26 +219,26 @@ arguments <tt class="docutils literal"><span class="pre">start</span></tt> and <
 
 <dl class="method">
 <dt id="selector.MailSelector.lookup_size">
-<tt class="descclassname">MailSelector.</tt><tt class="descname">lookup_size</tt><big>(</big><span class="optional">[</span><em>smin</em><span class="optional">[</span>, <em>smax</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="reference internal" href="_modules/selector.html#MailSelector.lookup_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selector.MailSelector.lookup_size" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MailSelector.</code><code class="descname">lookup_size</code><span class="sig-paren">(</span><span class="optional">[</span><em>smin</em><span class="optional">[</span>, <em>smax</em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/selector.html#MailSelector.lookup_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#selector.MailSelector.lookup_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Lookup mails send with specific size.</p>
-<p>Both arguments <tt class="docutils literal"><span class="pre">smin</span></tt> and <tt class="docutils literal"><span class="pre">smax</span></tt> are optionnal and default is set
-to <tt class="docutils literal"><span class="pre">0</span></tt>. Maximum size is ignored if setted to <tt class="docutils literal"><span class="pre">0</span></tt>. If both <tt class="docutils literal"><span class="pre">smin</span></tt>
-and <tt class="docutils literal"><span class="pre">smax</span></tt> are setted to <tt class="docutils literal"><span class="pre">0</span></tt>, no filtering is done and the entire
-<tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt> objects selection is returned.</p>
+<p>Both arguments <code class="docutils literal"><span class="pre">smin</span></code> and <code class="docutils literal"><span class="pre">smax</span></code> are optionnal and default is set
+to <code class="docutils literal"><span class="pre">0</span></code>. Maximum size is ignored if setted to <code class="docutils literal"><span class="pre">0</span></code>. If both <code class="docutils literal"><span class="pre">smin</span></code>
+and <code class="docutils literal"><span class="pre">smax</span></code> are setted to <code class="docutils literal"><span class="pre">0</span></code>, no filtering is done and the entire
+<code class="xref py py-class docutils literal"><span class="pre">Mail</span></code> objects selection is returned.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>smin</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Minimum size (Default: <tt class="docutils literal"><span class="pre">0</span></tt>)</li>
-<li><strong>smax</strong> (<a class="reference external" href="http://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Maximum size (Default: <tt class="docutils literal"><span class="pre">0</span></tt>)</li>
+<li><strong>smin</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Minimum size (Default: <code class="docutils literal"><span class="pre">0</span></code>)</li>
+<li><strong>smax</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Maximum size (Default: <code class="docutils literal"><span class="pre">0</span></code>)</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">List of newly selected <tt class="xref py py-class docutils literal"><span class="pre">Mail</span></tt> objects</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">List of newly selected <code class="xref py py-class docutils literal"><span class="pre">Mail</span></code> objects</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><tt class="xref py py-func docutils literal"><span class="pre">list()</span></tt></a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-func docutils literal"><span class="pre">list()</span></code></p>
 </td>
 </tr>
 </tbody>
@@ -265,21 +252,21 @@ and <tt class="docutils literal"><span class="pre">smax</span></tt> are setted t
 
 
       </div>
-      <div class="bottomnav">
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="store.html">pyqueue.store &#8211; Mails queue storage objects</a>
+        «&#160;&#160;<a href="store.html">pymailq.store – Mails queue storage objects</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="control.html">pyqueue.control &#8211; Mails queue adminitrative operations</a>&#160;&#160;»
+        <a href="control.html">pymailq.control – Mails queue adminitrative operations</a>&#160;&#160;»
         </p>
 
       </div>
 
-    <div class="footer">
-        &copy; Copyright 2014, Denis &#39;jawa&#39; Pompilio.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, Denis &#39;jawa&#39; Pompilio.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

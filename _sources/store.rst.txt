@@ -1,4 +1,4 @@
-pyqueue.store -- Mails queue storage objects
+pymailq.store -- Mails queue storage objects
 ============================================
 
 The :mod:`store` module provide several objects to convert mails queue content
@@ -7,7 +7,7 @@ into python structures.
 :class:`~store.PostqueueStore` Objects
 --------------------------------------
 
-    .. autoclass:: pyqueue.store.PostqueueStore()
+    .. autoclass:: pymailq.store.PostqueueStore()
 
     The :class:`~store.PostqueueStore` instance provides the following methods:
 
@@ -20,7 +20,7 @@ into python structures.
 :class:`~store.Mail` Objects
 ----------------------------
 
-    .. autoclass:: pyqueue.store.Mail(mail_id[, size[, date[, sender]]])
+    .. autoclass:: pymailq.store.Mail(mail_id[, size[, date[, sender]]])
 
     The :class:`~store.Mail` instance provides the following methods:
 

@@ -1,45 +1,37 @@
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>control &mdash; PyQueue 0.5.2
+    <title>control &#8212; PyMailq 0.6.0
  documentation</title>
-    
     <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/print.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.5.2
-',
+        VERSION:     '0.6.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/theme_extras.js"></script>
-    <link rel="top" title="PyQueue 0.5.2
- documentation" href="../index.html" />
-    <link rel="up" title="Module code" href="index.html" /> 
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
   </head>
   <body>
-      <div class="header"><h1 class="heading"><a href="../index.html">
-          <span>PyQueue 0.5.2
+      <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
+          <span>PyMailq 0.6.0
  documentation</span></a></h1>
         <h2 class="heading"><span>control</span></h2>
       </div>
-      <div class="topnav">
+      <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
         <a class="uplink" href="../index.html">Contents</a>
@@ -50,26 +42,27 @@
         
         
   <h1>Source code for control</h1><div class="highlight"><pre>
-<span class="c">#</span>
-<span class="c">#    Postfix queue control python tool (pyqueue)</span>
-<span class="c">#</span>
-<span class="c">#    Copyright (C) 2014 Denis Pompilio (jawa) &lt;denis.pompilio@gmail.com&gt;</span>
-<span class="c">#</span>
-<span class="c">#    This file is part of pyqueue</span>
-<span class="c">#</span>
-<span class="c">#    This program is free software; you can redistribute it and/or</span>
-<span class="c">#    modify it under the terms of the GNU General Public License</span>
-<span class="c">#    as published by the Free Software Foundation; either version 2</span>
-<span class="c">#    of the License, or (at your option) any later version.</span>
-<span class="c">#</span>
-<span class="c">#    This program is distributed in the hope that it will be useful,</span>
-<span class="c">#    but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
-<span class="c">#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
-<span class="c">#    GNU General Public License for more details.</span>
-<span class="c">#</span>
-<span class="c">#    You should have received a copy of the GNU General Public License</span>
-<span class="c">#    along with this program; if not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+<span></span><span class="c1">#</span>
+<span class="c1">#    Postfix queue control python tool (pymailq)</span>
+<span class="c1">#</span>
+<span class="c1">#    Copyright (C) 2014 Denis Pompilio (jawa) &lt;denis.pompilio@gmail.com&gt;</span>
+<span class="c1">#</span>
+<span class="c1">#    This file is part of pymailq</span>
+<span class="c1">#</span>
+<span class="c1">#    This program is free software; you can redistribute it and/or</span>
+<span class="c1">#    modify it under the terms of the GNU General Public License</span>
+<span class="c1">#    as published by the Free Software Foundation; either version 2</span>
+<span class="c1">#    of the License, or (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1">#    This program is distributed in the hope that it will be useful,</span>
+<span class="c1">#    but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1">#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1">#    GNU General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1">#    You should have received a copy of the GNU General Public License</span>
+<span class="c1">#    along with this program; if not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
 
+<span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
 
 
@@ -80,8 +73,13 @@
 <span class="sd">    The :class:`~control.QueueControl` instance defines the following</span>
 <span class="sd">    attributes:</span>
 
+<span class="sd">        .. attribute:: use_sudo</span>
+
+<span class="sd">            Boolean to control the use of `sudo` to invoke Postfix command.</span>
+<span class="sd">            Default is ``False``</span>
+
 <span class="sd">        .. attribute:: postsuper_cmd</span>
-<span class="sd"> </span>
+
 <span class="sd">            Postfix command and arguments :func:`list` for mails queue</span>
 <span class="sd">            administrative operations. Default is ``[&quot;postsuper&quot;]``</span>
 
@@ -106,11 +104,18 @@
 <span class="sd">                `postsuper`_ -- Postfix superintendent</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">postsuper_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;postsuper&quot;</span><span class="p">]</span>
-    <span class="n">known_operations</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;delete&#39;</span><span class="p">:</span> <span class="s">&#39;-d&#39;</span><span class="p">,</span>
-                        <span class="s">&#39;hold&#39;</span><span class="p">:</span> <span class="s">&#39;-h&#39;</span><span class="p">,</span>
-                        <span class="s">&#39;release&#39;</span><span class="p">:</span> <span class="s">&#39;-H&#39;</span><span class="p">,</span>
-                        <span class="s">&#39;requeue&#39;</span><span class="p">:</span> <span class="s">&#39;-r&#39;</span><span class="p">}</span>
+    <span class="n">use_sudo</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">postsuper_cmd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;sudo&quot;</span><span class="p">,</span> <span class="s2">&quot;postsuper&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_sudo</span> <span class="k">else</span> <span class="p">[</span><span class="s2">&quot;postsuper&quot;</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">known_operations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;delete&#39;</span><span class="p">:</span> <span class="s1">&#39;-d&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;hold&#39;</span><span class="p">:</span> <span class="s1">&#39;-h&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;release&#39;</span><span class="p">:</span> <span class="s1">&#39;-H&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;requeue&#39;</span><span class="p">:</span> <span class="s1">&#39;-r&#39;</span><span class="p">}</span>
 
 <div class="viewcode-block" id="QueueControl._operate"><a class="viewcode-back" href="../control.html#control.QueueControl._operate">[docs]</a>    <span class="k">def</span> <span class="nf">_operate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -128,26 +133,43 @@
 <span class="sd">        :return: Command&#39;s *stderr* output lines</span>
 <span class="sd">        :rtype: :func:`list`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c"># Convert operation name to operation attribute. Raise KeyError.</span>
+        <span class="c1"># Convert operation name to operation attribute. Raise KeyError.</span>
         <span class="n">operation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">known_operations</span><span class="p">[</span><span class="n">operation</span><span class="p">]</span>
 
-        <span class="c"># validate that object&#39;s attribute &quot;qid&quot; exist. Raise AttributeError.</span>
+        <span class="c1"># validate that object&#39;s attribute &quot;qid&quot; exist. Raise AttributeError.</span>
         <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
-            <span class="nb">getattr</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="s">&quot;qid&quot;</span><span class="p">)</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="s2">&quot;qid&quot;</span><span class="p">)</span>
 
-        <span class="n">postsuper_cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">postsuper_cmd</span> <span class="o">+</span> <span class="p">[</span><span class="n">operation</span><span class="p">,</span> <span class="s">&#39;-&#39;</span><span class="p">]</span>
-        <span class="n">child</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">postsuper_cmd</span><span class="p">,</span>
-                                 <span class="n">stdin</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
-                                 <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
-                                 <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+        <span class="c1"># We may modify this part to improve security.</span>
+        <span class="c1"># It should not be possible to inject commands, but who knows...</span>
+        <span class="c1"># https://www.kevinlondon.com/2015/07/26/dangerous-python-functions.html</span>
+        <span class="c1"># And consider the use of sh module: https://amoffat.github.io/sh/</span>
+        <span class="n">postsuper_cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">postsuper_cmd</span> <span class="o">+</span> <span class="p">[</span><span class="n">operation</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">child</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">postsuper_cmd</span><span class="p">,</span>
+                                     <span class="n">stdin</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+                                     <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="n">command_str</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">postsuper_cmd</span><span class="p">)</span>
+            <span class="n">error_msg</span> <span class="o">=</span> <span class="s2">&quot;Unable to call &#39;</span><span class="si">%s</span><span class="s2">&#39;: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">command_str</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
-            <span class="k">print</span> <span class="o">&gt;&gt;</span><span class="n">child</span><span class="o">.</span><span class="n">stdin</span><span class="p">,</span> <span class="n">msg</span><span class="o">.</span><span class="n">qid</span>
+        <span class="c1"># If permissions error, the postsuper process takes ~1s to teardown.</span>
+        <span class="c1"># Wait this delay and raise error message if process has stopped.</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">1.1</span><span class="p">)</span>
+        <span class="n">child</span><span class="o">.</span><span class="n">poll</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">returncode</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">communicate</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
 
-        <span class="p">(</span><span class="n">stdout</span><span class="p">,</span><span class="n">stderr</span><span class="p">)</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
+                <span class="n">child</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">write</span><span class="p">((</span><span class="n">msg</span><span class="o">.</span><span class="n">qid</span><span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+            <span class="n">stderr</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">communicate</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">BrokenPipeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Unexpected error: child process has crashed&quot;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="p">[</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">stderr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span> <span class="p">]</span>
-</div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">stderr</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)]</span></div>
+
 <div class="viewcode-block" id="QueueControl.delete_messages"><a class="viewcode-back" href="../control.html#control.QueueControl.delete_messages">[docs]</a>    <span class="k">def</span> <span class="nf">delete_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Delete several messages from postfix mail queue.</span>
@@ -155,8 +177,8 @@
 <span class="sd">        This method is a :func:`~functools.partial` wrapper on</span>
 <span class="sd">        :meth:`~control.QueueControl._operate`. Passed operation is ``delete``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operate</span><span class="p">(</span><span class="s">&#39;delete&#39;</span><span class="p">,</span> <span class="n">messages</span><span class="p">)</span>
-</div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operate</span><span class="p">(</span><span class="s1">&#39;delete&#39;</span><span class="p">,</span> <span class="n">messages</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="QueueControl.hold_messages"><a class="viewcode-back" href="../control.html#control.QueueControl.hold_messages">[docs]</a>    <span class="k">def</span> <span class="nf">hold_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Hold several messages from postfix mail queue.</span>
@@ -164,8 +186,8 @@
 <span class="sd">        This method is a :func:`~functools.partial` wrapper on</span>
 <span class="sd">        :meth:`~control.QueueControl._operate`. Passed operation is ``hold``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operate</span><span class="p">(</span><span class="s">&#39;hold&#39;</span><span class="p">,</span> <span class="n">messages</span><span class="p">)</span>
-</div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operate</span><span class="p">(</span><span class="s1">&#39;hold&#39;</span><span class="p">,</span> <span class="n">messages</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="QueueControl.release_messages"><a class="viewcode-back" href="../control.html#control.QueueControl.release_messages">[docs]</a>    <span class="k">def</span> <span class="nf">release_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Release several messages from postfix mail queue.</span>
@@ -173,8 +195,8 @@
 <span class="sd">        This method is a :func:`~functools.partial` wrapper on</span>
 <span class="sd">        :meth:`~control.QueueControl._operate`. Passed operation is ``release``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operate</span><span class="p">(</span><span class="s">&#39;release&#39;</span><span class="p">,</span> <span class="n">messages</span><span class="p">)</span>
-</div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operate</span><span class="p">(</span><span class="s1">&#39;release&#39;</span><span class="p">,</span> <span class="n">messages</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="QueueControl.requeue_messages"><a class="viewcode-back" href="../control.html#control.QueueControl.requeue_messages">[docs]</a>    <span class="k">def</span> <span class="nf">requeue_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Requeue several messages from postfix mail queue.</span>
@@ -182,11 +204,11 @@
 <span class="sd">        This method is a :func:`~functools.partial` wrapper on</span>
 <span class="sd">        :meth:`~control.QueueControl._operate`. Passed operation is ``requeue``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operate</span><span class="p">(</span><span class="s">&#39;requeue&#39;</span><span class="p">,</span> <span class="n">messages</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_operate</span><span class="p">(</span><span class="s1">&#39;requeue&#39;</span><span class="p">,</span> <span class="n">messages</span><span class="p">)</span></div></div>
 </pre></div>
 
       </div>
-      <div class="bottomnav">
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
         <a class="uplink" href="../index.html">Contents</a>
@@ -194,9 +216,9 @@
 
       </div>
 
-    <div class="footer">
-        &copy; Copyright 2014, Denis &#39;jawa&#39; Pompilio.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, Denis &#39;jawa&#39; Pompilio.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>
