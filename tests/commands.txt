@@ -1,0 +1,4 @@
+show selected
+store load
+show selected
+select sender foo@bar.lol

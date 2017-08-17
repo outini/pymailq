@@ -62,6 +62,7 @@ class MailHeaders(object):
         :rfc:`822` -- Standard for ARPA Internet Text Messages
     """
 
+
 class Mail(object):
     """
     Simple object to manipulate email messages.
@@ -134,7 +135,7 @@ class Mail(object):
             initialization with: ``["postcat", "-qv", self.qid]``
     """
 
-    def __init__(self, mail_id, size = 0, date = None, sender = ""):
+    def __init__(self, mail_id, size=0, date=None, sender=""):
         """Init method"""
         self.parsed = False
         self.parse_error = ""
@@ -149,7 +150,7 @@ class Mail(object):
         self.postcat_cmd = ["postcat", "-qv", self.qid]
 
         # Getting optionnal status from postqueue mail_id
-        postqueue_status = { '*': "active", '!': "hold" }
+        postqueue_status = {'*': "active", '!': "hold"}
         if mail_id[-1] in postqueue_status:
             self.qid = mail_id[:-1]
         self.status = postqueue_status.get(mail_id[-1], "deferred")
@@ -176,7 +177,7 @@ class Mail(object):
         child = subprocess.Popen(self.postcat_cmd,
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE)
-        (stdout,stderr) = child.communicate()
+        stdout = child.communicate()[0]
 
         raw_content = list()
         for line in stdout.decode().split('\n'):
@@ -184,7 +185,7 @@ class Mail(object):
                 self.size = int(line[14:].strip().split()[0])
             elif self.date is None and line[0:13] == "create_time: ":
                 self.date = datetime.strptime(line[13:].strip(),
-                                                       "%a %b %d %H:%M:%S %Y")
+                                              "%a %b %d %H:%M:%S %Y")
             elif not len(self.sender) and line[0:8] == "sender: ":
                 self.sender = line[8:].strip()
             elif line[0:14] == "regular_text: ":
@@ -220,13 +221,14 @@ class Mail(object):
 
         for attr in self.__dict__:
             if attr[0] != "_" and attr != 'head':
-                datas['postqueue'].update({ attr: getattr(self, attr) })
+                datas['postqueue'].update({attr: getattr(self, attr)})
 
         for header in self.head.__dict__:
             if header[0] != "_":
-                datas['headers'].update({ header: getattr(self.head, header) })
+                datas['headers'].update({header: getattr(self.head, header)})
 
         return datas
+
 
 class PostqueueStore(object):
     """
@@ -332,7 +334,7 @@ class PostqueueStore(object):
         """
         child = subprocess.Popen(self.postqueue_cmd,
                                  stdout=subprocess.PIPE)
-        (stdout,stderr) = child.communicate()
+        (stdout, stderr) = child.communicate()
 
         # return lines list without the headers and footers
         return [line.strip() for line in stdout.decode().split('\n')][1:-2]
@@ -355,7 +357,7 @@ class PostqueueStore(object):
         return True
 
     @debug
-    def _load_from_postqueue(self, filename = None):
+    def _load_from_postqueue(self, filename=None):
         """
         Load content from postfix queue using postqueue command output.
 
@@ -429,9 +431,9 @@ class PostqueueStore(object):
                     if date > now:
                         date = date - timedelta(days=365)
 
-                    mail = self.MailClass(fields[0], size = fields[1],
-                                           date = date,
-                                           sender = fields[-1])
+                    mail = self.MailClass(fields[0], size=fields[1],
+                                          date=date,
+                                          sender=fields[-1])
                     self.mails.append(mail)
                 else:
                     # Email address validity check can be tricky. RFC3696 talks
@@ -459,11 +461,9 @@ class PostqueueStore(object):
             Be aware that parsing mails on disk is slow and can lead to
             high load usage on system with large mails queue.
         """
-        mail = None
         for status in self.postqueue_mailstatus:
-            for path, dirs, files in os.walk("%s/%s" % (self.spool_path,
-                                                        status)):
-                for mail_id in files:
+            for fs_data in os.walk("%s/%s" % (self.spool_path, status)):
+                for mail_id in fs_data[2]:
                     mail = self.MailClass(mail_id)
                     mail.status = status
 
@@ -473,11 +473,10 @@ class PostqueueStore(object):
 
     @debug
     def _load_from_file(self, filename):
-        """        """
-
+        """Unimplemented method"""
 
     @debug
-    def load(self, method = "postqueue", filename = None):
+    def load(self, method="postqueue", filename=None):
         """
         Load content from postfix mails queue.
 
@@ -488,6 +487,7 @@ class PostqueueStore(object):
         control tool: `postqueue`_ is used.
 
         :param str method: Method used to load mails from Postfix queue
+        :param str filename: File to load mails from
 
         Provided method :func:`str` name is directly used with :func:`getattr`
         to find a *self._load_from_<method>* method.
@@ -502,4 +502,3 @@ class PostqueueStore(object):
         else:
             getattr(self, "_load_from_{0}".format(method))(filename)
         self.loaded_at = datetime.now()
-

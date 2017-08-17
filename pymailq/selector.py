@@ -87,7 +87,7 @@ class MailSelector(object):
         del self.mails
         gc.collect()
 
-        self.mails = [ mail for mail in self.store.mails ]
+        self.mails = [mail for mail in self.store.mails]
         self.filters = []
 
     def replay_filters(self):
@@ -106,8 +106,8 @@ class MailSelector(object):
         del self.mails
         gc.collect()
 
-        self.mails = [ mail for mail in self.store.mails ]
-        filters = [ entry for entry in self.filters ]
+        self.mails = [mail for mail in self.store.mails]
+        filters = [entry for entry in self.filters]
         for filterinfo in filters:
             name, args, kwargs = filterinfo
             getattr(self, name)(*args, **kwargs)
@@ -123,15 +123,14 @@ class MailSelector(object):
         :return: List of newly selected :class:`~store.Mail` objects
         :rtype: :func:`list`
         """
-        self.mails = [ mail for mail in self.mails
-                       if mail.status in status ]
+        self.mails = [mail for mail in self.mails
+                      if mail.status in status]
 
         return self.mails
 
-
     @debug
     @filter_registration
-    def lookup_sender(self, sender, partial = False):
+    def lookup_sender(self, sender, exact=True):
         """
         Lookup mails send from a specific sender.
 
@@ -146,16 +145,16 @@ class MailSelector(object):
 
         :param str sender: Sender address to lookup in :class:`~store.Mail`
                            objects selection.
-        :param bool partial: Allow lookup with partial match
+        :param bool exact: Allow lookup with partial or exact match
         :return: List of newly selected :class:`~store.Mail` objects
         :rtype: :func:`list`
         """
-        if partial is True:
-            self.mails = [ mail for mail in self.mails
-                           if sender in mail.sender ]
+        if exact is False:
+            self.mails = [mail for mail in self.mails
+                          if sender in mail.sender]
         else:
-            self.mails = [ mail for mail in self.mails
-                           if sender == mail.sender ]
+            self.mails = [mail for mail in self.mails
+                          if sender == mail.sender]
 
         return self.mails
 
@@ -169,46 +168,36 @@ class MailSelector(object):
         :return: List of newly selected :class:`~store.Mail` objects`
         :rtype: :func:`list`
         """
-        self.mails = [ mail for mail in self.mails
-                       if True in [ True for err in mail.errors
-                                    if error_msg in err ] ]
+        self.mails = [mail for mail in self.mails
+                      if True in [True for err in mail.errors
+                                  if error_msg in err]]
         return self.mails
 
     @debug
     @filter_registration
-    def lookup_date(self, start = None, stop = None):
+    def lookup_date(self, start=None, stop=None):
         """
-        Lookup mails send on specific date range.
+        Lookup mails send on specific date range(s).
 
-        Both arguments ``start`` and ``stop`` are optionnal and default is set
-        to ``None``. However, it is required to pass at least one of those
-        arguments. This method will raise :class:`~exception.TypeError` if both
-        arguments ``start`` and ``stop`` are set to ``None``.
+        :param datetime.date start: Start date (Default: None)
+        :param datetime.date stop: Stop date (Default: None)
 
-        :param datetime.datetime start: Start date
-                                        (default: ``datetime(1970,1,1)``)
-        :param datetime.datetime stop: Stop date
-                                       (default: ``datetime.now()``)
         :return: List of newly selected :class:`~store.Mail` objects
         :rtype: :func:`list`
         """
-
-        if start is None and stop is None:
-            raise TypeError("Required arguments 'start' or 'stop' not found")
-
         if start is None:
-            start = datetime(1970,1,1)
+            start = datetime(1970, 1, 1)
         if stop is None:
             stop = datetime.now()
 
-        self.mails = [ mail for mail in self.mails
-                       if mail.date >= start and mail.date <= stop ]
+        self.mails = [mail for mail in self.mails
+                      if start <= mail.date <= stop]
 
         return self.mails
 
     @debug
     @filter_registration
-    def lookup_size(self, smin = 0, smax = 0):  # TODO: documentation
+    def lookup_size(self, smin=0, smax=0):  # TODO: documentation
         """
         Lookup mails send with specific size.
 
@@ -226,7 +215,7 @@ class MailSelector(object):
             return self.mails
 
         if smax > 0:
-            self.mails = [ mail for mail in self.mails if mail.size <= smax ]
-        self.mails = [ mail for mail in self.mails if mail.size >= smin ]
+            self.mails = [mail for mail in self.mails if mail.size <= smax]
+        self.mails = [mail for mail in self.mails if mail.size >= smin]
 
         return self.mails

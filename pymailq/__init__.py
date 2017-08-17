@@ -26,6 +26,10 @@ from datetime import datetime
 #: Boolean to control activation of the :func:`debug` decorator.
 DEBUG = False
 
+#: Current version of the package as :func:`str`.
+VERSION = "0.6.0"
+
+
 def debug(function):
     """
     Decorator to print some call informations and timing debug on stderr.

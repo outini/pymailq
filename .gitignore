@@ -20,6 +20,7 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+MANIFEST
 
 # Installer logs
 pip-log.txt
@@ -39,18 +40,10 @@ coverage.xml
 # Sphinx documentation
 .buildinfo
 docs/_build/
-
-# gh_pages workdir for parallel checkout
-# created using the following cmd from the repo root:
-#   mkdir docs/gh_pages
-#   sh /usr/share/doc/git/contrib/workdir/git-new-workdir . docs/gh_pages/html
-#
-# Building the docs (from the docs dir):
-#   make html && make man
-#   rsync -nacv --delete --exclude '.git*' \
-#                        --exclude '.buildinfo' \
-#                        --exclude '.nojekyll' _build/html/ gh_pages/html/
 docs/gh_pages/
 
 # Vim swap files
 .*.swp
+
+# pycharm project
+.idea

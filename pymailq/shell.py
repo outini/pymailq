@@ -22,21 +22,24 @@
 import re
 import cmd
 from functools import partial
+from datetime import datetime, timedelta
 from subprocess import CalledProcessError
 import shlex
+import inspect
 from pymailq import store, control, selector, utils
-
 
 try:
     import readline
 except ImportError as error:
     print("Python readline is not available, shell capabilities are limited.")
 
+
 class StoreNotLoaded(Exception):
     def __str__(self):
         return 'The store is not loaded'
 
-class PyMailqShell(cmd.Cmd, object):
+
+class PyMailqShell(cmd.Cmd):
     """PyMailq shell for interactive mode"""
 
     # Automatic building of supported methods and documentation
@@ -44,30 +47,27 @@ class PyMailqShell(cmd.Cmd, object):
         'store': 'Control of Postfix queue content storage',
         'select': 'Select mails from Postfix queue content',
         'inspect': 'Mail content inspector',
-        'super' : 'call postsuper commands'
+        'super': 'Call postsuper commands'
         }
 
     # XXX: do_* methods are parsed before init and must be declared here
     do_store = None
     do_select = None
-    do_show = None
     do_super = None
 
-    def __init__(self):
+    def __init__(self, completekey='tab', stdin=None, stdout=None):
         """Init method"""
-        cmd.Cmd.__init__(self)
+        cmd.Cmd.__init__(self, completekey, stdin, stdout)
 
         # EOF action is registered here to hide it from user
         self.do_EOF = self.do_exit
 
         for command in self.commands_info:
-            setattr(self, "help_%s" % (command), partial(self._help_, command))
-            setattr(self, "do_%s" % (command), partial(self.__do, command))
-            setattr(self, "complete_%s" % (command),
-                          partial(self.__complete, command))
-        # show command is specific and cannot be build dynamicly
+            setattr(self, "help_%s" % (command,), partial(self._help_, command))
+            setattr(self, "do_%s" % (command,), partial(self.__do, command))
+
+        # show command is specific and cannot be build dynamically
         setattr(self, "help_show", partial(self._help_, "show"))
-        setattr(self, "complete_show", partial(self.__complete, "show"))
 
         self.pstore = store.PostqueueStore()
         self.selector = selector.MailSelector(self.pstore)
@@ -79,63 +79,59 @@ class PyMailqShell(cmd.Cmd, object):
                 'brief': "{date} {qid} [{status}] {sender} ({size}B)",
                 }
 
+    def respond(self, answer):
+        """Send reponse"""
+        self.stdout.write(str(answer) + '\n')
+
     # Internal functions
     def emptyline(self):
+        """Action on empty lines"""
         pass
 
     def help_help(self):
-        print("Show available commands")
+        """Help of command help"""
+        self.respond("Show available commands")
 
-    def do_exit(self, arg):
+    @staticmethod
+    def do_exit(arg):
+        """Action on exit"""
         return True
 
     def help_exit(self):
-        print("Exit PyMailq shell (or use Ctrl-D)")
+        """Help of command exit"""
+        self.respond("Exit PyMailq shell (or use Ctrl-D)")
 
     def cmdloop_nointerrupt(self):
         """Specific cmdloop to handle KeyboardInterrupt"""
         can_exit = False
         # intro message is not in self.intro not to display it each time
         # cmdloop is restarted
-        print("Welcome to PyMailq shell.")
+        self.respond("Welcome to PyMailq shell.")
         while can_exit is not True:
             try:
                 self.cmdloop()
                 can_exit = True
-            except (KeyboardInterrupt):
-                print("^C")
+            except KeyboardInterrupt:
+                self.respond("^C")
 
     def postloop(self):
         cmd.Cmd.postloop(self)
-        print("\nExiting shell... Bye.")
-
-    # PyMailq methods help
-    def __parse_docstring(self, docstring):
-        doclines = [ line.strip() for line in docstring.split('\n')
-                     if len(line.strip()) ]
-        parsed_lines = []
-        for line in doclines:
-            indent = ""
-            if line.startswith('..'):
-                line = "  " + line[2:]  # indentation required
-            parsed_lines.append("%s%s" % (indent, line))
-        return parsed_lines
+        self.respond("\nExiting shell... Bye.")
 
     def _help_(self, command):
-        doc = self.commands_info.get(
-                command, getattr(self, "do_%s" % (command)).__doc__)
-        for line in self.__parse_docstring(doc):
-            print(line)
+        docstr = self.commands_info.get(
+                command, getattr(self, "do_%s" % (command,)).__doc__)
+        self.respond(inspect.cleandoc(docstr))
 
-        print("Subcommands:")
+        self.respond("Subcommands:")
         for method in dir(self):
-            if method.startswith("_%s_" % (command)):
+            if method.startswith("_%s_" % (command,)):
                 docstr = getattr(self, method).__doc__
-                doclines = self.__parse_docstring(docstr)
-                print("  %-10s %s" % (method[len(command)+2:],
-                                      doclines.pop(0)))
+                doclines = inspect.cleandoc(docstr).split('\n')
+                self.respond("  %-10s %s" % (method[len(command)+2:],
+                                             doclines.pop(0)))
                 for line in doclines:
-                    print("  %-10s %s" % ("", line))
+                    self.respond("  %-10s %s" % ("", line))
 
 #
 # PyMailq methods
@@ -157,45 +153,122 @@ class PyMailqShell(cmd.Cmd, object):
 
         args = shlex.split(str_arg)
         if not len(args):
-            getattr(self, "help_%s" % (cmd_category))()
+            getattr(self, "help_%s" % (cmd_category,))()
             return None
 
         command = args.pop(0)
         method = "_%s_%s" % (cmd_category, command)
-        print("args:", str(method))
         try:
             lines = getattr(self, method)(*args)
             if lines is not None and len(lines):
-                print('\n'.join(lines))
-        #except AttributeError as error:
-        #    print(error)
-        #    print("%s has no subcommand: %s" % (cmd_category, command))
-        except (SyntaxError, TypeError) as error:
+                self.respond('\n'.join(lines))
+        except AttributeError:
+            self.respond("%s has no subcommand: %s" % (cmd_category, command))
+        except (SyntaxError, TypeError) as exc:
             # Rewording Python TypeError message for cli display
-            msg = str(error)
-            if "%s()" % (method) in msg:
-                msg = "%s command %s" %(cmd_category, msg[len(method)+3:])
-            print("*** Syntax error:", msg)
+            msg = str(exc)
+            if "%s()" % (method,) in msg:
+                msg = "%s command %s" % (cmd_category, msg[len(method)+3:])
+            self.respond("*** Syntax error: " + msg)
 
-    def __complete(self, cmd_category, text, line, begidx, endidx):
+    @staticmethod
+    def get_modifiers(match, excludes=()):
+        """Get modifiers from match
+
+        :param str match: String to match in modifiers
+        :param list excludes: Excluded modifiers
+        :return: Matched modifiers as :func:`list`
+        """
+        modifiers = {
+            'limit': ['<n>'],
+            'rankby': ['<field>'],
+            'sortby': ['<field> [asc|desc]']
+        }
+        if match in modifiers and match not in excludes:
+            return modifiers[match]
+        return [mod for mod in modifiers
+                if mod not in excludes and mod.startswith(match)]
+
+    def completenames(self, text, *ignored):
+        """Complete known commands"""
+        dotext = 'do_'+text
+        suggests = [a[3:] for a in self.get_names() if a.startswith(dotext)]
+        if len(suggests) == 1:
+            # Only one suggest, return it with a space
+            suggests[0] += " "
+        return suggests
+
+    def completedefault(self, text, line, *ignored):
         """Generic command completion method"""
-        # TODO: find a way to stop completion if no more arguments
-        #       It will probably not be possible to build it in auto :/
-        match = "_%s_" % (cmd_category)
-        return [ sub[len(match):] for sub in dir(self)
-                 if sub.startswith(match + text) ]
+        # we may consider the use of re.match for params in completion
+        completion = {
+            'show': {'__allow_mods__': True},
+            'select': {
+                'date': ['<datespec>'],
+                'error': ['<error_msg>'],
+                'rmfilter': ['<filterid>'],
+                'sender': ['<sender> [exact]'],
+                'size': ['<-n|n|+n> [-n]'],
+                'status': ['<status>']
+            }
+        }
 
-# Store commands
-    def _store_load(self, filename = None):
+        args = shlex.split(line)
+        command = args.pop(0)
+        sub_command = ""
+        if len(args):
+            sub_command = args.pop(0)
+
+        match = "_%s_" % (command,)
+        suggests = [name[len(match):] for name in dir(self)
+                    if name.startswith(match + sub_command)]
+
+        # No suggests, return None
+        if not len(suggests):
+            return None
+
+        # Return multiple suggests for sub-command
+        if len(suggests) > 1:
+            return suggests
+        suggest = suggests.pop(0)
+
+        exact_match = True if suggest == sub_command else False
+
+        if suggest in completion.get(command, {}):
+            if not exact_match:
+                # Sub-command takes params, suffix it with a space
+                return [suggest + " "]
+            elif not len(args):
+                # Return sub-command params
+                return completion[command][sub_command]
+        elif not exact_match:
+            # Sub-command doesn't take params, return as is
+            return [suggest]
+
+        # Command allows modifiers
+        if completion[command].get('__allow_mods__'):
+            if len(args) or not len(text):
+                match = args[-1] if len(args) else ""
+                mods = self.get_modifiers(match, excludes=args[:-1])
+                if not len(mods):
+                    mods = self.get_modifiers("", excludes=args)
+                mods[0] += " " if len(mods) == 1 else ""
+                suggests = mods
+
+        if not len(suggests):
+            return None
+        return suggests
+
+    def _store_load(self, filename=None):
         """Load Postfix queue content"""
         try:
-            self.pstore.load(filename = filename)
+            self.pstore.load(filename=filename)
             # Automatic load of selector if it is empty and never used.
             if not len(self.selector.mails) and not len(self.selector.filters):
                 self.selector.reset()
             return ["%d mails loaded from queue" % (len(self.pstore.mails))]
-        except (OSError, CalledProcessError) as error:
-            return ["*** Error: unable to load store", "    {0}".format(error)]
+        except (OSError, IOError, CalledProcessError) as exc:
+            return ["*** Error: unable to load store", "    %s" % (exc,)]
 
     def _store_status(self):
         """Show store status"""
@@ -204,7 +277,6 @@ class PyMailqShell(cmd.Cmd, object):
         return ["store loaded with %d mails at %s" % (
                                len(self.pstore.mails), self.pstore.loaded_at)]
 
-# Selector commands
     def _select_reset(self):
         """Reset content of selector with store content"""
         self.selector.reset()
@@ -219,8 +291,8 @@ class PyMailqShell(cmd.Cmd, object):
     def _select_rmfilter(self, filterid):
         """
         Remove filter previously applied
-        ..Filters ids are used to specify filter to remove
-        ..Usage: select rmfilter <filterid>
+          Filters ids are used to specify filter to remove
+          Usage: select rmfilter <filterid>
         """
         try:
             idx = int(filterid)
@@ -228,32 +300,32 @@ class PyMailqShell(cmd.Cmd, object):
             self.selector.replay_filters()
         # TODO: except should be more accurate
         except:
-            raise SyntaxError("invalid filter ID: %s" % (idx))
+            raise SyntaxError("invalid filter ID: %s" % filterid)
 
     def _select_status(self, status):
         """
         Select mails with specific postfix status
-        ..Usage: select status <status>
+          Usage: select status <status>
         """
-        self.selector.lookup_status(status = status)
+        self.selector.lookup_status(status=status)
 
-    def _select_sender(self, sender, partial = True):
+    def _select_sender(self, sender, exact=False):
         """
         Select mails from sender
-        ..Usage: select sender <sender> [exact]
+          Usage: select sender <sender> [exact]
         """
-        if partial is not True:  # received from command line
-            if partial != "exact":
-                raise SyntaxError("invalid keyword: %s" % (partial))
-            partial = False
-        self.selector.lookup_sender(sender = sender, partial = partial)
+        if exact is not False:  # received from command line
+            if exact != "exact":
+                raise SyntaxError("invalid keyword: %s" % exact)
+            exact = True
+        self.selector.lookup_sender(sender=sender, exact=exact)
 
-    def _select_size(self, sizeA, sizeB = None):
+    def _select_size(self, sizeA, sizeB=None):
         """
         Select mails by size in Bytes
-        ..- and + are supported, if not specified, search for exact size
-        ..Size range is allowed by using - (lesser than) and + (greater than)
-        ..Usage: select size <-n|n|+n> [-n]
+          - and + are supported, if not specified, search for exact size
+          Size range is allowed by using - (lesser than) and + (greater than)
+          Usage: select size <-n|n|+n> [-n]
         """
         smin = None
         smax = None
@@ -262,19 +334,17 @@ class PyMailqShell(cmd.Cmd, object):
             for size in sizeA, sizeB:
                 if size is None:
                     continue
-                if exact is not None and (smin, smax) != (None, None):
+                if exact is not None:
                     raise SyntaxError("exact size must be used alone")
                 if size.startswith("-"):
                     if smax is not None:
-                        raise SyntaxError("multiple '+' sizes specified")
+                        raise SyntaxError("multiple max sizes specified")
                     smax = int(size[1:])
                 elif size.startswith("+"):
                     if smin is not None:
-                        raise SyntaxError("multiple '-' sizes specified")
+                        raise SyntaxError("multiple min sizes specified")
                     smin = int(size[1:])
                 else:
-                    if exact is not None:
-                        raise SyntaxError("multiple exact sizes specified")
                     exact = int(size)
         except ValueError:
             raise SyntaxError("specified sizes must be valid numbers")
@@ -287,27 +357,52 @@ class PyMailqShell(cmd.Cmd, object):
         if smin is None:
             smin = 0
 
-        self.selector.lookup_size(smin = smin, smax = smax)
+        if smin > smax:
+            raise SyntaxError("minimum size is greater than maximum size")
 
-    def _select_date(self, dateA, dateB = None):
+        self.selector.lookup_size(smin=smin, smax=smax)
+
+    def _select_date(self, date_spec):
         """
-        Select mails by date
-        ..Usage: select date X [Y]
+        Select mails by date.
+          Usage:
+            select date <DATESPEC>
+            Where <DATESPEC> can be
+              YYYY-MM-DD (exact date)
+              YYYY-MM-DD..YYYY-MM-DD (within a date range (included))
+              +YYYY-MM-DD (after a date (included))
+              -YYYY-MM-DD (before a date (included))
         """
-        return ["Still not implemented"]
+        try:
+            if ".." in date_spec:
+                (str_start, str_stop) = date_spec.split("..", 1)
+                start = datetime.strptime(str_start, "%Y-%m-%d")
+                stop = datetime.strptime(str_stop, "%Y-%m-%d")
+            elif date_spec.startswith("+"):
+                start = datetime.strptime(date_spec[1:], "%Y-%m-%d")
+                stop = datetime.now()
+            elif date_spec.startswith("-"):
+                start = datetime(1970, 1, 1)
+                stop = datetime.strptime(date_spec[1:], "%Y-%m-%d")
+            else:
+                start = datetime.strptime(date_spec, "%Y-%m-%d")
+                stop = start + timedelta(1)
+            self.selector.lookup_date(start, stop)
+        except ValueError as exc:
+            raise SyntaxError(str(exc))
 
     def _select_error(self, error_msg):
         """
         Select mails by error message
         Specified error message can be partial
-        ..Usage: select error <error_msg>
+          Usage: select error <error_msg>
         """
-        return ["Still not implemented"]
+        self.selector.lookup_error(str(error_msg))
 
-
-# Viewer commands and wrapper
     def viewer(function):
         """Result viewer decorator
+
+        :param func function: Function to decorate
         """
         def wrapper(self, *args, **kwargs):
             args = list(args)  # conversion need for arguments cleaning
@@ -318,7 +413,7 @@ class PyMailqShell(cmd.Cmd, object):
                     limit_idx = args.index('limit')
                     args.pop(limit_idx)  # pop option, next arg is value
                     limit = int(args.pop(limit_idx))
-            except (IndexError, TypeError):
+            except (IndexError, TypeError, ValueError):
                 raise SyntaxError("limit modifier needs a valid number")
 
             output = "brief"
@@ -334,9 +429,14 @@ class PyMailqShell(cmd.Cmd, object):
             if not total_elements:
                 return ["No element to display"]
 
+            # Check for headers and increase limit accordingly
+            headers = 0
+            if total_elements > 1 and "========" in str(elements[1]):
+                headers = 2
+
             if limit is not None:
-                if total_elements > limit:
-                    overhead = total_elements - limit
+                if total_elements > (limit + headers):
+                    overhead = total_elements - (limit + headers)
                 else:
                     limit = total_elements
             else:
@@ -344,7 +444,7 @@ class PyMailqShell(cmd.Cmd, object):
 
             outformat_attrs = self.format_parser.findall(outformat)
             formatted = []
-            for element in elements[:limit]:
+            for element in elements[:limit + headers]:
                 if isinstance(element, store.Mail):
                     attrs = {}
                     for att in outformat_attrs:
@@ -365,35 +465,36 @@ class PyMailqShell(cmd.Cmd, object):
         """
         Generic viewer utility
         Optionnal modifiers can be provided to alter output:
-        ..limit <n>                     display the first n entries
-        ..sortby <field> [asc|desc]     sort output by field asc or desc
-        ..rankby <field>                Produce mails ranking by field
+          limit <n>                     display the first n entries
+          sortby <field> [asc|desc]     sort output by field asc or desc
+          rankby <field>                Produce mails ranking by field
         Known fields:
-        ..qid           Postqueue mail ID
-        ..date          Mail date
-        ..sender        Mail sender
-        ..recipients    Mail recipients (list, no sort)
-        ..size          Mail size
-        ..errors        Postqueue deferred error messages (list, no sort)
+          qid           Postqueue mail ID
+          date          Mail date
+          sender        Mail sender
+          recipients    Mail recipients (list, no sort)
+          size          Mail size
+          errors        Postqueue deferred error messages (list, no sort)
         """
         args = shlex.split(str_arg)
         if not len(args):
             return self.help_show()
 
-        subcmd = args.pop(0)
+        sub_cmd = args.pop(0)
         try:
-            lines = getattr(self, "_show_%s" % (subcmd))(*args)
+            lines = getattr(self, "_show_%s" % sub_cmd)(*args)
         except (TypeError, AttributeError):
-            print("*** Syntax error: show {0}".format(str_arg))
+            self.respond("*** Syntax error: show {0}".format(str_arg))
             return self.help_show()
-        except (SyntaxError, TypeError) as error:
+        except SyntaxError as error:
             # Rewording Python TypeError message for cli display
             msg = str(error)
-            if "%s()" % (method) in msg:
-                msg = "%s command %s" %(cmd_category, msg[len(method)+3:])
-            print("*** Syntax error:", msg)
+            if "%s()" % sub_cmd in msg:
+                msg = "show command %s" % msg
+            self.respond("*** Syntax error: " + msg)
+            return self.help_show()
 
-        print("\n".join(lines))
+        self.respond("\n".join(lines))
 
     @viewer
     @utils.ranker
@@ -401,66 +502,67 @@ class PyMailqShell(cmd.Cmd, object):
     def _show_selected(self):
         """
         Show selected mails
-        ..Usage: show selected [modifiers]
+          Usage: show selected [modifiers]
         """
-        if self.selector.mails is None:
-            return []
-
         return self.selector.mails
 
     def _show_filters(self):
         """
         Show filters applied on current mails selection
-        ..Usage: show filters
+          Usage: show filters
         """
         if not len(self.selector.filters):
             return ["No filters applied on current selection"]
 
         lines = []
-        for idx in range(len(self.selector.filters)):
-            name, _args, _kwargs = self.selector.filters[idx]
+        for idx, pqfilter in enumerate(self.selector.filters):
+            name, _args, _kwargs = pqfilter
             # name should always be prefixed with lookup_
             lines.append('%d: select %s:' % (idx, name[7:]))
-            for key,value in _kwargs.items():
-                lines.append("    %s: %s" % (key, value))
+            for key in sorted(_kwargs):
+                lines.append("    %s: %s" % (key, _kwargs[key]))
         return lines
 
     # Postsuper generic command
-    def _super__do(self, cmd, action_name):
+    def __do_super(self, operation, action_name):
+        """Postsuper generic command"""
         if not self.pstore.loaded_at:
-            raise(StoreNotLoaded)
-        if self.selector.mails is None:
-            handled_c = 0
+            raise StoreNotLoaded
+        if not len(self.selector.mails):
+            return ["No mail selected"]
         else:
-            f = getattr(self.qcontrol, '%s_messages' % cmd)
-            f(self.selector.mails)
-            handled_c = len(self.selector.mails)
+            func = getattr(self.qcontrol, '%s_messages' % operation)
+            try:
+                resp = func(self.selector.mails)
+            except RuntimeError as exc:
+                return [str(exc)]
+
             # reloads the data
             self._store_load()
-            self._select_reset()
+            self._select_replay()
 
-        return ['{} {} mails'.format(action_name, handled_c)]
+        return [resp[-1]]
 
     def _super_delete(self):
         """Deletes the mails in current selection
-        ..Usage: super delete
+          Usage: super delete
         """
-        return self._super__do('delete', 'Deleted')
+        return self.__do_super('delete', 'Deleted')
 
     def _super_hold(self):
         """Put on hold the mails in current selection
-        ..Usage: super hold
+          Usage: super hold
         """
-        return self._super__do('hold', 'Put on hold')
+        return self.__do_super('hold', 'Put on hold')
 
     def _super_release(self):
         """Releases from hold the mails in current selection
-        ..Usage: super release
+          Usage: super release
         """
-        return self._super__do('release', 'Released')
+        return self.__do_super('release', 'Released')
 
     def _super_requeue(self):
         """requeue the mails in current selection
-        ..Usage: super requeue
+          Usage: super requeue
         """
-        return self._super__do('requeue', 'Requeued')
+        return self.__do_super('requeue', 'Requeued')
