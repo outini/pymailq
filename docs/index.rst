@@ -14,6 +14,7 @@ monitoring.
 The :mod:`pymailq` package defines the following attribute:
 
     .. autodata:: DEBUG
+    .. autodata:: VERSION
 
 The :mod:`pymailq` package defines the following decorators:
 

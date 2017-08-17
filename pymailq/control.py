@@ -28,6 +28,7 @@ class QueueControl(object):
 
     The :class:`~control.QueueControl` instance defines the following
     attributes:
+
         .. attribute:: use_sudo
 
             Boolean to control the use of `sudo` to invoke Postfix command.

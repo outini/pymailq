@@ -1,4 +1,6 @@
-.TH "PQSHELL" "1" "May 06, 2014" "0.5" "PyMailq"
+.\" Man page generated from reStructuredText.
+.
+.TH "PQSHELL" "1" "Aug 16, 2017" "0.6" "PyMailq"
 .SH NAME
 pqshell \- A shell-like to interact with a Postfix mails queue
 .
@@ -28,8 +30,6 @@ level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
 .in \\n[rst2man-indent\\n[rst2man-indent-level]]u
 ..
-.\" Man page generated from reStructeredText.
-.
 .SH DESCRIPTION
 .sp
 pqshell is a shell\-like to interact with Postfix mails queue. It provide simple
@@ -58,7 +58,7 @@ No options supported.
 .SH SHELL COMMANDS
 .sp
 An inside help is available with the help command. Each provided command takes
-subcommands and command\(aqs help can be obtained while running it without
+subcommands and command’s help can be obtained while running it without
 argument.
 .SS store
 .INDENT 0.0
@@ -70,16 +70,18 @@ Control of Postfix queue content storage
 .INDENT 3.5
 .INDENT 0.0
 .TP
-.B \fBstatus\fP
+\fBstatus\fP
 Show store status.
 .TP
-.B \fBload\fP
+\fBload\fP
 Load Postfix queue content.
 .UNINDENT
 .UNINDENT
 .UNINDENT
 .sp
 \fBExample\fP:
+.INDENT 0.0
+.INDENT 3.5
 .sp
 .nf
 .ft C
@@ -91,6 +93,8 @@ PyMailq (sel:590)> store status
 store loaded with 590 mails at 2014\-05\-05 13:43:22.592767
 .ft P
 .fi
+.UNINDENT
+.UNINDENT
 .UNINDENT
 .UNINDENT
 .SS select
@@ -106,42 +110,57 @@ applied filters. Order of filters application is also important.
 .INDENT 3.5
 .INDENT 0.0
 .TP
-.B \fBdate\fP
+\fBdate\fP
 Select mails by date.
 .sp
-Usage: \fBselect date X [Y]\fP
+Usage: \fBselect date <DATESPEC>\fP
+.sp
+Where \fI<DATESPEC>\fP can be:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+YYYY\-MM\-DD (exact date)
+YYYY\-MM\-DD..YYYY\-MM\-DD (within a date range (included))
++YYYY\-MM\-DD (after a date (included))
+\-YYYY\-MM\-DD (before a date (included))
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
 .TP
-.B \fBerror\fP
+\fBerror\fP
 Select mails by error message. Specified error message can be
 partial and will be check against the whole error message.
 .sp
 Usage: \fBselect error <error_msg>\fP
 .TP
-.B \fBreplay\fP
+\fBreplay\fP
 Reset content of selector with store content and replay filters.
 .TP
-.B \fBreset\fP
+\fBreset\fP
 Reset content of selector with store content, remove filters.
 .TP
-.B \fBrmfilter\fP
+\fBrmfilter\fP
 Remove filter previously applied. Filters ids are used to specify
 filter to remove.
 .sp
 Usage: \fBselect rmfilter <filterid>\fP
 .TP
-.B \fBsender\fP
+\fBsender\fP
 Select mails from sender.
 .sp
 Usage: \fBselect sender <sender> [exact]\fP
 .TP
-.B \fBsize\fP
+\fBsize\fP
 Select mails by size in Bytes. Signs \- and + are supported, if not
 specified, search for exact size. Size range is allowed by
 using \fB\-\fP (lesser than) and \fB+\fP (greater than).
 .sp
 Usage: \fBselect size <\-n|n|+n> [\-n]\fP
 .TP
-.B \fBstatus\fP
+\fBstatus\fP
 Select mails with specific postfix status.
 .sp
 Usage: \fBselect status <status>\fP
@@ -150,6 +169,8 @@ Usage: \fBselect status <status>\fP
 .UNINDENT
 .sp
 \fBFiltering Example\fP:
+.INDENT 0.0
+.INDENT 3.5
 .sp
 .nf
 .ft C
@@ -159,8 +180,12 @@ PyMailq (sel:316)> select status active
 PyMailq (sel:0)>
 .ft P
 .fi
+.UNINDENT
+.UNINDENT
 .sp
 \fBFilters management\fP:
+.INDENT 0.0
+.INDENT 3.5
 .sp
 .nf
 .ft C
@@ -182,6 +207,8 @@ PyMailq (sel:608)>
 .fi
 .UNINDENT
 .UNINDENT
+.UNINDENT
+.UNINDENT
 .SS show
 .INDENT 0.0
 .INDENT 3.5
@@ -191,7 +218,7 @@ allow you to sort, limit or even output a ranking by specific field. By
 default, output is sorted by \fBdate of acceptance\fP in queue.
 .INDENT 0.0
 .TP
-.B \fBOptionnal modifiers\fP can be provided to alter output:
+\fBOptionnal modifiers\fP can be provided to alter output:
 .INDENT 7.0
 .TP
 .B \fBlimit <n>\fP
@@ -211,17 +238,17 @@ Produce mails ranking by field.
 .INDENT 3.5
 .INDENT 0.0
 .IP \(bu 2
-\fBqid\fP \-\- Postqueue mail ID.
+\fBqid\fP – Postqueue mail ID.
 .IP \(bu 2
-\fBdate\fP \-\- Mail date.
+\fBdate\fP – Mail date.
 .IP \(bu 2
-\fBsender\fP \-\- Mail sender.
+\fBsender\fP – Mail sender.
 .IP \(bu 2
-\fBrecipients\fP \-\- Mail recipients (list, no sort).
+\fBrecipients\fP – Mail recipients (list, no sort).
 .IP \(bu 2
-\fBsize\fP \-\- Mail size.
+\fBsize\fP – Mail size.
 .IP \(bu 2
-\fBerrors\fP \-\- Postqueue deferred error messages (list, no sort).
+\fBerrors\fP – Postqueue deferred error messages (list, no sort).
 .UNINDENT
 .UNINDENT
 .UNINDENT
@@ -231,12 +258,12 @@ Produce mails ranking by field.
 .INDENT 3.5
 .INDENT 0.0
 .TP
-.B \fBfilters\fP
+\fBfilters\fP
 Show filters applied on current mails selection.
 .sp
 Usage: \fBshow filters\fP
 .TP
-.B \fBselected\fP
+\fBselected\fP
 Show selected mails.
 .sp
 Usage: \fBshow selected [modifiers]\fP
@@ -245,6 +272,8 @@ Usage: \fBshow selected [modifiers]\fP
 .UNINDENT
 .sp
 \fBExample\fP:
+.INDENT 0.0
+.INDENT 3.5
 .sp
 .nf
 .ft C
@@ -275,10 +304,11 @@ sss@dom5.com                              13
 .fi
 .UNINDENT
 .UNINDENT
+.UNINDENT
+.UNINDENT
 .SH AUTHOR
 Denis Pompilio (jawa) <denis.pompilio@gmail.com>
 .SH COPYRIGHT
 2014, Denis 'jawa' Pompilio
 .\" Generated by docutils manpage writer.
-.\"
 .
