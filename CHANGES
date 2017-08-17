@@ -9,7 +9,7 @@ https://github.com/outini/pymailq
     * Pqshell can now show pymailq package version
     * Pqshell can now be started in debug mode
     * Improved shell completion with suggests and modifiers
-    * Implentation of the "mails by date" selector
+    * Implementation of the "mails by date" selector
     * Reworked postsuper commands handling
     * Better pep8 support
     * Unit testing for python2.7 and python3
