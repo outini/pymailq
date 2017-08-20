@@ -18,21 +18,35 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import sys
 import pytest
 import pymailq
 from datetime import datetime
 from pymailq import store, control, selector
+
+try:
+    from unittest.mock import Mock, patch
+except ImportError:
+    from mock import Mock, patch
+
 
 PSTORE = store.PostqueueStore()
 SELECTOR = selector.MailSelector(PSTORE)
 QCONTROL = control.QueueControl()
 
 
+@patch('sys.stderr', new_callable=Mock())
+def test_debug_decorator(stderr):
+    """Test pymailq.debug decorator"""
+    @pymailq.debug
+    def test():
+        stderr.write("test\n")
+    test()
+
+
 def test_store_load_from_spool():
     """Test PostqueueStore load from spool"""
-    pymailq.DEBUG = True
     PSTORE.load(method="spool")
-    pymailq.DEBUG = False
     assert PSTORE.loaded_at is not None
 
 
