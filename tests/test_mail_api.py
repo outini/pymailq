@@ -64,7 +64,7 @@ def test_store_load_from_postqueue():
 
 def test_mail_parse():
     """Test Mail.parse method"""
-    mail = PSTORE.mails[0]
+    mail = store.Mail(PSTORE.mails[0].qid)
     assert mail.parsed is False
     mail.parse()
     assert mail.parsed is True
