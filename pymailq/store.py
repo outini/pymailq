@@ -24,7 +24,7 @@ import re
 import subprocess
 import email
 from datetime import datetime, timedelta
-from pymailq import debug
+from pymailq import CONFIG, debug
 
 
 class MailHeaders(object):
@@ -147,7 +147,10 @@ class Mail(object):
         self.recipients = []
         self.errors = []
         self.head = MailHeaders()
-        self.postcat_cmd = ["postcat", "-qv", self.qid]
+
+        self.postcat_cmd = CONFIG['commands']['cat_message'] + [self.qid]
+        if CONFIG['commands']['use_sudo']:
+            self.postcat_cmd.insert(0, 'sudo')
 
         # Getting optionnal status from postqueue mail_id
         postqueue_status = {'*': "active", '!': "hold"}

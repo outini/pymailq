@@ -29,6 +29,18 @@ DEBUG = False
 #: Current version of the package as :func:`str`.
 VERSION = "0.6.0"
 
+#: Module configuration as :class:`dict`
+CONFIG = {
+    "commands": {
+        "use_sudo": False,
+        "cat_message": ["postcat", "-qv"],
+        "hold_message": ["postsuper", "-h"],
+        "release_message": ["postsuper", "-H"],
+        "requeue_message": ["postsuper", "-r"],
+        "delete_message": ["postsuper", "-d"]
+    }
+}
+
 
 def debug(function):
     """

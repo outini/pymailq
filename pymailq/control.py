@@ -20,6 +20,7 @@
 
 import time
 import subprocess
+from pymailq import CONFIG, debug
 
 
 class QueueControl(object):
@@ -60,38 +61,39 @@ class QueueControl(object):
                 `postsuper`_ -- Postfix superintendent
     """
 
-    use_sudo = False
+    def get_operation_cmd(self, operation):
+        """Get operation related command from configuration
 
-    @property
-    def postsuper_cmd(self):
-        return ["sudo", "postsuper"] if self.use_sudo else ["postsuper"]
+        Known operations:
+        - hold: Hold message
+        - release: Release message from hold
+        - requeue: Requeue message
+        - delete: Delete message from queue
 
-    @property
-    def known_operations(self):
-        return {'delete': '-d',
-                'hold': '-h',
-                'release': '-H',
-                'requeue': '-r'}
+        :param str operation: Operation name
+        :return: Command and arguments as :class:`list`
 
+        :raise KeyError: Operation is unknown
+        """
+        cmd = CONFIG['commands'][operation + '_message']
+        if CONFIG['commands']['use_sudo']:
+            cmd.insert(0, 'sudo')
+        return cmd
+
+    @debug
     def _operate(self, operation, messages):
         """
         Generic method to lead operations messages from postfix mail queue.
 
         Operations can be one of Postfix known operations stored in
-        :attr:`~QueueControl.known_operations` attribute. Operation
-        argument is directly converted and passed to the
-        :attr:`~QueueControl.postsuper_cmd` command.
+        PyMailq module configuration.
 
-        :param str operation: Known operation from
-                              :attr:`~QueueControl.known_operations`.
+        :param str operation: Known operation from :attr:`pymailq.CONFIG`.
         :param list messages: List of :class:`~store.Mail` objects targetted
                               for operation.
         :return: Command's *stderr* output lines
         :rtype: :func:`list`
         """
-        # Convert operation name to operation attribute. Raise KeyError.
-        operation = self.known_operations[operation]
-
         # validate that object's attribute "qid" exist. Raise AttributeError.
         for msg in messages:
             getattr(msg, "qid")
@@ -100,13 +102,13 @@ class QueueControl(object):
         # It should not be possible to inject commands, but who knows...
         # https://www.kevinlondon.com/2015/07/26/dangerous-python-functions.html
         # And consider the use of sh module: https://amoffat.github.io/sh/
-        postsuper_cmd = self.postsuper_cmd + [operation, '-']
+        operation_cmd = self.get_operation_cmd(operation) + ['-']
         try:
-            child = subprocess.Popen(postsuper_cmd,
+            child = subprocess.Popen(operation_cmd,
                                      stdin=subprocess.PIPE,
                                      stderr=subprocess.PIPE)
         except FileNotFoundError as exc:
-            command_str = " ".join(postsuper_cmd)
+            command_str = " ".join(operation_cmd)
             error_msg = "Unable to call '%s': %s" % (command_str, str(exc))
             raise FileNotFoundError(error_msg)
 
