@@ -61,7 +61,8 @@ class QueueControl(object):
                 `postsuper`_ -- Postfix superintendent
     """
 
-    def get_operation_cmd(self, operation):
+    @staticmethod
+    def get_operation_cmd(operation):
         """Get operation related command from configuration
 
         Known operations:

@@ -337,7 +337,7 @@ class PostqueueStore(object):
         """
         child = subprocess.Popen(self.postqueue_cmd,
                                  stdout=subprocess.PIPE)
-        (stdout, stderr) = child.communicate()
+        stdout = child.communicate()[0]
 
         # return lines list without the headers and footers
         return [line.strip() for line in stdout.decode().split('\n')][1:-2]
