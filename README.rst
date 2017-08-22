@@ -1,4 +1,4 @@
-|PythonPIP|_ |PythonSupport|_ |License|_ |Codacy|_ |Coverage|_
+|PythonPIP|_ |PythonSupport|_ |License|_ |Codacy|_ |Coverage|_ |Travis|_
 
 pymailq - Simple Postfix queue management
 =========================================
@@ -56,3 +56,6 @@ License
 .. _Codacy: https://www.codacy.com/app/outini/pymailq
 .. |Coverage| image:: https://api.codacy.com/project/badge/Coverage/8444a0f124fe463d86a91d80a2a52e7c
 .. _Coverage: https://www.codacy.com/app/outini/pymailq
+.. |Travis| image:: https://travis-ci.org/outini/pymailq.svg?branch=master
+.. _Travis: https://travis-ci.org/outini/pymailq
+
