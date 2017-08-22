@@ -48,7 +48,7 @@ License
 
 .. |PythonPIP| image:: https://badge.fury.io/py/pymailq.svg
 .. _PythonPIP: https://pypi.python.org/pypi/pymailq/
-.. |PythonSupport| image:: https://img.shields.io/badge/python-2.7,%203.4-blue.svg
+.. |PythonSupport| image:: https://img.shields.io/badge/python-2.7,%203.4,%203.5,%203.6-blue.svg
 .. _PythonSupport: https://github.com/outini/pymailq/
 .. |License| image:: https://img.shields.io/badge/license-GPLv2-green.svg
 .. _License: https://github.com/outini/pymailq/
