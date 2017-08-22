@@ -1,8 +1,8 @@
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
 
 Name:           pymailq
-Version:        0.5.3
-Release:        2%{?dist}
+Version:        0.6.0
+Release:        1%{?dist}
 Summary:        Simple Postfix queue management
 
 Group:          Development/Languages
@@ -46,6 +46,16 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Aug 16 2017 Denis Pompilio <denis.pompilio@gmail.com> - 0.6.0-1
+- Pqshell now have usage and options
+- Pqshell can now show pymailq package version
+- Pqshell can now be started in debug mode
+- Improved shell completion with suggests and modifiers
+- Implementation of the "mails by date" selector
+- Reworked postsuper commands handling
+- Better pep8 support
+- Unit testing for python2.7 and python3
+- Using code coverage
 * Mon Oct 27 2014 Nils Ratusznik <nils.github@anotherhomepage.org> - 0.5.3-2
 - Automated version update for Source0
 - renamed pyqueue.spec to pymailq.spec
