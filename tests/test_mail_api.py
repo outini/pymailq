@@ -148,7 +148,7 @@ def test_control_unknown_command():
     orig_command = pymailq.CONFIG['commands']['hold_message']
     pymailq.CONFIG['commands']['use_sudo'] = False
     pymailq.CONFIG['commands']['hold_message'] = ["invalid-cmd"]
-    with pytest.raises(FileNotFoundError) as exc:
+    with pytest.raises(RuntimeError) as exc:
         QCONTROL.hold_messages([store.Mail('XXXXXXXXX')])
     assert "Unable to call" in str(exc.value)
     pymailq.CONFIG['commands']['hold_message'] = orig_command

@@ -108,10 +108,10 @@ class QueueControl(object):
             child = subprocess.Popen(operation_cmd,
                                      stdin=subprocess.PIPE,
                                      stderr=subprocess.PIPE)
-        except FileNotFoundError as exc:
+        except EnvironmentError as exc:
             command_str = " ".join(operation_cmd)
             error_msg = "Unable to call '%s': %s" % (command_str, str(exc))
-            raise FileNotFoundError(error_msg)
+            raise RuntimeError(error_msg)
 
         # If permissions error, the postsuper process takes ~1s to teardown.
         # Wait this delay and raise error message if process has stopped.
