@@ -1,3 +1,4 @@
+ipython
 pytest
 mock
 coverage
