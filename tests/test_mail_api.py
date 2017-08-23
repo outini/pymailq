@@ -127,6 +127,10 @@ def test_selector_size():
     mails = SELECTOR.lookup_size(smax=500)
     assert type(mails) == list
     assert len(mails) == 250
+    SELECTOR.reset()
+    mails = SELECTOR.lookup_size(smin=500)
+    assert type(mails) == list
+    assert len(mails) == 250
 
 
 def test_selector_replay_filters():
