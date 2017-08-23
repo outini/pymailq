@@ -31,7 +31,7 @@ class MailHeaders(object):
     """
     Simple object to store mail headers.
 
-    Object's attributes are dynamicly created while parent :class:`~store.Mail`
+    Object's attributes are dynamically created when parent :class:`~store.Mail`
     object's method :meth:`~store.Mail.parse` is called. Those attributes are
     retrieved with help of :func:`~email.message_from_string` method provided
     by the :mod:`email` module.
@@ -303,8 +303,8 @@ class PostqueueStore(object):
 
         :rfc:`3696` -- Checking and Transformation of Names
     """
-    postqueue_cmd = ["/usr/sbin/postqueue", "-p"]
-    spool_path = "/var/spool/postfix"
+    postqueue_cmd = None
+    spool_path = None
     postqueue_mailstatus = ['active', 'deferred', 'hold']
     mail_id_re = re.compile(r"^[A-F0-9]{10,12}[*!]?$")
     mail_addr_re = re.compile(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+$")
@@ -312,6 +312,11 @@ class PostqueueStore(object):
 
     def __init__(self):
         """Init method"""
+        self.spool_path = CONFIG['core']['postfix_spool']
+        self.postqueue_cmd = CONFIG['commands']['list_queue']
+        if CONFIG['commands']['use_sudo']:
+            self.postqueue_cmd.insert(0, 'sudo')
+
         self.loaded_at = None
         self.mails = []
 

@@ -31,8 +31,12 @@ VERSION = "0.6.0"
 
 #: Module configuration as :class:`dict`
 CONFIG = {
+    "core": {
+        "postfix_spool": "/var/spool/postfix"
+    },
     "commands": {
         "use_sudo": False,
+        "list_queue": ["mailq"],
         "cat_message": ["postcat", "-qv"],
         "hold_message": ["postsuper", "-h"],
         "release_message": ["postsuper", "-H"],
