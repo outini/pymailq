@@ -43,7 +43,7 @@ if __name__ == '__main__':
                     ('share/man/man1/', ['man/pqshell.1'])],
         keywords=['postfix', 'shell', 'mailq', 'python', 'pqshell', 'postqueue'],
         classifiers=[
-            'Development Status :: 2 - Pre-Alpha',
+            'Development Status :: 5 - Production/Stable',
             'Operating System :: POSIX :: BSD',
             'Operating System :: POSIX :: Linux',
             'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
