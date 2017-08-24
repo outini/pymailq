@@ -42,10 +42,14 @@ rm -rf $RPM_BUILD_ROOT
 /usr/bin/pqshell
 /usr/share/doc/pymailq/LICENSE
 /usr/share/doc/pymailq/README.rst
+/usr/share/doc/pymailq/CHANGES
+/usr/share/doc/pymailq/examples/pymailq.ini
 /usr/share/man/man1/pqshell.1.gz
 
 
 %changelog
+* Thu Aug 24 2017 Denis Pompilio <denis.pompilio@gmail.com> - 0.6.0-2
+- Added CHANGES file and examples to package
 * Wed Aug 16 2017 Denis Pompilio <denis.pompilio@gmail.com> - 0.6.0-1
 - Pqshell now have usage and options
 - Pqshell can now show pymailq package version

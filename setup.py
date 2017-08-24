@@ -39,8 +39,11 @@ if __name__ == '__main__':
         scripts=['bin/pqshell'],
         packages=['pymailq'],
         package_dir={'pymailq': 'pymailq'},
-        data_files=[('share/doc/pymailq', ['README.rst', 'LICENSE']),
-                    ('share/man/man1/', ['man/pqshell.1'])],
+        data_files=[('share/doc/pymailq', ['README.rst', 'LICENSE', 'CHANGES']),
+                    ('share/doc/pymailq/examples', [
+                        'share/doc/examples/pymailq.ini'
+                    ]),
+                    ('share/man/man1', ['man/pqshell.1'])],
         keywords=['postfix', 'shell', 'mailq', 'python', 'pqshell', 'postqueue'],
         classifiers=[
             'Development Status :: 5 - Production/Stable',
