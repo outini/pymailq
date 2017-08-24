@@ -16,10 +16,12 @@ The :mod:`pymailq` package defines the following attribute:
     .. autodata:: DEBUG
     .. autodata:: VERSION
     .. autodata:: CONFIG
+        :annotation: = dict()
 
 The :mod:`pymailq` package defines the following decorators:
 
     .. autofunction:: debug(function)
+    .. autofunction:: load_config(cfg_file)
 
 The :mod:`pymailq` package provides the following submodules:
 
@@ -30,4 +32,5 @@ The :mod:`pymailq` package provides the following submodules:
     selector
     control
     shell
+    config
     pqshell
