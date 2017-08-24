@@ -19,15 +19,36 @@
 #    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import sys
+import shlex
 from functools import wraps
 from datetime import datetime
 
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
 
 #: Boolean to control activation of the :func:`debug` decorator.
 DEBUG = False
 
-#: Current version of the package as :func:`str`.
-VERSION = "0.6.0"
+#: Current version of the package as :class:`str`.
+VERSION = "0.7.0"
+
+#: Module configuration as :class:`dict`.
+CONFIG = {
+    "core": {
+        "postfix_spool": "/var/spool/postfix"
+    },
+    "commands": {
+        "use_sudo": False,
+        "list_queue": ["mailq"],
+        "cat_message": ["postcat", "-qv"],
+        "hold_message": ["postsuper", "-h"],
+        "release_message": ["postsuper", "-H"],
+        "requeue_message": ["postsuper", "-r"],
+        "delete_message": ["postsuper", "-d"]
+    }
+}
 
 
 def debug(function):
@@ -57,3 +78,38 @@ def debug(function):
         return ret
 
     return run
+
+
+def load_config(cfg_file):
+    """
+    Load module configuration from .ini file
+
+    Information from this file are directly used to override values stored in
+    :attr:`pymailq.CONFIG`.
+
+    Commands from configuration file are treated using :func:`shlex.split` to
+    properly transform command string to list of arguments.
+
+    :param str cfg_file: Configuration file
+
+    .. seealso::
+
+        :ref:`pymailq-configuration`
+    """
+    global CONFIG
+
+    cfg = configparser.ConfigParser()
+    cfg.read(cfg_file)
+
+    if "core" in cfg.sections():
+        if cfg.has_option("core", "postfix_spool"):
+            CONFIG["core"]["postfix_spool"] = cfg.get("core", "postfix_spool")
+
+    if "commands" in cfg.sections():
+        for key in cfg.options("commands"):
+            if key == "use_sudo":
+                if cfg.get("commands", key) == "yes":
+                    CONFIG["commands"]["use_sudo"] = True
+            else:
+                command = shlex.split(cfg.get("commands", key))
+                CONFIG["commands"][key] = command

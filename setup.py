@@ -23,7 +23,7 @@ from distutils.core import setup
 
 if __name__ == '__main__':
     readme_file = os.path.join(os.path.dirname(__file__), 'README.rst')
-    release = "0.6.0"
+    release = "0.7.0"
     setup(
         name="pymailq",
         version=release,
@@ -39,11 +39,14 @@ if __name__ == '__main__':
         scripts=['bin/pqshell'],
         packages=['pymailq'],
         package_dir={'pymailq': 'pymailq'},
-        data_files=[('share/doc/pymailq', ['README.rst', 'LICENSE']),
-                    ('share/man/man1/', ['man/pqshell.1'])],
+        data_files=[('share/doc/pymailq', ['README.rst', 'LICENSE', 'CHANGES']),
+                    ('share/doc/pymailq/examples', [
+                        'share/doc/examples/pymailq.ini'
+                    ]),
+                    ('share/man/man1', ['man/pqshell.1'])],
         keywords=['postfix', 'shell', 'mailq', 'python', 'pqshell', 'postqueue'],
         classifiers=[
-            'Development Status :: 2 - Pre-Alpha',
+            'Development Status :: 5 - Production/Stable',
             'Operating System :: POSIX :: BSD',
             'Operating System :: POSIX :: Linux',
             'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',

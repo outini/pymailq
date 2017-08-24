@@ -24,14 +24,14 @@ import re
 import subprocess
 import email
 from datetime import datetime, timedelta
-from pymailq import debug
+from pymailq import CONFIG, debug
 
 
 class MailHeaders(object):
     """
     Simple object to store mail headers.
 
-    Object's attributes are dynamicly created while parent :class:`~store.Mail`
+    Object's attributes are dynamically created when parent :class:`~store.Mail`
     object's method :meth:`~store.Mail.parse` is called. Those attributes are
     retrieved with help of :func:`~email.message_from_string` method provided
     by the :mod:`email` module.
@@ -147,7 +147,10 @@ class Mail(object):
         self.recipients = []
         self.errors = []
         self.head = MailHeaders()
-        self.postcat_cmd = ["postcat", "-qv", self.qid]
+
+        self.postcat_cmd = CONFIG['commands']['cat_message'] + [self.qid]
+        if CONFIG['commands']['use_sudo']:
+            self.postcat_cmd.insert(0, 'sudo')
 
         # Getting optionnal status from postqueue mail_id
         postqueue_status = {'*': "active", '!': "hold"}
@@ -161,14 +164,16 @@ class Mail(object):
         Parse message content.
 
         This method use Postfix mails content parsing command defined in
-        :attr:`~Mail.postcat_cmd` attribute. This command is runned using
-        :class:`subprocess.Popen` instance.
+        :attr:`pymailq.CONFIG` attribute under the key 'cat_message'.
+        This command is runned using :class:`subprocess.Popen` instance.
 
         Parsed headers become attributes and are retrieved with help of
         :func:`~email.message_from_string` function provided by the
         :mod:`email` module.
 
         .. seealso::
+
+            :ref:`pymailq-configuration`
 
             Postfix manual:
                 `postcat`_ -- Show Postfix queue file contents
@@ -300,8 +305,8 @@ class PostqueueStore(object):
 
         :rfc:`3696` -- Checking and Transformation of Names
     """
-    postqueue_cmd = ["/usr/sbin/postqueue", "-p"]
-    spool_path = "/var/spool/postfix"
+    postqueue_cmd = None
+    spool_path = None
     postqueue_mailstatus = ['active', 'deferred', 'hold']
     mail_id_re = re.compile(r"^[A-F0-9]{10,12}[*!]?$")
     mail_addr_re = re.compile(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+$")
@@ -309,6 +314,11 @@ class PostqueueStore(object):
 
     def __init__(self):
         """Init method"""
+        self.spool_path = CONFIG['core']['postfix_spool']
+        self.postqueue_cmd = CONFIG['commands']['list_queue']
+        if CONFIG['commands']['use_sudo']:
+            self.postqueue_cmd.insert(0, 'sudo')
+
         self.loaded_at = None
         self.mails = []
 
@@ -334,7 +344,7 @@ class PostqueueStore(object):
         """
         child = subprocess.Popen(self.postqueue_cmd,
                                  stdout=subprocess.PIPE)
-        (stdout, stderr) = child.communicate()
+        stdout = child.communicate()[0]
 
         # return lines list without the headers and footers
         return [line.strip() for line in stdout.decode().split('\n')][1:-2]

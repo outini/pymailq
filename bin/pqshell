@@ -39,6 +39,8 @@ if __name__ == "__main__":
     parser.add_argument('--debug', dest='debug', action='store_const',
                         const=True, default=False,
                         help='show shell debug and timing info')
+    parser.add_argument('--config', dest='cfg_file',
+                        help='specify a configuration file for PyMailq')
 
     args = parser.parse_args()
 
@@ -49,5 +51,9 @@ if __name__ == "__main__":
     if args.debug:
         print("Setting shell in debug mode.")
         pymailq.DEBUG = True
+
+    if args.cfg_file:
+        print("Using custom configuration: " + str(args.cfg_file))
+        pymailq.load_config(args.cfg_file)
 
     main()

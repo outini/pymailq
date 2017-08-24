@@ -28,11 +28,6 @@ import shlex
 import inspect
 from pymailq import store, control, selector, utils
 
-try:
-    import readline
-except ImportError as error:
-    print("Python readline is not available, shell capabilities are limited.")
-
 
 class StoreNotLoaded(Exception):
     def __str__(self):

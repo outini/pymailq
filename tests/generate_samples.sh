@@ -33,22 +33,22 @@ gen_mail() {
 }
 
 echo -n "injecting test mails "
-(for i in `seq 500`; do gen_mail 1 1 "`msg 1000`"; done; echo -n ".") &
-(for i in `seq 500`; do gen_mail 1 2 "`msg 10`"; done; echo -n ".") &
-(for i in `seq 500`; do gen_mail 2 1 "`msg 1000`"; done; echo -n ".") &
-(for i in `seq 500`; do gen_mail 2 3 "`msg 10`"; done; echo -n ".") &
-(for i in `seq 500`; do gen_mail 3 2 "`msg 1000`"; done; echo -n ".") &
-(for i in `seq 500`; do gen_mail 4 3 "`msg 10`"; done; echo -n ".") &
-(for i in `seq 500`; do gen_mail 5 2 "`msg 1000`"; done; echo -n ".") &
-(for i in `seq 500`; do gen_mail 6 3 "`msg 10`"; done; echo -n ".") &
-(for i in `seq 500`; do gen_mail 7 2 "`msg 1000`"; done; echo -n ".") &
-(for i in `seq 500`; do gen_mail 8 3 "`msg 10`"; done; echo -n ".") &
+(for i in `seq 50`; do gen_mail 1 1 "`msg 1000`"; done; echo -n ".") &
+(for i in `seq 50`; do gen_mail 1 2 "`msg 10`"; done; echo -n ".") &
+(for i in `seq 50`; do gen_mail 2 1 "`msg 1000`"; done; echo -n ".") &
+(for i in `seq 50`; do gen_mail 2 3 "`msg 10`"; done; echo -n ".") &
+(for i in `seq 50`; do gen_mail 3 2 "`msg 1000`"; done; echo -n ".") &
+(for i in `seq 50`; do gen_mail 4 3 "`msg 10`"; done; echo -n ".") &
+(for i in `seq 50`; do gen_mail 5 2 "`msg 1000`"; done; echo -n ".") &
+(for i in `seq 50`; do gen_mail 6 3 "`msg 10`"; done; echo -n ".") &
+(for i in `seq 50`; do gen_mail 7 2 "`msg 1000`"; done; echo -n ".") &
+(for i in `seq 50`; do gen_mail 8 3 "`msg 10`"; done; echo -n ".") &
 wait
 echo " done."
 
 # Checks that mails queue is stabilized before proceeding further
 echo "waiting for queue stabilization."
-while [ `sendmail -bp | grep -c '^[A-F0-9]'` -ne 5000 ]; do
+while [ `sendmail -bp | grep -c '^[A-F0-9]'` -ne 500 ]; do
     sleep 1
 done
 echo "generated `sendmail -bp | grep -c '^[A-F0-9]'` emails."

@@ -20,7 +20,7 @@
 
 import sys
 from datetime import datetime, timedelta
-from pymailq import shell
+from pymailq import CONFIG, shell
 
 try:
     from unittest.mock import create_autospec
@@ -197,7 +197,7 @@ def test_shell_show_selected_limit():
     assert len(resp.split('\n')) == 3
     resp = run_cmd("show selected limit 10000")
     assert "Preview of first 10000" not in resp
-    assert len(resp.split('\n')) == 5000
+    assert len(resp.split('\n')) == 500
 
 
 def test_shell_show_selected_sorted():
@@ -234,7 +234,7 @@ def test_shell_select_sender():
     run_cmd("select sender sender-1")
     resp = run_cmd("show selected")
     assert "sender-1@" in resp
-    assert len(resp.split('\n')) == 1000
+    assert len(resp.split('\n')) == 100
     run_cmd("select sender sender-1 exact")
     resp = run_cmd("show selected")
     assert "No element to display" in resp
@@ -274,15 +274,15 @@ def test_shell_select_size():
     run_cmd("select reset")
     run_cmd("select size +200")
     resp = run_cmd("show selected")
-    assert len(resp.split("\n")) == 5000
+    assert len(resp.split("\n")) == 500
     run_cmd("select reset")
     run_cmd("select size -1000")
     resp = run_cmd("show selected")
-    assert len(resp.split("\n")) == 2500
+    assert len(resp.split("\n")) == 250
     run_cmd("select reset")
     run_cmd("select size +200 -1000")
     resp = run_cmd("show selected")
-    assert len(resp.split("\n")) == 2500
+    assert len(resp.split("\n")) == 250
 
 
 def test_shell_select_date():
@@ -295,7 +295,7 @@ def test_shell_select_date():
     run_cmd("select reset")
     run_cmd("select date %s" % now)
     resp = run_cmd("show selected")
-    assert len(resp.split("\n")) == 5000
+    assert len(resp.split("\n")) == 500
     run_cmd("select reset")
     run_cmd("select date %s" % five_days_ago)
     resp = run_cmd("show selected")
@@ -303,7 +303,7 @@ def test_shell_select_date():
     run_cmd("select reset")
     run_cmd("select date +%s" % five_days_ago)
     resp = run_cmd("show selected")
-    assert len(resp.split("\n")) == 5000
+    assert len(resp.split("\n")) == 500
     run_cmd("select reset")
     run_cmd("select date +%s" % in_five_days)
     resp = run_cmd("show selected")
@@ -311,11 +311,11 @@ def test_shell_select_date():
     run_cmd("select reset")
     run_cmd("select date %s..%s" % (five_days_ago, in_five_days))
     resp = run_cmd("show selected")
-    assert len(resp.split("\n")) == 5000
+    assert len(resp.split("\n")) == 500
     run_cmd("select reset")
     run_cmd("select date -%s" % in_five_days)
     resp = run_cmd("show selected")
-    assert len(resp.split("\n")) == 5000
+    assert len(resp.split("\n")) == 500
     resp = run_cmd("select date XXXX-XX-XX")
     assert "'XXXX-XX-XX' does not match format '%Y-%m-%d'" in resp
 
@@ -361,23 +361,27 @@ def test_shell_select_reset():
 
 def test_shell_super_hold():
     """Test 'select reset' command"""
+    CONFIG['commands']['use_sudo'] = True
     resp = run_cmd("super hold")
     assert "postsuper: Placed on hold" in resp
 
 
 def test_shell_super_release():
     """Test 'select reset' command"""
+    CONFIG['commands']['use_sudo'] = True
     resp = run_cmd("super release")
     assert "postsuper: Released" in resp
 
 
 def test_shell_super_requeue():
     """Test 'super requeue' command"""
+    CONFIG['commands']['use_sudo'] = True
     resp = run_cmd("super requeue")
     assert "postsuper: Requeued" in resp
 
 
 def test_shell_super_delete():
     """Test 'select reset' command"""
+    CONFIG['commands']['use_sudo'] = True
     resp = run_cmd("super delete")
     assert "postsuper: Deleted" in resp

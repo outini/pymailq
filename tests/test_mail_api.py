@@ -18,21 +18,49 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import sys
 import pytest
 import pymailq
 from datetime import datetime
 from pymailq import store, control, selector
+
+try:
+    from unittest.mock import Mock, patch
+except ImportError:
+    from mock import Mock, patch
+
+
+pymailq.CONFIG['commands']['use_sudo'] = True
 
 PSTORE = store.PostqueueStore()
 SELECTOR = selector.MailSelector(PSTORE)
 QCONTROL = control.QueueControl()
 
 
+@patch('sys.stderr', new_callable=Mock())
+def test_debug_decorator(stderr):
+    """Test pymailq.debug decorator"""
+    pymailq.DEBUG = True
+
+    @pymailq.debug
+    def test():
+        stderr.write("test\n")
+
+    test()
+    pymailq.DEBUG = False
+
+
+def test_load_config():
+    """Test pymailq.load_config method"""
+    pymailq.CONFIG.update({"core": {}, "commands": {}})
+    pymailq.load_config("tests/samples/pymailq.ini")
+    assert 'postfix_spool' in pymailq.CONFIG['core']
+    assert pymailq.CONFIG['commands']['use_sudo'] is True
+
+
 def test_store_load_from_spool():
     """Test PostqueueStore load from spool"""
-    pymailq.DEBUG = True
     PSTORE.load(method="spool")
-    pymailq.DEBUG = False
     assert PSTORE.loaded_at is not None
 
 
@@ -48,17 +76,13 @@ def test_store_load_from_postqueue():
     assert PSTORE.loaded_at is not None
 
 
-def test_mail_parse():
+def test_mail_parse_and_dump():
     """Test Mail.parse method"""
-    mail = PSTORE.mails[0]
+    pymailq.CONFIG['commands']['use_sudo'] = True
+    mail = store.Mail(PSTORE.mails[0].qid)
     assert mail.parsed is False
     mail.parse()
     assert mail.parsed is True
-
-
-def test_mail_dump():
-    """Test Mail.dump method"""
-    mail = PSTORE.mails[0]
     datas = mail.dump()
     assert "headers" in datas
     assert "postqueue" in datas
@@ -69,7 +93,7 @@ def test_selector_status():
     SELECTOR.reset()
     mails = SELECTOR.lookup_status(["deferred"])
     assert type(mails) == list
-    assert len(mails) == 5000
+    assert len(mails) == 500
 
 
 def test_selector_sender():
@@ -77,11 +101,11 @@ def test_selector_sender():
     SELECTOR.reset()
     mails = SELECTOR.lookup_sender("sender-1", exact=False)
     assert type(mails) == list
-    assert len(mails) == 1000
+    assert len(mails) == 100
     SELECTOR.reset()
     mails = SELECTOR.lookup_sender("sender-2@test-domain.tld")
     assert type(mails) == list
-    assert len(mails) == 1000
+    assert len(mails) == 100
 
 
 def test_selector_error():
@@ -97,11 +121,11 @@ def test_selector_date():
     SELECTOR.reset()
     mails = SELECTOR.lookup_date(start=datetime(1970, 1, 1))
     assert type(mails) == list
-    assert len(mails) == 5000
+    assert len(mails) == 500
     SELECTOR.reset()
     mails = SELECTOR.lookup_date(stop=datetime.now())
     assert type(mails) == list
-    assert len(mails) == 5000
+    assert len(mails) == 500
 
 
 def test_selector_size():
@@ -109,11 +133,15 @@ def test_selector_size():
     SELECTOR.reset()
     mails = SELECTOR.lookup_size()
     assert type(mails) == list
-    assert len(mails) == 5000
+    assert len(mails) == 500
     SELECTOR.reset()
     mails = SELECTOR.lookup_size(smax=500)
     assert type(mails) == list
-    assert len(mails) == 2500
+    assert len(mails) == 250
+    SELECTOR.reset()
+    mails = SELECTOR.lookup_size(smin=500)
+    assert type(mails) == list
+    assert len(mails) == 250
 
 
 def test_selector_replay_filters():
@@ -130,16 +158,28 @@ def test_selector_reset():
     assert SELECTOR.mails == PSTORE.mails
 
 
+def test_control_unknown_command():
+    """Test QueueControl._operate with unknown command"""
+    orig_command = pymailq.CONFIG['commands']['hold_message']
+    pymailq.CONFIG['commands']['use_sudo'] = False
+    pymailq.CONFIG['commands']['hold_message'] = ["invalid-cmd"]
+    with pytest.raises(RuntimeError) as exc:
+        QCONTROL.hold_messages([store.Mail('XXXXXXXXX')])
+    assert "Unable to call" in str(exc.value)
+    pymailq.CONFIG['commands']['hold_message'] = orig_command
+
+
 def test_control_as_user():
     """Test QueueControl.hold_messages"""
+    pymailq.CONFIG['commands']['use_sudo'] = False
     with pytest.raises(RuntimeError) as exc:
-        QCONTROL.hold_messages(PSTORE.mails[0:2])
+        QCONTROL.hold_messages([store.Mail('XXXXXXXXX')])
     assert "postsuper: fatal: use of this command" in str(exc.value)
 
 
 def test_control_nothing_done():
     """Test QueueControl on unexistent mail ID"""
-    QCONTROL.use_sudo = True
+    pymailq.CONFIG['commands']['use_sudo'] = True
     result = QCONTROL.hold_messages([store.Mail('XXXXXXXXX')])
     assert type(result) == list
     assert len(result) == 1
@@ -148,30 +188,30 @@ def test_control_nothing_done():
 
 def test_control_hold():
     """Test QueueControl.hold_messages"""
-    QCONTROL.use_sudo = True
-    result = QCONTROL.hold_messages(PSTORE.mails[0:2])
+    pymailq.CONFIG['commands']['use_sudo'] = True
+    result = QCONTROL.hold_messages(PSTORE.mails[-2:])
     assert type(result) == list
     assert "postsuper: Placed on hold: 2 messages" in result
 
 
 def test_control_release():
     """Test QueueControl.release_messages"""
-    QCONTROL.use_sudo = True
-    result = QCONTROL.release_messages(PSTORE.mails[0:2])
+    pymailq.CONFIG['commands']['use_sudo'] = True
+    result = QCONTROL.release_messages(PSTORE.mails[-2:])
     assert type(result) == list
     assert "postsuper: Released from hold: 2 messages" in result
 
 
 def test_control_requeue():
     """Test QueueControl.requeue_messages"""
-    QCONTROL.use_sudo = True
-    result = QCONTROL.requeue_messages(PSTORE.mails[0:2])
+    pymailq.CONFIG['commands']['use_sudo'] = True
+    result = QCONTROL.requeue_messages(PSTORE.mails[-2:])
     assert "postsuper: Requeued: 2 messages" in result
 
 
 def test_control_delete():
     """Test QueueControl.delete_messages"""
-    QCONTROL.use_sudo = True
+    pymailq.CONFIG['commands']['use_sudo'] = True
     # We don't really delete messages to keep queue consistence for next tests
     result = QCONTROL.delete_messages([])
     assert type(result) == list

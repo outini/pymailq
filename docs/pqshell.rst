@@ -11,7 +11,9 @@ means to view the queue content, filter mails on criterias like `Sender` or
 SYNOPSIS
 ********
 
-    pqshell [options]
+::
+
+    pqshell [-h] [--version] [--debug] [--config CFG_FILE]
 
 FEATURES
 ********
@@ -24,7 +26,10 @@ FEATURES
 OPTIONS
 *******
 
-No options supported.
+    -h, --help           show help message and exit
+    --version            show shell version
+    --debug              show shell debug and timing info
+    --config CFG_FILE    specify a configuration file for PyMailq
 
 SHELL COMMANDS
 **************

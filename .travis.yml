@@ -1,0 +1,16 @@
+language: python
+python:
+  - 2.7
+  - 3.4
+  - 3.5
+  - 3.6
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq postfix
+install:
+  - pip install -r tests/tests.requirements.txt
+  - python ./setup.py install
+before_script:
+  - sudo ./tests/generate_samples.sh
+script:
+  - pytest tests/
