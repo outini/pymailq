@@ -5,14 +5,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>store &#8212; PyMailq 0.6.0
+    <title>store &#8212; PyMailq 0.7.0
  documentation</title>
     <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.6.0',
+        VERSION:     '0.7.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -27,7 +27,7 @@
   </head>
   <body>
       <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>PyMailq 0.6.0
+          <span>PyMailq 0.7.0
  documentation</span></a></h1>
         <h2 class="heading"><span>store</span></h2>
       </div>
@@ -68,14 +68,14 @@
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">email</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
-<span class="kn">from</span> <span class="nn">pymailq</span> <span class="k">import</span> <span class="n">debug</span>
+<span class="kn">from</span> <span class="nn">pymailq</span> <span class="k">import</span> <span class="n">CONFIG</span><span class="p">,</span> <span class="n">debug</span>
 
 
 <div class="viewcode-block" id="MailHeaders"><a class="viewcode-back" href="../store.html#store.MailHeaders">[docs]</a><span class="k">class</span> <span class="nc">MailHeaders</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Simple object to store mail headers.</span>
 
-<span class="sd">    Object&#39;s attributes are dynamicly created while parent :class:`~store.Mail`</span>
+<span class="sd">    Object&#39;s attributes are dynamically created when parent :class:`~store.Mail`</span>
 <span class="sd">    object&#39;s method :meth:`~store.Mail.parse` is called. Those attributes are</span>
 <span class="sd">    retrieved with help of :func:`~email.message_from_string` method provided</span>
 <span class="sd">    by the :mod:`email` module.</span>
@@ -191,7 +191,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">recipients</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="n">MailHeaders</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">postcat_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;postcat&quot;</span><span class="p">,</span> <span class="s2">&quot;-qv&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">qid</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">postcat_cmd</span> <span class="o">=</span> <span class="n">CONFIG</span><span class="p">[</span><span class="s1">&#39;commands&#39;</span><span class="p">][</span><span class="s1">&#39;cat_message&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">qid</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">CONFIG</span><span class="p">[</span><span class="s1">&#39;commands&#39;</span><span class="p">][</span><span class="s1">&#39;use_sudo&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">postcat_cmd</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;sudo&#39;</span><span class="p">)</span>
 
         <span class="c1"># Getting optionnal status from postqueue mail_id</span>
         <span class="n">postqueue_status</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;*&#39;</span><span class="p">:</span> <span class="s2">&quot;active&quot;</span><span class="p">,</span> <span class="s1">&#39;!&#39;</span><span class="p">:</span> <span class="s2">&quot;hold&quot;</span><span class="p">}</span>
@@ -205,14 +208,16 @@
 <span class="sd">        Parse message content.</span>
 
 <span class="sd">        This method use Postfix mails content parsing command defined in</span>
-<span class="sd">        :attr:`~Mail.postcat_cmd` attribute. This command is runned using</span>
-<span class="sd">        :class:`subprocess.Popen` instance.</span>
+<span class="sd">        :attr:`pymailq.CONFIG` attribute under the key &#39;cat_message&#39;.</span>
+<span class="sd">        This command is runned using :class:`subprocess.Popen` instance.</span>
 
 <span class="sd">        Parsed headers become attributes and are retrieved with help of</span>
 <span class="sd">        :func:`~email.message_from_string` function provided by the</span>
 <span class="sd">        :mod:`email` module.</span>
 
 <span class="sd">        .. seealso::</span>
+
+<span class="sd">            :ref:`pymailq-configuration`</span>
 
 <span class="sd">            Postfix manual:</span>
 <span class="sd">                `postcat`_ -- Show Postfix queue file contents</span>
@@ -344,8 +349,8 @@
 
 <span class="sd">        :rfc:`3696` -- Checking and Transformation of Names</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">postqueue_cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;/usr/sbin/postqueue&quot;</span><span class="p">,</span> <span class="s2">&quot;-p&quot;</span><span class="p">]</span>
-    <span class="n">spool_path</span> <span class="o">=</span> <span class="s2">&quot;/var/spool/postfix&quot;</span>
+    <span class="n">postqueue_cmd</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">spool_path</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">postqueue_mailstatus</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;active&#39;</span><span class="p">,</span> <span class="s1">&#39;deferred&#39;</span><span class="p">,</span> <span class="s1">&#39;hold&#39;</span><span class="p">]</span>
     <span class="n">mail_id_re</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^[A-F0-9]{10,12}[*!]?$&quot;</span><span class="p">)</span>
     <span class="n">mail_addr_re</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+$&quot;</span><span class="p">)</span>
@@ -353,6 +358,11 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Init method&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spool_path</span> <span class="o">=</span> <span class="n">CONFIG</span><span class="p">[</span><span class="s1">&#39;core&#39;</span><span class="p">][</span><span class="s1">&#39;postfix_spool&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">postqueue_cmd</span> <span class="o">=</span> <span class="n">CONFIG</span><span class="p">[</span><span class="s1">&#39;commands&#39;</span><span class="p">][</span><span class="s1">&#39;list_queue&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">CONFIG</span><span class="p">[</span><span class="s1">&#39;commands&#39;</span><span class="p">][</span><span class="s1">&#39;use_sudo&#39;</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">postqueue_cmd</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;sudo&#39;</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">loaded_at</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -378,7 +388,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">child</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">postqueue_cmd</span><span class="p">,</span>
                                  <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
-        <span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span><span class="p">)</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+        <span class="n">stdout</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">communicate</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="c1"># return lines list without the headers and footers</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span></div>

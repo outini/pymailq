@@ -5,14 +5,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>control &#8212; PyMailq 0.6.0
+    <title>control &#8212; PyMailq 0.7.0
  documentation</title>
     <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.6.0',
+        VERSION:     '0.7.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -27,7 +27,7 @@
   </head>
   <body>
       <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>PyMailq 0.6.0
+          <span>PyMailq 0.7.0
  documentation</span></a></h1>
         <h2 class="heading"><span>control</span></h2>
       </div>
@@ -64,6 +64,7 @@
 
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">from</span> <span class="nn">pymailq</span> <span class="k">import</span> <span class="n">CONFIG</span><span class="p">,</span> <span class="n">debug</span>
 
 
 <div class="viewcode-block" id="QueueControl"><a class="viewcode-back" href="../control.html#control.QueueControl">[docs]</a><span class="k">class</span> <span class="nc">QueueControl</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -104,38 +105,40 @@
 <span class="sd">                `postsuper`_ -- Postfix superintendent</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">use_sudo</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_operation_cmd</span><span class="p">(</span><span class="n">operation</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get operation related command from configuration</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">postsuper_cmd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;sudo&quot;</span><span class="p">,</span> <span class="s2">&quot;postsuper&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_sudo</span> <span class="k">else</span> <span class="p">[</span><span class="s2">&quot;postsuper&quot;</span><span class="p">]</span>
+<span class="sd">        Known operations:</span>
+<span class="sd">        - hold: Hold message</span>
+<span class="sd">        - release: Release message from hold</span>
+<span class="sd">        - requeue: Requeue message</span>
+<span class="sd">        - delete: Delete message from queue</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">known_operations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;delete&#39;</span><span class="p">:</span> <span class="s1">&#39;-d&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;hold&#39;</span><span class="p">:</span> <span class="s1">&#39;-h&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;release&#39;</span><span class="p">:</span> <span class="s1">&#39;-H&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;requeue&#39;</span><span class="p">:</span> <span class="s1">&#39;-r&#39;</span><span class="p">}</span>
+<span class="sd">        :param str operation: Operation name</span>
+<span class="sd">        :return: Command and arguments as :class:`list`</span>
 
-<div class="viewcode-block" id="QueueControl._operate"><a class="viewcode-back" href="../control.html#control.QueueControl._operate">[docs]</a>    <span class="k">def</span> <span class="nf">_operate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>
+<span class="sd">        :raise KeyError: Operation is unknown</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cmd</span> <span class="o">=</span> <span class="n">CONFIG</span><span class="p">[</span><span class="s1">&#39;commands&#39;</span><span class="p">][</span><span class="n">operation</span> <span class="o">+</span> <span class="s1">&#39;_message&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">CONFIG</span><span class="p">[</span><span class="s1">&#39;commands&#39;</span><span class="p">][</span><span class="s1">&#39;use_sudo&#39;</span><span class="p">]:</span>
+            <span class="n">cmd</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;sudo&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cmd</span>
+
+<div class="viewcode-block" id="QueueControl._operate"><a class="viewcode-back" href="../control.html#control.QueueControl._operate">[docs]</a>    <span class="nd">@debug</span>
+    <span class="k">def</span> <span class="nf">_operate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generic method to lead operations messages from postfix mail queue.</span>
 
 <span class="sd">        Operations can be one of Postfix known operations stored in</span>
-<span class="sd">        :attr:`~QueueControl.known_operations` attribute. Operation</span>
-<span class="sd">        argument is directly converted and passed to the</span>
-<span class="sd">        :attr:`~QueueControl.postsuper_cmd` command.</span>
+<span class="sd">        PyMailq module configuration.</span>
 
-<span class="sd">        :param str operation: Known operation from</span>
-<span class="sd">                              :attr:`~QueueControl.known_operations`.</span>
+<span class="sd">        :param str operation: Known operation from :attr:`pymailq.CONFIG`.</span>
 <span class="sd">        :param list messages: List of :class:`~store.Mail` objects targetted</span>
 <span class="sd">                              for operation.</span>
 <span class="sd">        :return: Command&#39;s *stderr* output lines</span>
 <span class="sd">        :rtype: :func:`list`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Convert operation name to operation attribute. Raise KeyError.</span>
-        <span class="n">operation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">known_operations</span><span class="p">[</span><span class="n">operation</span><span class="p">]</span>
-
         <span class="c1"># validate that object&#39;s attribute &quot;qid&quot; exist. Raise AttributeError.</span>
         <span class="k">for</span> <span class="n">msg</span> <span class="ow">in</span> <span class="n">messages</span><span class="p">:</span>
             <span class="nb">getattr</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="s2">&quot;qid&quot;</span><span class="p">)</span>
@@ -144,15 +147,15 @@
         <span class="c1"># It should not be possible to inject commands, but who knows...</span>
         <span class="c1"># https://www.kevinlondon.com/2015/07/26/dangerous-python-functions.html</span>
         <span class="c1"># And consider the use of sh module: https://amoffat.github.io/sh/</span>
-        <span class="n">postsuper_cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">postsuper_cmd</span> <span class="o">+</span> <span class="p">[</span><span class="n">operation</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">]</span>
+        <span class="n">operation_cmd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_operation_cmd</span><span class="p">(</span><span class="n">operation</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;-&#39;</span><span class="p">]</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">child</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">postsuper_cmd</span><span class="p">,</span>
+            <span class="n">child</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="n">operation_cmd</span><span class="p">,</span>
                                      <span class="n">stdin</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
                                      <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-            <span class="n">command_str</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">postsuper_cmd</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">EnvironmentError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="n">command_str</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">operation_cmd</span><span class="p">)</span>
             <span class="n">error_msg</span> <span class="o">=</span> <span class="s2">&quot;Unable to call &#39;</span><span class="si">%s</span><span class="s2">&#39;: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">command_str</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
-            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
 
         <span class="c1"># If permissions error, the postsuper process takes ~1s to teardown.</span>
         <span class="c1"># Wait this delay and raise error message if process has stopped.</span>

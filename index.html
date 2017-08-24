@@ -5,14 +5,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pymailq – Simple Postfix queue management &#8212; PyMailq 0.6.0
+    <title>pymailq – Simple Postfix queue management &#8212; PyMailq 0.7.0
  documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.6.0',
+        VERSION:     '0.7.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -28,7 +28,7 @@
   </head>
   <body>
       <div class="header" role="banner"><h1 class="heading"><a href="#">
-          <span>PyMailq 0.6.0
+          <span>PyMailq 0.7.0
  documentation</span></a></h1>
         <h2 class="heading"><span>pymailq – Simple Postfix queue management</span></h2>
       </div>
@@ -60,8 +60,14 @@ monitoring.</p>
 
 <dl class="data">
 <dt id="pymailq.VERSION">
-<code class="descclassname">pymailq.</code><code class="descname">VERSION</code><em class="property"> = '0.6.0'</em><a class="headerlink" href="#pymailq.VERSION" title="Permalink to this definition">¶</a></dt>
-<dd><p>Current version of the package as <code class="xref py py-func docutils literal"><span class="pre">str()</span></code>.</p>
+<code class="descclassname">pymailq.</code><code class="descname">VERSION</code><em class="property"> = '0.7.0'</em><a class="headerlink" href="#pymailq.VERSION" title="Permalink to this definition">¶</a></dt>
+<dd><p>Current version of the package as <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">str</span></code></a>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="pymailq.CONFIG">
+<code class="descclassname">pymailq.</code><code class="descname">CONFIG</code><em class="property"> = dict()</em><a class="headerlink" href="#pymailq.CONFIG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Module configuration as <a class="reference external" href="https://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">dict</span></code></a>.</p>
 </dd></dl>
 
 </div></blockquote>
@@ -76,6 +82,28 @@ is also print at the end of call. This decorator is based on the value of
 <a class="reference internal" href="#pymailq.DEBUG" title="pymailq.DEBUG"><code class="xref py py-data docutils literal"><span class="pre">DEBUG</span></code></a>. If <code class="docutils literal"><span class="pre">True</span></code>, the debug informations will be displayed.</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="pymailq.load_config">
+<code class="descclassname">pymailq.</code><code class="descname">load_config</code><span class="sig-paren">(</span><em>cfg_file</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pymailq.html#load_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymailq.load_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load module configuration from .ini file</p>
+<p>Information from this file are directly used to override values stored in
+<a class="reference internal" href="#pymailq.CONFIG" title="pymailq.CONFIG"><code class="xref py py-attr docutils literal"><span class="pre">pymailq.CONFIG</span></code></a>.</p>
+<p>Commands from configuration file are treated using <a class="reference external" href="https://docs.python.org/2.7/library/shlex.html#shlex.split" title="(in Python v2.7)"><code class="xref py py-func docutils literal"><span class="pre">shlex.split()</span></code></a> to
+properly transform command string to list of arguments.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>cfg_file</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Configuration file</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="config.html#pymailq-configuration"><span class="std std-ref">pymailq.CONFIG – Configuration structure and usage</span></a></p>
+</div>
+</dd></dl>
+
 </div></blockquote>
 <p>The <a class="reference internal" href="#module-pymailq" title="pymailq: Simple Postfix queue management XXX."><code class="xref py py-mod docutils literal"><span class="pre">pymailq</span></code></a> package provides the following submodules:</p>
 <div class="toctree-wrapper compound">
@@ -84,6 +112,7 @@ is also print at the end of call. This decorator is based on the value of
 <li class="toctree-l1"><a class="reference internal" href="selector.html">pymailq.selector – Mails queue filtering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="control.html">pymailq.control – Mails queue adminitrative operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="shell.html">pymailq.shell – Mails queue management shell</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">pymailq.CONFIG – Configuration structure and usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pqshell.html">pqshell – A shell-like to interact with a Postfix mails queue</a></li>
 </ul>
 </div>

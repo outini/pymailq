@@ -1,29 +1,25 @@
-pymailq -- Simple Postfix queue management
+pyqueue -- Simple Postfix queue management
 ==========================================
 
-.. module:: pymailq
+.. module:: pyqueue
    :synopsis: Simple Postfix queue management XXX.
 .. moduleauthor:: Denis 'jawa' Pompilio <denis.pompilio@gmail.com>
 .. sectionauthor:: Denis 'jawa' Pompilio <denis.pompilio@gmail.com>
 
-The :mod:`pymailq` package makes it easy to view and control Postfix mails
+The :mod:`pyqueue` package makes it easy to view and control Postfix mails
 queue. It provide several classes to store, view and interact with mail queue
 using Postfix command line tools. This module is provided for automation and
 monitoring.
 
-The :mod:`pymailq` package defines the following attribute:
+The :mod:`pyqueue` package defines the following attribute:
 
     .. autodata:: DEBUG
-    .. autodata:: VERSION
-    .. autodata:: CONFIG
-        :annotation: = dict()
 
-The :mod:`pymailq` package defines the following decorators:
+The :mod:`pyqueue` package defines the following decorators:
 
     .. autofunction:: debug(function)
-    .. autofunction:: load_config(cfg_file)
 
-The :mod:`pymailq` package provides the following submodules:
+The :mod:`pyqueue` package provides the following submodules:
 
 .. toctree::
     :maxdepth: 1
@@ -32,5 +28,4 @@ The :mod:`pymailq` package provides the following submodules:
     selector
     control
     shell
-    config
     pqshell

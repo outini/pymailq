@@ -1,0 +1,141 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>pymailq.CONFIG – Configuration structure and usage &#8212; PyMailq 0.7.0
+ documentation</title>
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.7.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pqshell – A shell-like to interact with a Postfix mails queue" href="pqshell.html" />
+    <link rel="prev" title="pymailq.shell – Mails queue management shell" href="shell.html" /> 
+  </head>
+  <body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>PyMailq 0.7.0
+ documentation</span></a></h1>
+        <h2 class="heading"><span>pymailq.CONFIG – Configuration structure and usage</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="shell.html">pymailq.shell – Mails queue management shell</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="pqshell.html">pqshell – A shell-like to interact with a Postfix mails queue</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="pymailq-config-configuration-structure-and-usage">
+<span id="pymailq-configuration"></span><h1>pymailq.CONFIG – Configuration structure and usage<a class="headerlink" href="#pymailq-config-configuration-structure-and-usage" title="Permalink to this headline">¶</a></h1>
+<p>PyMailq module takes an optional <cite>.ini</cite> configuration file.</p>
+<div class="section" id="section-core">
+<h2>Section: core<a class="headerlink" href="#section-core" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">postfix_spool</span></code></dt>
+<dd>Path to postfix spool (defaults to <cite>/var/spool/postfix</cite>)</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="section-commands">
+<h2>Section: commands<a class="headerlink" href="#section-commands" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">use_sudo</span></code> (yes|no)</dt>
+<dd>Control the use of sudo to invoke commands (default: <cite>yes</cite>)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">list_queue</span></code></dt>
+<dd>Command to list messages queue (default: <cite>mailq</cite>)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">cat_message</span></code></dt>
+<dd>Command to cat message (default: <cite>postcat -qv</cite>)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">hold_message</span></code></dt>
+<dd>Command to hold message (default: <cite>postsuper -h</cite>)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">release_message</span></code></dt>
+<dd>Command to release message (default: <cite>postsuper -H</cite>)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">requeue_message</span></code></dt>
+<dd>Command to requeue message (default: <cite>postsuper -r</cite>)</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">delete_message</span></code></dt>
+<dd>Command to delete message (default: <cite>postsuper -d</cite>)</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<p><strong>pymailq.ini</strong>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">core</span><span class="p">]</span>
+<span class="n">postfix_spool</span> <span class="o">=</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">spool</span><span class="o">/</span><span class="n">postfix</span>
+
+<span class="p">[</span><span class="n">commands</span><span class="p">]</span>
+<span class="n">use_sudo</span> <span class="o">=</span> <span class="n">yes</span>
+<span class="n">list_queue</span> <span class="o">=</span> <span class="n">mailq</span>
+<span class="n">cat_message</span> <span class="o">=</span> <span class="n">postcat</span> <span class="o">-</span><span class="n">qv</span>
+<span class="n">hold_message</span> <span class="o">=</span> <span class="n">postsuper</span> <span class="o">-</span><span class="n">h</span>
+<span class="n">release_message</span> <span class="o">=</span> <span class="n">postsuper</span> <span class="o">-</span><span class="n">H</span>
+<span class="n">requeue_message</span> <span class="o">=</span> <span class="n">postsuper</span> <span class="o">-</span><span class="n">r</span>
+<span class="n">delete_message</span> <span class="o">=</span> <span class="n">postsuper</span> <span class="o">-</span><span class="n">d</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="shell.html">pymailq.shell – Mails queue management shell</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="pqshell.html">pqshell – A shell-like to interact with a Postfix mails queue</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2014, Denis &#39;jawa&#39; Pompilio.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>

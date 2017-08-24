@@ -5,14 +5,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pymailq.store – Mails queue storage objects &#8212; PyMailq 0.6.0
+    <title>pymailq.store – Mails queue storage objects &#8212; PyMailq 0.7.0
  documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.6.0',
+        VERSION:     '0.7.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -29,7 +29,7 @@
   </head>
   <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>PyMailq 0.6.0
+          <span>PyMailq 0.7.0
  documentation</span></a></h1>
         <h2 class="heading"><span>pymailq.store – Mails queue storage objects</span></h2>
       </div>
@@ -412,13 +412,14 @@ initialization with: <code class="docutils literal"><span class="pre">[&quot;pos
 <code class="descclassname">Mail.</code><code class="descname">parse</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/store.html#Mail.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#store.Mail.parse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse message content.</p>
 <p>This method use Postfix mails content parsing command defined in
-<a class="reference internal" href="#Mail.postcat_cmd" title="Mail.postcat_cmd"><code class="xref py py-attr docutils literal"><span class="pre">postcat_cmd</span></code></a> attribute. This command is runned using
-<a class="reference external" href="https://docs.python.org/2.7/library/subprocess.html#subprocess.Popen" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">subprocess.Popen</span></code></a> instance.</p>
+<a class="reference internal" href="index.html#pymailq.CONFIG" title="pymailq.CONFIG"><code class="xref py py-attr docutils literal"><span class="pre">pymailq.CONFIG</span></code></a> attribute under the key ‘cat_message’.
+This command is runned using <a class="reference external" href="https://docs.python.org/2.7/library/subprocess.html#subprocess.Popen" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">subprocess.Popen</span></code></a> instance.</p>
 <p>Parsed headers become attributes and are retrieved with help of
 <a class="reference external" href="https://docs.python.org/2.7/library/email.parser.html#email.message_from_string" title="(in Python v2.7)"><code class="xref py py-func docutils literal"><span class="pre">message_from_string()</span></code></a> function provided by the
 <a class="reference external" href="https://docs.python.org/2.7/library/email.html#module-email" title="(in Python v2.7)"><code class="xref py py-mod docutils literal"><span class="pre">email</span></code></a> module.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
+<p><a class="reference internal" href="config.html#pymailq-configuration"><span class="std std-ref">pymailq.CONFIG – Configuration structure and usage</span></a></p>
 <dl class="last docutils">
 <dt>Postfix manual:</dt>
 <dd><a class="reference external" href="http://www.postfix.org/postcat.1.html">postcat</a> – Show Postfix queue file contents</dd>
@@ -459,7 +460,7 @@ informations under the <code class="docutils literal"><span class="pre">headers<
 <dt id="store.MailHeaders">
 <em class="property">class </em><code class="descclassname">store.</code><code class="descname">MailHeaders</code><a class="reference internal" href="_modules/store.html#MailHeaders"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#store.MailHeaders" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simple object to store mail headers.</p>
-<p>Object’s attributes are dynamicly created while parent <code class="xref py py-class docutils literal"><span class="pre">Mail</span></code>
+<p>Object’s attributes are dynamically created when parent <code class="xref py py-class docutils literal"><span class="pre">Mail</span></code>
 object’s method <a class="reference internal" href="#store.Mail.parse" title="store.Mail.parse"><code class="xref py py-meth docutils literal"><span class="pre">parse()</span></code></a> is called. Those attributes are
 retrieved with help of <a class="reference external" href="https://docs.python.org/2.7/library/email.parser.html#email.message_from_string" title="(in Python v2.7)"><code class="xref py py-func docutils literal"><span class="pre">message_from_string()</span></code></a> method provided
 by the <a class="reference external" href="https://docs.python.org/2.7/library/email.html#module-email" title="(in Python v2.7)"><code class="xref py py-mod docutils literal"><span class="pre">email</span></code></a> module.</p>
