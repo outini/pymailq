@@ -48,6 +48,8 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Aug 24 2017 Denis Pompilio <denis.pompilio@gmail.com> - 0.7.0-1
+- Support of configuration file
 * Thu Aug 24 2017 Denis Pompilio <denis.pompilio@gmail.com> - 0.6.0-2
 - Added CHANGES file and examples to package
 * Wed Aug 16 2017 Denis Pompilio <denis.pompilio@gmail.com> - 0.6.0-1

@@ -189,7 +189,7 @@ def test_control_nothing_done():
 def test_control_hold():
     """Test QueueControl.hold_messages"""
     pymailq.CONFIG['commands']['use_sudo'] = True
-    result = QCONTROL.hold_messages(PSTORE.mails[0:2])
+    result = QCONTROL.hold_messages(PSTORE.mails[-2:])
     assert type(result) == list
     assert "postsuper: Placed on hold: 2 messages" in result
 
@@ -197,7 +197,7 @@ def test_control_hold():
 def test_control_release():
     """Test QueueControl.release_messages"""
     pymailq.CONFIG['commands']['use_sudo'] = True
-    result = QCONTROL.release_messages(PSTORE.mails[0:2])
+    result = QCONTROL.release_messages(PSTORE.mails[-2:])
     assert type(result) == list
     assert "postsuper: Released from hold: 2 messages" in result
 
@@ -205,7 +205,7 @@ def test_control_release():
 def test_control_requeue():
     """Test QueueControl.requeue_messages"""
     pymailq.CONFIG['commands']['use_sudo'] = True
-    result = QCONTROL.requeue_messages(PSTORE.mails[0:2])
+    result = QCONTROL.requeue_messages(PSTORE.mails[-2:])
     assert "postsuper: Requeued: 2 messages" in result
 
 

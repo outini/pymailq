@@ -1,6 +1,6 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "PQSHELL" "1" "Aug 16, 2017" "0.6" "PyMailq"
+.TH "PQSHELL" "1" "Aug 24, 2017" "0.7" "PyMailq"
 .SH NAME
 pqshell \- A shell-like to interact with a Postfix mails queue
 .
@@ -38,7 +38,12 @@ means to view the queue content, filter mails on criterias like \fISender\fP or
 .SH SYNOPSIS
 .INDENT 0.0
 .INDENT 3.5
-pqshell [options]
+.sp
+.nf
+.ft C
+pqshell [\-h] [\-\-version] [\-\-debug] [\-\-config CFG_FILE]
+.ft P
+.fi
 .UNINDENT
 .UNINDENT
 .SH FEATURES
@@ -53,8 +58,24 @@ Administrative operations on mails queue
 History and autocomplete via readline, if installed.
 .UNINDENT
 .SH OPTIONS
-.sp
-No options supported.
+.INDENT 0.0
+.INDENT 3.5
+.INDENT 0.0
+.TP
+.B \-h\fP,\fB  \-\-help
+show help message and exit
+.TP
+.B \-\-version
+show shell version
+.TP
+.B \-\-debug
+show shell debug and timing info
+.TP
+.BI \-\-config \ CFG_FILE
+specify a configuration file for PyMailq
+.UNINDENT
+.UNINDENT
+.UNINDENT
 .SH SHELL COMMANDS
 .sp
 An inside help is available with the help command. Each provided command takes

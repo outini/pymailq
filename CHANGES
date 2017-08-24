@@ -4,7 +4,10 @@ pymailq - Simple mail queue management
 Contact: Denis Pompilio (jawa) <denis.pompilio@gmail.com>
 https://github.com/outini/pymailq
 
-== v0.6.0 16/08/2017 ===
+=== v0.7.0 24/08/2017 ===
+    * Support of configuration file
+
+=== v0.6.0 16/08/2017 ===
     * Pqshell now have usage and options
     * Pqshell can now show pymailq package version
     * Pqshell can now be started in debug mode
@@ -15,7 +18,7 @@ https://github.com/outini/pymailq
     * Unit testing for python2.7 and python3
     * Using code coverage
 
-== v0.5.3 19/10/2014 ===
+=== v0.5.3 19/10/2014 ===
     * Complete support for python2.7 and python3
     * Project renamed to PyMailq
 
