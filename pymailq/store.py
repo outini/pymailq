@@ -164,14 +164,16 @@ class Mail(object):
         Parse message content.
 
         This method use Postfix mails content parsing command defined in
-        :attr:`~Mail.postcat_cmd` attribute. This command is runned using
-        :class:`subprocess.Popen` instance.
+        :attr:`pymailq.CONFIG` attribute under the key 'cat_message'.
+        This command is runned using :class:`subprocess.Popen` instance.
 
         Parsed headers become attributes and are retrieved with help of
         :func:`~email.message_from_string` function provided by the
         :mod:`email` module.
 
         .. seealso::
+
+            :ref:`pymailq-configuration`
 
             Postfix manual:
                 `postcat`_ -- Show Postfix queue file contents
