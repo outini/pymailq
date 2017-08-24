@@ -30,6 +30,8 @@ except ImportError:
     from mock import Mock, patch
 
 
+pymailq.CONFIG['commands']['use_sudo'] = True
+
 PSTORE = store.PostqueueStore()
 SELECTOR = selector.MailSelector(PSTORE)
 QCONTROL = control.QueueControl()
@@ -39,16 +41,25 @@ QCONTROL = control.QueueControl()
 def test_debug_decorator(stderr):
     """Test pymailq.debug decorator"""
     pymailq.DEBUG = True
+
     @pymailq.debug
     def test():
         stderr.write("test\n")
+
     test()
     pymailq.DEBUG = False
 
 
+def test_load_config():
+    """Test pymailq.load_config method"""
+    pymailq.CONFIG.update({"core": {}, "commands": {}})
+    pymailq.load_config("tests/samples/pymailq.ini")
+    assert 'postfix_spool' in pymailq.CONFIG['core']
+    assert pymailq.CONFIG['commands']['use_sudo'] is True
+
+
 def test_store_load_from_spool():
     """Test PostqueueStore load from spool"""
-    pymailq.CONFIG['commands']['use_sudo'] = True
     PSTORE.load(method="spool")
     assert PSTORE.loaded_at is not None
 
