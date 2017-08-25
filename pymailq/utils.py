@@ -18,8 +18,89 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import re
 from functools import wraps
 from collections import Counter
+
+
+FORMAT_PARSER = re.compile(r'\{[^{}]+\}')
+FORMATS = {
+    'brief': "{date} {qid} [{status}] {sender} ({size}B)",
+    'long': ("{date} {qid} [{status}] {sender} ({size}B)\n"
+             "  Rcpt: {recipients}\n"
+             "   Err: {errors}")
+}
+
+
+def viewer(function):
+    """Result viewer decorator
+
+    :param func function: Function to decorate
+    """
+    def wrapper(*args, **kwargs):
+        args = list(args)  # conversion need for arguments cleaning
+        limit = None
+        overhead = 0
+        try:
+            if "limit" in args:
+                limit_idx = args.index('limit')
+                args.pop(limit_idx)  # pop option, next arg is value
+                limit = int(args.pop(limit_idx))
+        except (IndexError, TypeError, ValueError):
+            raise SyntaxError("limit modifier needs a valid number")
+
+        output = "brief"
+        for known in FORMATS:
+            if known in args:
+                output = args.pop(args.index(known))
+                break
+        out_format = FORMATS[output]
+
+        elements = function(*args, **kwargs)
+
+        total_elements = len(elements)
+        if not total_elements:
+            return ["No element to display"]
+
+        # Check for headers and increase limit accordingly
+        headers = 0
+        if total_elements > 1 and "========" in str(elements[1]):
+            headers = 2
+
+        if limit is not None:
+            if total_elements > (limit + headers):
+                overhead = total_elements - (limit + headers)
+            else:
+                limit = total_elements
+        else:
+            limit = total_elements
+
+        out_format_attrs = FORMAT_PARSER.findall(out_format)
+        formatted = []
+        for element in elements[:limit + headers]:
+            # if attr qid exists, assume this is a mail
+            if hasattr(element, "qid"):
+                attrs = {}
+                for att in out_format_attrs:
+                    if att == "{recipients}":
+                        rcpts = getattr(element, att[1:-1], ["-"])
+                        attrs[att[1:-1]] = ", ".join(rcpts)
+                    elif att == "{errors}":
+                        errors = getattr(element, att[1:-1], ["-"])
+                        attrs[att[1:-1]] = "\n".join(errors)
+                    else:
+                        attrs[att[1:-1]] = getattr(element, att[1:-1], "-")
+                formatted.append(out_format.format(**attrs))
+            else:
+                formatted.append(element)
+
+        if overhead > 0:
+            msg = "...Preview of first %d (%d more)..." % (limit, overhead)
+            formatted.append(msg)
+
+        return formatted
+    wrapper.__doc__ = function.__doc__
+    return wrapper
 
 
 def sorter(function):

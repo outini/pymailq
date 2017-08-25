@@ -19,7 +19,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-import re
 import cmd
 from functools import partial
 from datetime import datetime, timedelta
@@ -68,14 +67,8 @@ class PyMailqShell(cmd.Cmd):
         self.selector = selector.MailSelector(self.pstore)
         self.qcontrol = control.QueueControl()
 
-        # Formats for output
-        self.format_parser = re.compile(r'\{[^{}]+\}')
-        self.formats = {
-                'brief': "{date} {qid} [{status}] {sender} ({size}B)",
-                }
-
     def respond(self, answer):
-        """Send reponse"""
+        """Send response"""
         self.stdout.write(str(answer) + '\n')
 
     # Internal functions
@@ -491,7 +484,7 @@ class PyMailqShell(cmd.Cmd):
 
         self.respond("\n".join(lines))
 
-    @viewer
+    @utils.viewer
     @utils.ranker
     @utils.sorter
     def _show_selected(self):
