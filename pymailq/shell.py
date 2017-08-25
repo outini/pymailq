@@ -512,7 +512,7 @@ class PyMailqShell(cmd.Cmd):
         return lines
 
     # Postsuper generic command
-    def __do_super(self, operation, action_name):
+    def __do_super(self, operation):
         """Postsuper generic command"""
         if not self.pstore.loaded_at:
             raise StoreNotLoaded
@@ -535,22 +535,22 @@ class PyMailqShell(cmd.Cmd):
         """Deletes the mails in current selection
           Usage: super delete
         """
-        return self.__do_super('delete', 'Deleted')
+        return self.__do_super('delete')
 
     def _super_hold(self):
         """Put on hold the mails in current selection
           Usage: super hold
         """
-        return self.__do_super('hold', 'Put on hold')
+        return self.__do_super('hold')
 
     def _super_release(self):
         """Releases from hold the mails in current selection
           Usage: super release
         """
-        return self.__do_super('release', 'Released')
+        return self.__do_super('release')
 
     def _super_requeue(self):
         """requeue the mails in current selection
           Usage: super requeue
         """
-        return self.__do_super('requeue', 'Requeued')
+        return self.__do_super('requeue')
