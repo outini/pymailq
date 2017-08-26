@@ -345,7 +345,7 @@ class PyMailqShell(cmd.Cmd):
         if smin is None:
             smin = 0
 
-        if smin > smax:
+        if smin > smax > 0:
             raise SyntaxError("minimum size is greater than maximum size")
 
         self.selector.lookup_size(smin=smin, smax=smax)
