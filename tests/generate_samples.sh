@@ -41,15 +41,15 @@ EOF
 }
 
 echo -n "injecting test mails "
-(for i in `seq 50`; do gen_mail 1 1 "`msg 1000`"; done; echo -n ".") &
+(for i in `seq 50`; do gen_mail 1 1 "`msg 2000`"; done; echo -n ".") &
 (for i in `seq 50`; do gen_mail 1 2 "`msg 10`"; done; echo -n ".") &
-(for i in `seq 50`; do gen_mail 2 1 "`msg 1000`"; done; echo -n ".") &
-(for i in `seq 50`; do gen_mail 2 3 "`msg 10`"; done; echo -n ".") &
-(for i in `seq 50`; do gen_mail 3 2 "`msg 1000`"; done; echo -n ".") &
+(for i in `seq 50`; do gen_mail 2 1 "`msg 2000`"; done; echo -n ".") &
+(for i in `seq 50`; do gen_mail 2 3 "`msg 20`"; done; echo -n ".") &
+(for i in `seq 50`; do gen_mail 3 2 "`msg 2000`"; done; echo -n ".") &
 (for i in `seq 50`; do gen_mail 4 3 "`msg 10`"; done; echo -n ".") &
-(for i in `seq 50`; do gen_mail 5 2 "`msg 1000`"; done; echo -n ".") &
+(for i in `seq 50`; do gen_mail 5 2 "`msg 2000`"; done; echo -n ".") &
 (for i in `seq 50`; do gen_mail 6 3 "`msg 10`"; done; echo -n ".") &
-(for i in `seq 50`; do gen_mail 7 2 "`msg 1000`"; done; echo -n ".") &
+(for i in `seq 50`; do gen_mail 7 2 "`msg 2000`"; done; echo -n ".") &
 (for i in `seq 50`; do gen_mail 8 3 "`msg 10`"; done; echo -n ".") &
 wait
 echo " done."

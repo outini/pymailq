@@ -135,11 +135,11 @@ def test_selector_size():
     assert type(mails) == list
     assert len(mails) == 500
     SELECTOR.reset()
-    mails = SELECTOR.lookup_size(smax=500)
+    mails = SELECTOR.lookup_size(smax=1000)
     assert type(mails) == list
     assert len(mails) == 250
     SELECTOR.reset()
-    mails = SELECTOR.lookup_size(smin=500)
+    mails = SELECTOR.lookup_size(smin=1000)
     assert type(mails) == list
     assert len(mails) == 250
 
