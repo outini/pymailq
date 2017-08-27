@@ -210,6 +210,9 @@ class Mail(object):
                 `postcat`_ -- Show Postfix queue file contents
 
         """
+        # Reset parsing error message
+        self.parse_error = ""
+
         child = subprocess.Popen(self.postcat_cmd,
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE)
