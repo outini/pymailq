@@ -290,6 +290,13 @@ class PyMailqShell(cmd.Cmd):
         except:
             raise SyntaxError("invalid filter ID: %s" % filterid)
 
+    def _select_qids(self, *qids):
+        """
+        Select mails by ID
+          Usage: select qids <qid>[,<qid>,...]
+        """
+        self.selector.lookup_qid(qids)
+
     def _select_status(self, status):
         """
         Select mails with specific postfix status
