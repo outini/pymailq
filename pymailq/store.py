@@ -23,6 +23,7 @@ import gc
 import re
 import subprocess
 import email
+from collections import Counter
 from datetime import datetime, timedelta
 from pymailq import CONFIG, debug
 
@@ -554,3 +555,59 @@ class PostqueueStore(object):
         else:
             getattr(self, "_load_from_{0}".format(method))(filename)
         self.loaded_at = datetime.now()
+
+    @debug
+    def summary(self):
+        """
+        Summarize the mails queue content
+        :return: Mail queue summary as :class:`dict`
+        """
+        senders = Counter()
+        sender_domains = Counter()
+        recipients = Counter()
+        recipient_domains = Counter()
+        status = Counter(active=0, hold=0, deferred=0)
+        errors = Counter()
+        total_mails_size = 0
+        max_mail_size = 0
+        min_mail_size = 0
+
+        for mail in self.mails:
+            status[mail.status] += 1
+            senders[mail.sender] += 1
+            if '@' in mail.sender:
+                sender_domains[mail.sender.split('@', 1)[1]] += 1
+            for recipient in mail.recipients:
+                recipients[recipient] += 1
+                if '@' in recipient:
+                    recipient_domains[recipient.split('@', 1)[1]] += 1
+            for error in mail.errors:
+                errors[error] += 1
+            total_mails_size += mail.size
+            if mail.size > max_mail_size:
+                max_mail_size = mail.size
+            if min_mail_size == 0:
+                min_mail_size = mail.size
+            elif mail.size < min_mail_size:
+                min_mail_size = mail.size
+
+        average_mail_size = total_mails_size / len(self.mails)
+
+        summary = {
+            'total_mails': len(self.mails),
+            'total_mails_size': total_mails_size,
+            'average_mail_size': average_mail_size,
+            'max_mail_size': max_mail_size,
+            'min_mail_size': min_mail_size,
+            'top_status': status.most_common()[:5],
+            'unique_senders': len(list(senders)),
+            'unique_sender_domains': len(list(sender_domains)),
+            'unique_recipients': len(list(recipients)),
+            'unique_recipient_domains': len(list(recipient_domains)),
+            'top_senders': senders.most_common()[:5],
+            'top_sender_domains': sender_domains.most_common()[:5],
+            'top_recipients': recipients.most_common()[:5],
+            'top_recipient_domains': recipient_domains.most_common()[:5],
+            'top_errors': errors.most_common()[:5]
+        }
+        return summary
