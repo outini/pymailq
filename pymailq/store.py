@@ -158,6 +158,30 @@ class Mail(object):
             self.qid = mail_id[:-1]
         self.status = postqueue_status.get(mail_id[-1], "deferred")
 
+    def show(self):
+        output = ("=== Mail %s ===\n"
+                  "Received: %s\n"
+                  "Date: %s\n"
+                  "Message-Id: %s\n"
+                  "Size: %sB\n"
+                  "Sender: %s\n"
+                  "From: %s\n"
+                  "To: %s\n"
+                  "Cc: %s\n"
+                  "Subject: %s\n")
+        return output % (
+            self.qid,
+            "\n".join(getattr(self.head, "Received", ["n/a"])),
+            getattr(self.head, "Date", ["n/a"])[0],
+            getattr(self.head, "Message-Id", ["n/a"])[0],
+            self.size,
+            getattr(self.head, "Sender", ["n/a"])[0],
+            getattr(self.head, "From", ["n/a"])[0],
+            ", ".join(getattr(self.head, "To", ["n/a"])),
+            ", ".join(getattr(self.head, "Cc", ["n/a"])),
+            getattr(self.head, "Subject", ["n/a"])[0]
+        )
+
     @debug
     def parse(self):
         """
