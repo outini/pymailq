@@ -45,6 +45,7 @@ class PyMailqShell(cmd.Cmd):
         }
 
     # XXX: do_* methods are parsed before init and must be declared here
+    do_inspect = None
     do_store = None
     do_select = None
     do_super = None
@@ -190,7 +191,12 @@ class PyMailqShell(cmd.Cmd):
         """Generic command completion method"""
         # we may consider the use of re.match for params in completion
         completion = {
-            'show': {'__allow_mods__': True},
+            'show': {
+                '__allow_mods__': True,
+            },
+            'inspect': {
+                'mails': ['<qid>[,<qid>,...]']
+            },
             'select': {
                 'date': ['<datespec>'],
                 'error': ['<error_msg>'],
@@ -394,67 +400,21 @@ class PyMailqShell(cmd.Cmd):
         """
         self.selector.lookup_error(str(error_msg))
 
-    def viewer(function):
-        """Result viewer decorator
-
-        :param func function: Function to decorate
+    def _inspect_mails(self, *qids):
         """
-        def wrapper(self, *args, **kwargs):
-            args = list(args)  # conversion need for arguments cleaning
-            limit = None
-            overhead = 0
-            try:
-                if "limit" in args:
-                    limit_idx = args.index('limit')
-                    args.pop(limit_idx)  # pop option, next arg is value
-                    limit = int(args.pop(limit_idx))
-            except (IndexError, TypeError, ValueError):
-                raise SyntaxError("limit modifier needs a valid number")
-
-            output = "brief"
-            for known in self.formats:
-                if known in args:
-                    output = args.pop(args.index(known))
-                    break
-            outformat = self.formats[output]
-
-            elements = function(self, *args, **kwargs)
-
-            total_elements = len(elements)
-            if not total_elements:
-                return ["No element to display"]
-
-            # Check for headers and increase limit accordingly
-            headers = 0
-            if total_elements > 1 and "========" in str(elements[1]):
-                headers = 2
-
-            if limit is not None:
-                if total_elements > (limit + headers):
-                    overhead = total_elements - (limit + headers)
-                else:
-                    limit = total_elements
-            else:
-                limit = total_elements
-
-            outformat_attrs = self.format_parser.findall(outformat)
-            formatted = []
-            for element in elements[:limit + headers]:
-                if isinstance(element, store.Mail):
-                    attrs = {}
-                    for att in outformat_attrs:
-                        attrs[att[1:-1]] = getattr(element, att[1:-1], "-")
-                    formatted.append(outformat.format(**attrs))
-                else:
-                    formatted.append(element)
-
-            if overhead > 0:
-                msg = "...Preview of first %d (%d more)..." % (limit, overhead)
-                formatted.append(msg)
-
-            return formatted
-        wrapper.__doc__ = function.__doc__
-        return wrapper
+        Show mails content
+          Usage: show mail <mail_qid>
+        """
+        mails = self.selector.get_mails_by_qid(qids)
+        if not len(mails):
+            return ['Mail IDs not found']
+        response = []
+        for mail in mails:
+            mail.parse()
+            if len(mail.parse_error):
+                return [mail.parse_error]
+            response.append(mail.show())
+        return response
 
     def do_show(self, str_arg):
         """
