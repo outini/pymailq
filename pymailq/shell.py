@@ -308,7 +308,7 @@ class PyMailqShell(cmd.Cmd):
             exact = True
         self.selector.lookup_sender(sender=sender, exact=exact)
 
-    def _select_size(self, sizeA, sizeB=None):
+    def _select_size(self, size_a, size_b=None):
         """
         Select mails by size in Bytes
           - and + are supported, if not specified, search for exact size
@@ -319,7 +319,7 @@ class PyMailqShell(cmd.Cmd):
         smax = None
         exact = None
         try:
-            for size in sizeA, sizeB:
+            for size in size_a, size_b:
                 if size is None:
                     continue
                 if exact is not None:
