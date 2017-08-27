@@ -182,7 +182,15 @@ class Mail(object):
         child = subprocess.Popen(self.postcat_cmd,
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE)
-        stdout = child.communicate()[0]
+        stdout, stderr = child.communicate()
+
+        if not len(stdout):
+            # Ignore first 3 line on stderr which are:
+            #   postcat: name_mask: all
+            #   postcat: inet_addr_local: configured 3 IPv4 addresses
+            #   postcat: inet_addr_local: configured 3 IPv6 addresses
+            self.parse_error = "\n".join(stderr.decode().split('\n')[3:])
+            return
 
         raw_content = list()
         for line in stdout.decode().split('\n'):
