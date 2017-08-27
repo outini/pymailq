@@ -148,15 +148,22 @@ class Mail(object):
         self.errors = []
         self.head = MailHeaders()
 
-        self.postcat_cmd = CONFIG['commands']['cat_message'] + [self.qid]
-        if CONFIG['commands']['use_sudo']:
-            self.postcat_cmd.insert(0, 'sudo')
-
         # Getting optionnal status from postqueue mail_id
         postqueue_status = {'*': "active", '!': "hold"}
         if mail_id[-1] in postqueue_status:
             self.qid = mail_id[:-1]
         self.status = postqueue_status.get(mail_id[-1], "deferred")
+
+    @property
+    def postcat_cmd(self):
+        """
+        Get the cat_message command from configuration
+        :return: Command as :class:`list`
+        """
+        postcat_cmd = CONFIG['commands']['cat_message'] + [self.qid]
+        if CONFIG['commands']['use_sudo']:
+            postcat_cmd.insert(0, 'sudo')
+        return postcat_cmd
 
     def show(self):
         output = ("=== Mail %s ===\n"
