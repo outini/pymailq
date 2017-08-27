@@ -168,6 +168,27 @@ def test_shell_store_status_loaded():
     assert "store loaded with " in resp
 
 
+def test_shell_inspect_mails_as_user():
+    """Test 'inspect mails' command as user"""
+    CONFIG['commands']['use_sudo'] = False
+    resp = run_cmd("inspect mails %s" % PQSHELL.pstore.mails[0].qid)
+    assert 'Permission denied' in resp
+
+
+def test_shell_inspect_mails_not_found():
+    resp = run_cmd("inspect mails XXXXXXXX")
+    assert 'Mail IDs not found' in resp
+
+
+def test_shell_inspect_mails():
+    """Test 'inspect mails' command"""
+    CONFIG['commands']['use_sudo'] = True
+    qids = [mail.qid for mail in PQSHELL.pstore.mails[0:2]]
+    resp = run_cmd("inspect mails %s %s" % (qids[0], qids[1]))
+    assert qids[0] in resp
+    assert qids[1] in resp
+
+
 def test_shell_show():
     """Test 'show' command without arguments"""
     resp = run_cmd("show")
@@ -217,6 +238,12 @@ def test_shell_show_selected_rankby():
     assert len(resp.split('\n')) == 5
 
 
+def test_shell_show_selected_long_format():
+    """Test 'show selected format' command"""
+    resp = run_cmd("show selected limit 2 long")
+    assert len(resp.split('\n')) == 7
+
+
 def test_shell_show_filters_empty():
     """Test 'show filters' command without registered filters"""
     resp = run_cmd("show filters")
@@ -246,6 +273,16 @@ def test_shell_select_invalid():
     """Test 'select invalid' command"""
     resp = run_cmd("select invalid")
     assert "has no subcommand:" in resp
+
+
+def test_shell_select_qids():
+    """Test 'select qids' command"""
+    assert 'mails loaded from queue' in run_cmd("store load")
+    assert 'Selector resetted with store content' in run_cmd("select reset")
+    qids = [mail.qid for mail in PQSHELL.pstore.mails[0:2]]
+    resp = run_cmd("select qids %s %s" % (qids[0], qids[1]))
+    assert not len(resp)
+    assert len(PQSHELL.selector.mails) == 2
 
 
 def test_shell_select_status():
