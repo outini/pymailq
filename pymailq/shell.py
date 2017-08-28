@@ -241,7 +241,8 @@ class PyMailqShell(cmd.Cmd):
                 mods = self.get_modifiers(match, excludes=args[:-1])
                 if not len(mods):
                     mods = self.get_modifiers("", excludes=args)
-                mods[0] += " " if len(mods) == 1 else ""
+                if len(mods):
+                    mods[0] += " " if len(mods) == 1 else ""
                 suggests = mods
 
         if not len(suggests):
