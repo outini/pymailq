@@ -86,6 +86,9 @@ def test_shell_completion():
     assert ["selected"] == resp
     resp = PQSHELL.completedefault("", "show selected ")
     assert ["limit", "rankby", "sortby"] == sorted(resp)
+    resp = PQSHELL.completedefault("",
+                                   "show selected limit x rankby x sortby x")
+    assert resp is None
     resp = PQSHELL.completedefault("", "show selected limit ")
     assert ["<n> "] == resp
     resp = PQSHELL.completedefault("", "show selected limit 5 ")
@@ -395,6 +398,19 @@ def test_shell_select_reset():
     """Test 'select reset' command"""
     resp = run_cmd("select reset")
     assert "Selector resetted with store content" in resp
+
+
+def test_shell_super_unloaded_or_no_selection():
+    """Test QueueControl with an unloaded store"""
+    loaded_at = PQSHELL.pstore.loaded_at
+    setattr(PQSHELL.pstore, 'loaded_at', None)
+    resp = run_cmd("super hold")
+    assert 'The store is not loaded' in resp
+    setattr(PQSHELL.pstore, 'loaded_at', loaded_at)
+    setattr(PQSHELL.selector, 'mails', [])
+    resp = run_cmd("super hold")
+    assert 'No mail selected' in resp
+    run_cmd("select reset")
 
 
 def test_shell_super_hold():

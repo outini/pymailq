@@ -76,6 +76,13 @@ def test_store_load_from_postqueue():
     assert PSTORE.loaded_at is not None
 
 
+def test_store_summary():
+    """Test PostqueueStore.summary method"""
+    summary = PSTORE.summary()
+    assert 'top_senders' in summary
+    assert 'top_recipients' in summary
+
+
 def test_mail_parse_and_dump():
     """Test Mail.parse method"""
     pymailq.CONFIG['commands']['use_sudo'] = True
@@ -86,6 +93,25 @@ def test_mail_parse_and_dump():
     datas = mail.dump()
     assert "headers" in datas
     assert "postqueue" in datas
+
+
+def test_selector_get_mails_by_qids():
+    """Test MailSelector.get_mails_by_qids method"""
+    pymailq.CONFIG['commands']['use_sudo'] = True
+    SELECTOR.reset()
+    qids = [mail.qid for mail in SELECTOR.mails[:2]]
+    mails = SELECTOR.get_mails_by_qids(qids)
+    assert len(mails) == 2
+    assert qids[0] in mails[0].show()
+    assert qids[1] in mails[1].show()
+
+
+def test_selector_qids():
+    """Test MailSelector.lookup_qids method"""
+    SELECTOR.reset()
+    mails = SELECTOR.lookup_qids([mail.qid for mail in PSTORE.mails[:2]])
+    assert type(mails) == list
+    assert len(mails) == 2
 
 
 def test_selector_status():
