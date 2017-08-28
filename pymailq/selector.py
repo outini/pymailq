@@ -113,7 +113,7 @@ class MailSelector(object):
             getattr(self, name)(*args, **kwargs)
         self.filters = filters
 
-    def get_mails_by_qid(self, qids):
+    def get_mails_by_qids(self, qids):
         """
         Get mails with specified IDs.
 
@@ -124,11 +124,11 @@ class MailSelector(object):
         :rtype: :func:`list`
         """
         return [mail for mail in self.mails
-                      if mail.qid in qids]
+                if mail.qid in qids]
 
     @debug
     @filter_registration
-    def lookup_qid(self, qids):
+    def lookup_qids(self, qids):
         """
         Lookup mails with specified IDs.
 
@@ -136,7 +136,7 @@ class MailSelector(object):
         :return: List of newly selected :class:`~store.Mail` objects
         :rtype: :func:`list`
         """
-        self.mails = self.get_mails_by_qid(qids)
+        self.mails = self.get_mails_by_qids(qids)
         return self.mails
 
     @debug

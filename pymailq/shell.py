@@ -297,7 +297,7 @@ class PyMailqShell(cmd.Cmd):
         Select mails by ID
           Usage: select qids <qid>[,<qid>,...]
         """
-        self.selector.lookup_qid(qids)
+        self.selector.lookup_qids(qids)
 
     def _select_status(self, status):
         """
@@ -401,7 +401,7 @@ class PyMailqShell(cmd.Cmd):
         Show mails content
           Usage: show mail <mail_qid>
         """
-        mails = self.selector.get_mails_by_qid(qids)
+        mails = self.selector.get_mails_by_qids(qids)
         if not len(mails):
             return ['Mail IDs not found']
         response = []
