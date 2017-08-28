@@ -5,14 +5,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pqshell – A shell-like to interact with a Postfix mails queue &#8212; PyMailq 0.7.0
+    <title>pqshell – A shell-like to interact with a Postfix mails queue &#8212; PyMailq 0.8.0
  documentation</title>
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.7.0',
+        VERSION:     '0.8.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -28,7 +28,7 @@
   </head>
   <body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>PyMailq 0.7.0
+          <span>PyMailq 0.8.0
  documentation</span></a></h1>
         <h2 class="heading"><span>pqshell – A shell-like to interact with a Postfix mails queue</span></h2>
       </div>
@@ -54,7 +54,7 @@ means to view the queue content, filter mails on criterias like <cite>Sender</ci
 </div>
 <div class="section" id="synopsis">
 <h2>SYNOPSIS<a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pqshell</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">version</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">debug</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">config</span> <span class="n">CFG_FILE</span><span class="p">]</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pqshell</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">version</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">debug</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">config</span> <span class="n">CFG_FILE</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">summary</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -79,14 +79,17 @@ means to view the queue content, filter mails on criterias like <cite>Sender</ci
 <td>show help message and exit</td></tr>
 <tr><td class="option-group">
 <kbd><span class="option">--version</span></kbd></td>
-<td>show shell version</td></tr>
+<td>show shell version and exit</td></tr>
 <tr><td class="option-group">
 <kbd><span class="option">--debug</span></kbd></td>
-<td>show shell debug and timing info</td></tr>
+<td>activate shell debug and timing info</td></tr>
 <tr><td class="option-group" colspan="2">
 <kbd><span class="option">--config <var>CFG_FILE</var></span></kbd></td>
 </tr>
 <tr><td>&#160;</td><td>specify a configuration file for PyMailq</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">--summary</span></kbd></td>
+<td>show mails queue summary and exit</td></tr>
 </tbody>
 </table>
 </div></blockquote>
@@ -130,6 +133,10 @@ applied filters. Order of filters application is also important.</p>
 <p><strong>Subcommands</strong>:</p>
 <blockquote>
 <div><dl class="docutils">
+<dt><strong>qids</strong></dt>
+<dd><p class="first">Select mails by queue IDs.</p>
+<p class="last">Usage: <code class="docutils literal"><span class="pre">select</span> <span class="pre">qids</span> <span class="pre">&lt;qid&gt;</span> <span class="pre">[qid]</span> <span class="pre">...</span></code></p>
+</dd>
 <dt><strong>date</strong></dt>
 <dd><p class="first">Select mails by date.</p>
 <p>Usage: <code class="docutils literal"><span class="pre">select</span> <span class="pre">date</span> <span class="pre">&lt;DATESPEC&gt;</span></code></p>
@@ -197,6 +204,24 @@ using <code class="docutils literal"><span class="pre">-</span></code> (lesser t
 </div>
 </div></blockquote>
 </div>
+<div class="section" id="inspect">
+<h3>inspect<a class="headerlink" href="#inspect" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Display mails content.</p>
+<p><strong>Subcommands:</strong></p>
+<blockquote>
+<div><dl class="docutils">
+<dt><strong>mails:</strong></dt>
+<dd><p class="first">Show mails most common fields content including by not limited to
+<cite>From</cite>, <cite>To</cite>, <cite>Subject</cite>, <cite>Received</cite>, … This command parses mails
+content and requires specific privileges or the use of <cite>sudo</cite> in
+configuration.</p>
+<p class="last">Usage: <code class="docutils literal"><span class="pre">inspect</span> <span class="pre">mails</span> <span class="pre">&lt;qid&gt;</span> <span class="pre">[qid]</span> <span class="pre">...</span></code></p>
+</dd>
+</dl>
+</div></blockquote>
+</div></blockquote>
+</div>
 <div class="section" id="show">
 <h3>show<a class="headerlink" href="#show" title="Permalink to this headline">¶</a></h3>
 <blockquote>
@@ -226,6 +251,13 @@ descending.</dd>
 <li><code class="docutils literal"><span class="pre">recipients</span></code> – Mail recipients (list, no sort).</li>
 <li><code class="docutils literal"><span class="pre">size</span></code> – Mail size.</li>
 <li><code class="docutils literal"><span class="pre">errors</span></code> – Postqueue deferred error messages (list, no sort).</li>
+</ul>
+</div></blockquote>
+<p><strong>Output formatting:</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">brief</span></code> – Default single line output to display selection</li>
+<li><code class="docutils literal"><span class="pre">long</span></code> – Long format to also display errors and recipients</li>
 </ul>
 </div></blockquote>
 <p><strong>Subcommands:</strong></p>

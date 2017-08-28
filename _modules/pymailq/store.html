@@ -5,14 +5,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pymailq.store &#8212; PyMailq 0.7.0
+    <title>pymailq.store &#8212; PyMailq 0.8.0
  documentation</title>
     <link rel="stylesheet" href="../../_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.7.0',
+        VERSION:     '0.8.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -27,7 +27,7 @@
   </head>
   <body>
       <div class="header" role="banner"><h1 class="heading"><a href="../../index.html">
-          <span>PyMailq 0.7.0
+          <span>PyMailq 0.8.0
  documentation</span></a></h1>
         <h2 class="heading"><span>pymailq.store</span></h2>
       </div>
@@ -67,6 +67,7 @@
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">email</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Counter</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
 <span class="kn">from</span> <span class="nn">pymailq</span> <span class="k">import</span> <span class="n">CONFIG</span><span class="p">,</span> <span class="n">debug</span>
 
@@ -174,9 +175,14 @@
 
 <span class="sd">        .. attribute:: postcat_cmd</span>
 
-<span class="sd">            Postfix command and arguments :func:`list` for mails content</span>
-<span class="sd">            parsing. Default command and arguments list is build at</span>
-<span class="sd">            initialization with: ``[&quot;postcat&quot;, &quot;-qv&quot;, self.qid]``</span>
+<span class="sd">            This property use Postfix mails content parsing command defined in</span>
+<span class="sd">            :attr:`pymailq.CONFIG` attribute under the key &#39;cat_message&#39;.</span>
+<span class="sd">            Command and arguments list is build on call with the configuration</span>
+<span class="sd">            data.</span>
+
+<span class="sd">            .. seealso::</span>
+
+<span class="sd">                :ref:`pymailq-configuration`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mail_id</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sender</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
@@ -192,15 +198,51 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="n">MailHeaders</span><span class="p">()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">postcat_cmd</span> <span class="o">=</span> <span class="n">CONFIG</span><span class="p">[</span><span class="s1">&#39;commands&#39;</span><span class="p">][</span><span class="s1">&#39;cat_message&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">qid</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">CONFIG</span><span class="p">[</span><span class="s1">&#39;commands&#39;</span><span class="p">][</span><span class="s1">&#39;use_sudo&#39;</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">postcat_cmd</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;sudo&#39;</span><span class="p">)</span>
-
         <span class="c1"># Getting optionnal status from postqueue mail_id</span>
         <span class="n">postqueue_status</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;*&#39;</span><span class="p">:</span> <span class="s2">&quot;active&quot;</span><span class="p">,</span> <span class="s1">&#39;!&#39;</span><span class="p">:</span> <span class="s2">&quot;hold&quot;</span><span class="p">}</span>
         <span class="k">if</span> <span class="n">mail_id</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="n">postqueue_status</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">qid</span> <span class="o">=</span> <span class="n">mail_id</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">postqueue_status</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">mail_id</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;deferred&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">postcat_cmd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the cat_message command from configuration</span>
+<span class="sd">        :return: Command as :class:`list`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">postcat_cmd</span> <span class="o">=</span> <span class="n">CONFIG</span><span class="p">[</span><span class="s1">&#39;commands&#39;</span><span class="p">][</span><span class="s1">&#39;cat_message&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">qid</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">CONFIG</span><span class="p">[</span><span class="s1">&#39;commands&#39;</span><span class="p">][</span><span class="s1">&#39;use_sudo&#39;</span><span class="p">]:</span>
+            <span class="n">postcat_cmd</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;sudo&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">postcat_cmd</span>
+
+    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return mail detailled representation for printing</span>
+
+<span class="sd">        :return: Representation as :class:`str`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;=== Mail </span><span class="si">%s</span><span class="s2"> ===</span><span class="se">\n</span><span class="s2">&quot;</span>
+                  <span class="s2">&quot;Received: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span>
+                  <span class="s2">&quot;Date: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span>
+                  <span class="s2">&quot;Message-Id: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span>
+                  <span class="s2">&quot;Size: </span><span class="si">%s</span><span class="s2">B</span><span class="se">\n</span><span class="s2">&quot;</span>
+                  <span class="s2">&quot;Sender: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span>
+                  <span class="s2">&quot;From: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span>
+                  <span class="s2">&quot;To: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span>
+                  <span class="s2">&quot;Cc: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span>
+                  <span class="s2">&quot;Subject: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">qid</span><span class="p">,</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">head</span><span class="p">,</span> <span class="s2">&quot;Received&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;n/a&quot;</span><span class="p">])),</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">head</span><span class="p">,</span> <span class="s2">&quot;Date&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;n/a&quot;</span><span class="p">])[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">head</span><span class="p">,</span> <span class="s2">&quot;Message-Id&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;n/a&quot;</span><span class="p">])[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">head</span><span class="p">,</span> <span class="s2">&quot;Sender&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;n/a&quot;</span><span class="p">])[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">head</span><span class="p">,</span> <span class="s2">&quot;From&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;n/a&quot;</span><span class="p">])[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">head</span><span class="p">,</span> <span class="s2">&quot;To&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;n/a&quot;</span><span class="p">])),</span>
+            <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">head</span><span class="p">,</span> <span class="s2">&quot;Cc&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;n/a&quot;</span><span class="p">])),</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">head</span><span class="p">,</span> <span class="s2">&quot;Subject&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;n/a&quot;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="p">)</span>
 
     <span class="nd">@debug</span>
     <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -208,7 +250,7 @@
 <span class="sd">        Parse message content.</span>
 
 <span class="sd">        This method use Postfix mails content parsing command defined in</span>
-<span class="sd">        :attr:`pymailq.CONFIG` attribute under the key &#39;cat_message&#39;.</span>
+<span class="sd">        :attr:`~Mail.postcat_cmd` attribute.</span>
 <span class="sd">        This command is runned using :class:`subprocess.Popen` instance.</span>
 
 <span class="sd">        Parsed headers become attributes and are retrieved with help of</span>
@@ -217,16 +259,25 @@
 
 <span class="sd">        .. seealso::</span>
 
-<span class="sd">            :ref:`pymailq-configuration`</span>
-
 <span class="sd">            Postfix manual:</span>
 <span class="sd">                `postcat`_ -- Show Postfix queue file contents</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Reset parsing error message</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parse_error</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+
         <span class="n">child</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">postcat_cmd</span><span class="p">,</span>
                                  <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
                                  <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
-        <span class="n">stdout</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">communicate</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">stdout</span><span class="p">):</span>
+            <span class="c1"># Ignore first 3 line on stderr which are:</span>
+            <span class="c1">#   postcat: name_mask: all</span>
+            <span class="c1">#   postcat: inet_addr_local: configured 3 IPv4 addresses</span>
+            <span class="c1">#   postcat: inet_addr_local: configured 3 IPv6 addresses</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parse_error</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">stderr</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">3</span><span class="p">:])</span>
+            <span class="k">return</span>
 
         <span class="n">raw_content</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
@@ -303,9 +354,11 @@
 
 <span class="sd">        .. attribute:: postqueue_cmd</span>
 
-<span class="sd">            :func:`list` object to store Postfix command and arguments to view</span>
-<span class="sd">            the mails queue content.</span>
-<span class="sd">            Default is ``[&quot;/usr/sbin/postqueue&quot;, &quot;-p&quot;]``.</span>
+<span class="sd">            :obj:`list` object to store Postfix command and arguments to view</span>
+<span class="sd">            the mails queue content. This property use Postfix mails content</span>
+<span class="sd">            parsing command defined in :attr:`pymailq.CONFIG` attribute under</span>
+<span class="sd">            the key &#39;list_queue&#39;. Command and arguments list is build on call</span>
+<span class="sd">            with the configuration data.</span>
 
 <span class="sd">        .. attribute:: spool_path</span>
 
@@ -555,7 +608,107 @@
             <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_load_from_</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">method</span><span class="p">))()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_load_from_</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">method</span><span class="p">))(</span><span class="n">filename</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">loaded_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loaded_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+    <span class="nd">@debug</span>
+    <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Summarize the mails queue content.</span>
+
+<span class="sd">        :return: Mail queue summary as :class:`dict`</span>
+
+<span class="sd">        Sizes are in bytes.</span>
+
+<span class="sd">        Example response::</span>
+
+<span class="sd">            {</span>
+<span class="sd">                &#39;total_mails&#39;: 500,</span>
+<span class="sd">                &#39;total_mails_size&#39;: 709750,</span>
+<span class="sd">                &#39;average_mail_size&#39;: 1419.5,</span>
+<span class="sd">                &#39;max_mail_size&#39;: 2414,</span>
+<span class="sd">                &#39;min_mail_size&#39;: 423,</span>
+<span class="sd">                &#39;top_errors&#39;: [</span>
+<span class="sd">                    (&#39;mail transport unavailable&#39;, 484),</span>
+<span class="sd">                    (&#39;Test error message&#39;, 16)</span>
+<span class="sd">                ],</span>
+<span class="sd">                &#39;top_recipient_domains&#39;: [</span>
+<span class="sd">                    (&#39;test-domain.tld&#39;, 500)</span>
+<span class="sd">                ],</span>
+<span class="sd">                &#39;top_recipients&#39;: [</span>
+<span class="sd">                    (&#39;user-3@test-domain.tld&#39;, 200),</span>
+<span class="sd">                    (&#39;user-2@test-domain.tld&#39;, 200),</span>
+<span class="sd">                    (&#39;user-1@test-domain.tld&#39;, 100)</span>
+<span class="sd">                ],</span>
+<span class="sd">                &#39;top_sender_domains&#39;: [</span>
+<span class="sd">                    (&#39;test-domain.tld&#39;, 500)</span>
+<span class="sd">                ],</span>
+<span class="sd">                &#39;top_senders&#39;: [</span>
+<span class="sd">                    (&#39;sender-1@test-domain.tld&#39;, 100),</span>
+<span class="sd">                    (&#39;sender-2@test-domain.tld&#39;, 100),</span>
+<span class="sd">                    (&#39;sender-7@test-domain.tld&#39;, 50),</span>
+<span class="sd">                    (&#39;sender-4@test-domain.tld&#39;, 50),</span>
+<span class="sd">                    (&#39;sender-5@test-domain.tld&#39;, 50)</span>
+<span class="sd">                ],</span>
+<span class="sd">                &#39;top_status&#39;: [</span>
+<span class="sd">                    (&#39;deferred&#39;, 500),</span>
+<span class="sd">                    (&#39;active&#39;, 0),</span>
+<span class="sd">                    (&#39;hold&#39;, 0)</span>
+<span class="sd">                ],</span>
+<span class="sd">                &#39;unique_recipient_domains&#39;: 1,</span>
+<span class="sd">                &#39;unique_recipients&#39;: 3,</span>
+<span class="sd">                &#39;unique_sender_domains&#39;: 1,</span>
+<span class="sd">                &#39;unique_senders&#39;: 8</span>
+<span class="sd">            }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">senders</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+        <span class="n">sender_domains</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+        <span class="n">recipients</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+        <span class="n">recipient_domains</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">active</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">hold</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">deferred</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">errors</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+        <span class="n">total_mails_size</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">max_mail_size</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">min_mail_size</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span><span class="p">:</span>
+            <span class="n">status</span><span class="p">[</span><span class="n">mail</span><span class="o">.</span><span class="n">status</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">senders</span><span class="p">[</span><span class="n">mail</span><span class="o">.</span><span class="n">sender</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="s1">&#39;@&#39;</span> <span class="ow">in</span> <span class="n">mail</span><span class="o">.</span><span class="n">sender</span><span class="p">:</span>
+                <span class="n">sender_domains</span><span class="p">[</span><span class="n">mail</span><span class="o">.</span><span class="n">sender</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">recipient</span> <span class="ow">in</span> <span class="n">mail</span><span class="o">.</span><span class="n">recipients</span><span class="p">:</span>
+                <span class="n">recipients</span><span class="p">[</span><span class="n">recipient</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="s1">&#39;@&#39;</span> <span class="ow">in</span> <span class="n">recipient</span><span class="p">:</span>
+                    <span class="n">recipient_domains</span><span class="p">[</span><span class="n">recipient</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">mail</span><span class="o">.</span><span class="n">errors</span><span class="p">:</span>
+                <span class="n">errors</span><span class="p">[</span><span class="n">error</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">total_mails_size</span> <span class="o">+=</span> <span class="n">mail</span><span class="o">.</span><span class="n">size</span>
+            <span class="k">if</span> <span class="n">mail</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="n">max_mail_size</span><span class="p">:</span>
+                <span class="n">max_mail_size</span> <span class="o">=</span> <span class="n">mail</span><span class="o">.</span><span class="n">size</span>
+            <span class="k">if</span> <span class="n">min_mail_size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">min_mail_size</span> <span class="o">=</span> <span class="n">mail</span><span class="o">.</span><span class="n">size</span>
+            <span class="k">elif</span> <span class="n">mail</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;</span> <span class="n">min_mail_size</span><span class="p">:</span>
+                <span class="n">min_mail_size</span> <span class="o">=</span> <span class="n">mail</span><span class="o">.</span><span class="n">size</span>
+
+        <span class="n">average_mail_size</span> <span class="o">=</span> <span class="n">total_mails_size</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mails</span><span class="p">)</span>
+
+        <span class="n">summary</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;total_mails&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mails</span><span class="p">),</span>
+            <span class="s1">&#39;total_mails_size&#39;</span><span class="p">:</span> <span class="n">total_mails_size</span><span class="p">,</span>
+            <span class="s1">&#39;average_mail_size&#39;</span><span class="p">:</span> <span class="n">average_mail_size</span><span class="p">,</span>
+            <span class="s1">&#39;max_mail_size&#39;</span><span class="p">:</span> <span class="n">max_mail_size</span><span class="p">,</span>
+            <span class="s1">&#39;min_mail_size&#39;</span><span class="p">:</span> <span class="n">min_mail_size</span><span class="p">,</span>
+            <span class="s1">&#39;top_status&#39;</span><span class="p">:</span> <span class="n">status</span><span class="o">.</span><span class="n">most_common</span><span class="p">()[:</span><span class="mi">5</span><span class="p">],</span>
+            <span class="s1">&#39;unique_senders&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">senders</span><span class="p">)),</span>
+            <span class="s1">&#39;unique_sender_domains&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">sender_domains</span><span class="p">)),</span>
+            <span class="s1">&#39;unique_recipients&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">recipients</span><span class="p">)),</span>
+            <span class="s1">&#39;unique_recipient_domains&#39;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">recipient_domains</span><span class="p">)),</span>
+            <span class="s1">&#39;top_senders&#39;</span><span class="p">:</span> <span class="n">senders</span><span class="o">.</span><span class="n">most_common</span><span class="p">()[:</span><span class="mi">5</span><span class="p">],</span>
+            <span class="s1">&#39;top_sender_domains&#39;</span><span class="p">:</span> <span class="n">sender_domains</span><span class="o">.</span><span class="n">most_common</span><span class="p">()[:</span><span class="mi">5</span><span class="p">],</span>
+            <span class="s1">&#39;top_recipients&#39;</span><span class="p">:</span> <span class="n">recipients</span><span class="o">.</span><span class="n">most_common</span><span class="p">()[:</span><span class="mi">5</span><span class="p">],</span>
+            <span class="s1">&#39;top_recipient_domains&#39;</span><span class="p">:</span> <span class="n">recipient_domains</span><span class="o">.</span><span class="n">most_common</span><span class="p">()[:</span><span class="mi">5</span><span class="p">],</span>
+            <span class="s1">&#39;top_errors&#39;</span><span class="p">:</span> <span class="n">errors</span><span class="o">.</span><span class="n">most_common</span><span class="p">()[:</span><span class="mi">5</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">summary</span></div>
 </pre></div>
 
       </div>

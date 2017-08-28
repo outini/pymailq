@@ -5,14 +5,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>selector &#8212; PyMailq 0.7.0
+    <title>selector &#8212; PyMailq 0.8.0
  documentation</title>
     <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.7.0',
+        VERSION:     '0.8.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -27,7 +27,7 @@
   </head>
   <body>
       <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>PyMailq 0.7.0
+          <span>PyMailq 0.8.0
  documentation</span></a></h1>
         <h2 class="heading"><span>selector</span></h2>
       </div>
@@ -156,6 +156,32 @@
             <span class="n">name</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span> <span class="o">=</span> <span class="n">filterinfo</span>
             <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filters</span> <span class="o">=</span> <span class="n">filters</span></div>
+
+<div class="viewcode-block" id="MailSelector.get_mails_by_qids"><a class="viewcode-back" href="../selector.html#selector.MailSelector.get_mails_by_qids">[docs]</a>    <span class="k">def</span> <span class="nf">get_mails_by_qids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qids</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get mails with specified IDs.</span>
+
+<span class="sd">        This function is not registered as filter.</span>
+
+<span class="sd">        :param list qids: List of mail IDs.</span>
+<span class="sd">        :return: List of newly selected :class:`~store.Mail` objects</span>
+<span class="sd">        :rtype: :func:`list`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">mail</span> <span class="k">for</span> <span class="n">mail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span>
+                <span class="k">if</span> <span class="n">mail</span><span class="o">.</span><span class="n">qid</span> <span class="ow">in</span> <span class="n">qids</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="MailSelector.lookup_qids"><a class="viewcode-back" href="../selector.html#selector.MailSelector.lookup_qids">[docs]</a>    <span class="nd">@debug</span>
+    <span class="nd">@filter_registration</span>
+    <span class="k">def</span> <span class="nf">lookup_qids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qids</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Lookup mails with specified IDs.</span>
+
+<span class="sd">        :param list qids: List of mail IDs.</span>
+<span class="sd">        :return: List of newly selected :class:`~store.Mail` objects</span>
+<span class="sd">        :rtype: :func:`list`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mails</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_mails_by_qids</span><span class="p">(</span><span class="n">qids</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mails</span></div>
 
 <div class="viewcode-block" id="MailSelector.lookup_status"><a class="viewcode-back" href="../selector.html#selector.MailSelector.lookup_status">[docs]</a>    <span class="nd">@debug</span>
     <span class="nd">@filter_registration</span>

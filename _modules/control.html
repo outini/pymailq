@@ -5,14 +5,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>control &#8212; PyMailq 0.7.0
+    <title>control &#8212; PyMailq 0.8.0
  documentation</title>
     <link rel="stylesheet" href="../_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.7.0',
+        VERSION:     '0.8.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -27,7 +27,7 @@
   </head>
   <body>
       <div class="header" role="banner"><h1 class="heading"><a href="../index.html">
-          <span>PyMailq 0.7.0
+          <span>PyMailq 0.8.0
  documentation</span></a></h1>
         <h2 class="heading"><span>control</span></h2>
       </div>
@@ -105,25 +105,30 @@
 <span class="sd">                `postsuper`_ -- Postfix superintendent</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="QueueControl.get_operation_cmd"><a class="viewcode-back" href="../control.html#control.QueueControl.get_operation_cmd">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">get_operation_cmd</span><span class="p">(</span><span class="n">operation</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get operation related command from configuration</span>
 
-<span class="sd">        Known operations:</span>
-<span class="sd">        - hold: Hold message</span>
-<span class="sd">        - release: Release message from hold</span>
-<span class="sd">        - requeue: Requeue message</span>
-<span class="sd">        - delete: Delete message from queue</span>
+<span class="sd">        This method use Postfix administrative commands defined</span>
+<span class="sd">        in :attr:`pymailq.CONFIG` attribute under the key &#39;list_queue&#39;.</span>
+<span class="sd">        Command and arguments list is build on call with the configuration data.</span>
+
+<span class="sd">        Command keys are built with the ``operation`` argument suffixed with</span>
+<span class="sd">        ``_message``. Example: ``hold_message`` for the hold command.</span>
 
 <span class="sd">        :param str operation: Operation name</span>
 <span class="sd">        :return: Command and arguments as :class:`list`</span>
 
 <span class="sd">        :raise KeyError: Operation is unknown</span>
+
+<span class="sd">        .. seealso::</span>
+
+<span class="sd">            :ref:`pymailq-configuration`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">cmd</span> <span class="o">=</span> <span class="n">CONFIG</span><span class="p">[</span><span class="s1">&#39;commands&#39;</span><span class="p">][</span><span class="n">operation</span> <span class="o">+</span> <span class="s1">&#39;_message&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">CONFIG</span><span class="p">[</span><span class="s1">&#39;commands&#39;</span><span class="p">][</span><span class="s1">&#39;use_sudo&#39;</span><span class="p">]:</span>
             <span class="n">cmd</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;sudo&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">cmd</span>
+        <span class="k">return</span> <span class="n">cmd</span></div>
 
 <div class="viewcode-block" id="QueueControl._operate"><a class="viewcode-back" href="../control.html#control.QueueControl._operate">[docs]</a>    <span class="nd">@debug</span>
     <span class="k">def</span> <span class="nf">_operate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">operation</span><span class="p">,</span> <span class="n">messages</span><span class="p">):</span>
