@@ -19,7 +19,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-import re
 import cmd
 from functools import partial
 from datetime import datetime, timedelta
@@ -27,11 +26,6 @@ from subprocess import CalledProcessError
 import shlex
 import inspect
 from pymailq import store, control, selector, utils
-
-
-class StoreNotLoaded(Exception):
-    def __str__(self):
-        return 'The store is not loaded'
 
 
 class PyMailqShell(cmd.Cmd):
@@ -46,6 +40,7 @@ class PyMailqShell(cmd.Cmd):
         }
 
     # XXX: do_* methods are parsed before init and must be declared here
+    do_inspect = None
     do_store = None
     do_select = None
     do_super = None
@@ -68,14 +63,8 @@ class PyMailqShell(cmd.Cmd):
         self.selector = selector.MailSelector(self.pstore)
         self.qcontrol = control.QueueControl()
 
-        # Formats for output
-        self.format_parser = re.compile(r'\{[^{}]+\}')
-        self.formats = {
-                'brief': "{date} {qid} [{status}] {sender} ({size}B)",
-                }
-
     def respond(self, answer):
-        """Send reponse"""
+        """Send response"""
         self.stdout.write(str(answer) + '\n')
 
     # Internal functions
@@ -197,7 +186,12 @@ class PyMailqShell(cmd.Cmd):
         """Generic command completion method"""
         # we may consider the use of re.match for params in completion
         completion = {
-            'show': {'__allow_mods__': True},
+            'show': {
+                '__allow_mods__': True,
+            },
+            'inspect': {
+                'mails': ['<qid>[,<qid>,...]']
+            },
             'select': {
                 'date': ['<datespec>'],
                 'error': ['<error_msg>'],
@@ -247,7 +241,8 @@ class PyMailqShell(cmd.Cmd):
                 mods = self.get_modifiers(match, excludes=args[:-1])
                 if not len(mods):
                     mods = self.get_modifiers("", excludes=args)
-                mods[0] += " " if len(mods) == 1 else ""
+                if len(mods):
+                    mods[0] += " " if len(mods) == 1 else ""
                 suggests = mods
 
         if not len(suggests):
@@ -297,6 +292,13 @@ class PyMailqShell(cmd.Cmd):
         except:
             raise SyntaxError("invalid filter ID: %s" % filterid)
 
+    def _select_qids(self, *qids):
+        """
+        Select mails by ID
+          Usage: select qids <qid>[,<qid>,...]
+        """
+        self.selector.lookup_qids(qids)
+
     def _select_status(self, status):
         """
         Select mails with specific postfix status
@@ -315,7 +317,7 @@ class PyMailqShell(cmd.Cmd):
             exact = True
         self.selector.lookup_sender(sender=sender, exact=exact)
 
-    def _select_size(self, sizeA, sizeB=None):
+    def _select_size(self, size_a, size_b=None):
         """
         Select mails by size in Bytes
           - and + are supported, if not specified, search for exact size
@@ -326,7 +328,7 @@ class PyMailqShell(cmd.Cmd):
         smax = None
         exact = None
         try:
-            for size in sizeA, sizeB:
+            for size in size_a, size_b:
                 if size is None:
                     continue
                 if exact is not None:
@@ -352,7 +354,7 @@ class PyMailqShell(cmd.Cmd):
         if smin is None:
             smin = 0
 
-        if smin > smax:
+        if smin > smax > 0:
             raise SyntaxError("minimum size is greater than maximum size")
 
         self.selector.lookup_size(smin=smin, smax=smax)
@@ -394,67 +396,21 @@ class PyMailqShell(cmd.Cmd):
         """
         self.selector.lookup_error(str(error_msg))
 
-    def viewer(function):
-        """Result viewer decorator
-
-        :param func function: Function to decorate
+    def _inspect_mails(self, *qids):
         """
-        def wrapper(self, *args, **kwargs):
-            args = list(args)  # conversion need for arguments cleaning
-            limit = None
-            overhead = 0
-            try:
-                if "limit" in args:
-                    limit_idx = args.index('limit')
-                    args.pop(limit_idx)  # pop option, next arg is value
-                    limit = int(args.pop(limit_idx))
-            except (IndexError, TypeError, ValueError):
-                raise SyntaxError("limit modifier needs a valid number")
-
-            output = "brief"
-            for known in self.formats:
-                if known in args:
-                    output = args.pop(args.index(known))
-                    break
-            outformat = self.formats[output]
-
-            elements = function(self, *args, **kwargs)
-
-            total_elements = len(elements)
-            if not total_elements:
-                return ["No element to display"]
-
-            # Check for headers and increase limit accordingly
-            headers = 0
-            if total_elements > 1 and "========" in str(elements[1]):
-                headers = 2
-
-            if limit is not None:
-                if total_elements > (limit + headers):
-                    overhead = total_elements - (limit + headers)
-                else:
-                    limit = total_elements
-            else:
-                limit = total_elements
-
-            outformat_attrs = self.format_parser.findall(outformat)
-            formatted = []
-            for element in elements[:limit + headers]:
-                if isinstance(element, store.Mail):
-                    attrs = {}
-                    for att in outformat_attrs:
-                        attrs[att[1:-1]] = getattr(element, att[1:-1], "-")
-                    formatted.append(outformat.format(**attrs))
-                else:
-                    formatted.append(element)
-
-            if overhead > 0:
-                msg = "...Preview of first %d (%d more)..." % (limit, overhead)
-                formatted.append(msg)
-
-            return formatted
-        wrapper.__doc__ = function.__doc__
-        return wrapper
+        Show mails content
+          Usage: show mail <mail_qid>
+        """
+        mails = self.selector.get_mails_by_qids(qids)
+        if not len(mails):
+            return ['Mail IDs not found']
+        response = []
+        for mail in mails:
+            mail.parse()
+            if len(mail.parse_error):
+                return [mail.parse_error]
+            response.append(mail.show())
+        return response
 
     def do_show(self, str_arg):
         """
@@ -491,7 +447,7 @@ class PyMailqShell(cmd.Cmd):
 
         self.respond("\n".join(lines))
 
-    @viewer
+    @utils.viewer
     @utils.ranker
     @utils.sorter
     def _show_selected(self):
@@ -519,10 +475,10 @@ class PyMailqShell(cmd.Cmd):
         return lines
 
     # Postsuper generic command
-    def __do_super(self, operation, action_name):
+    def __do_super(self, operation):
         """Postsuper generic command"""
         if not self.pstore.loaded_at:
-            raise StoreNotLoaded
+            return ["The store is not loaded"]
         if not len(self.selector.mails):
             return ["No mail selected"]
         else:
@@ -542,22 +498,22 @@ class PyMailqShell(cmd.Cmd):
         """Deletes the mails in current selection
           Usage: super delete
         """
-        return self.__do_super('delete', 'Deleted')
+        return self.__do_super('delete')
 
     def _super_hold(self):
         """Put on hold the mails in current selection
           Usage: super hold
         """
-        return self.__do_super('hold', 'Put on hold')
+        return self.__do_super('hold')
 
     def _super_release(self):
         """Releases from hold the mails in current selection
           Usage: super release
         """
-        return self.__do_super('release', 'Released')
+        return self.__do_super('release')
 
     def _super_requeue(self):
         """requeue the mails in current selection
           Usage: super requeue
         """
-        return self.__do_super('requeue', 'Requeued')
+        return self.__do_super('requeue')

@@ -86,6 +86,9 @@ def test_shell_completion():
     assert ["selected"] == resp
     resp = PQSHELL.completedefault("", "show selected ")
     assert ["limit", "rankby", "sortby"] == sorted(resp)
+    resp = PQSHELL.completedefault("",
+                                   "show selected limit x rankby x sortby x")
+    assert resp is None
     resp = PQSHELL.completedefault("", "show selected limit ")
     assert ["<n> "] == resp
     resp = PQSHELL.completedefault("", "show selected limit 5 ")
@@ -150,22 +153,43 @@ def test_shell_store_status_unloaded():
     assert "store is not loaded" in resp
 
 
-def test_shell_store_load():
-    """Test 'store load' command"""
-    resp = run_cmd("store load")
-    assert "mails loaded from queue" in resp
-
-
 def test_shell_store_load_error():
     """Test 'store load' command"""
     resp = run_cmd("store load notfound.txt")
     assert "*** Error: unable to load store" in resp
 
 
+def test_shell_store_load():
+    """Test 'store load' command"""
+    resp = run_cmd("store load")
+    assert "mails loaded from queue" in resp
+
+
 def test_shell_store_status_loaded():
     """Test 'store status' command with loaded store"""
     resp = run_cmd("store status")
     assert "store loaded with " in resp
+
+
+def test_shell_inspect_mails_as_user():
+    """Test 'inspect mails' command as user"""
+    CONFIG['commands']['use_sudo'] = False
+    resp = run_cmd("inspect mails %s" % PQSHELL.pstore.mails[0].qid)
+    assert 'Permission denied' in resp
+
+
+def test_shell_inspect_mails_not_found():
+    resp = run_cmd("inspect mails XXXXXXXX")
+    assert 'Mail IDs not found' in resp
+
+
+def test_shell_inspect_mails():
+    """Test 'inspect mails' command"""
+    CONFIG['commands']['use_sudo'] = True
+    qids = [mail.qid for mail in PQSHELL.pstore.mails[0:2]]
+    resp = run_cmd("inspect mails %s %s" % (qids[0], qids[1]))
+    assert qids[0] in resp
+    assert qids[1] in resp
 
 
 def test_shell_show():
@@ -217,6 +241,12 @@ def test_shell_show_selected_rankby():
     assert len(resp.split('\n')) == 5
 
 
+def test_shell_show_selected_long_format():
+    """Test 'show selected format' command"""
+    resp = run_cmd("show selected limit 2 long")
+    assert len(resp.split('\n')) == 7
+
+
 def test_shell_show_filters_empty():
     """Test 'show filters' command without registered filters"""
     resp = run_cmd("show filters")
@@ -231,11 +261,11 @@ def test_shell_select():
 
 def test_shell_select_sender():
     """Test 'select sender' command"""
-    run_cmd("select sender sender-1")
+    assert not len(run_cmd("select sender sender-1"))
     resp = run_cmd("show selected")
     assert "sender-1@" in resp
     assert len(resp.split('\n')) == 100
-    run_cmd("select sender sender-1 exact")
+    assert not len(run_cmd("select sender sender-1 exact"))
     resp = run_cmd("show selected")
     assert "No element to display" in resp
     resp = run_cmd("select sender sender-1 invalid")
@@ -246,6 +276,16 @@ def test_shell_select_invalid():
     """Test 'select invalid' command"""
     resp = run_cmd("select invalid")
     assert "has no subcommand:" in resp
+
+
+def test_shell_select_qids():
+    """Test 'select qids' command"""
+    assert 'mails loaded from queue' in run_cmd("store load")
+    assert 'Selector resetted with store content' in run_cmd("select reset")
+    qids = [mail.qid for mail in PQSHELL.pstore.mails[0:2]]
+    resp = run_cmd("select qids %s %s" % (qids[0], qids[1]))
+    assert not len(resp)
+    assert len(PQSHELL.selector.mails) == 2
 
 
 def test_shell_select_status():
@@ -266,21 +306,21 @@ def test_shell_select_size():
     assert "multiple max sizes specified" in resp
     resp = run_cmd("select size -263 +266")
     assert "minimum size is greater than maximum size" in resp
-    run_cmd("store load")
-    run_cmd("select reset")
-    run_cmd("select size 1000")
+    assert 'mails loaded from queue' in run_cmd("store load")
+    assert 'Selector resetted with store content' in run_cmd("select reset")
+    assert not len(run_cmd("select size 1000"))
     resp = run_cmd("show selected")
     assert "No element to display" in resp
-    run_cmd("select reset")
-    run_cmd("select size +200")
+    assert 'Selector resetted with store content' in run_cmd("select reset")
+    assert not len(run_cmd("select size +200"))
     resp = run_cmd("show selected")
     assert len(resp.split("\n")) == 500
-    run_cmd("select reset")
-    run_cmd("select size -1000")
+    assert 'Selector resetted with store content' in run_cmd("select reset")
+    assert not len(run_cmd("select size -1000"))
     resp = run_cmd("show selected")
     assert len(resp.split("\n")) == 250
-    run_cmd("select reset")
-    run_cmd("select size +200 -1000")
+    assert 'Selector resetted with store content' in run_cmd("select reset")
+    assert not len(run_cmd("select size +200 -1000"))
     resp = run_cmd("show selected")
     assert len(resp.split("\n")) == 250
 
@@ -291,29 +331,30 @@ def test_shell_select_date():
     now = datetime.now().strftime('%Y-%m-%d')
     five_days_ago = (datetime.now() - five_days).strftime('%Y-%m-%d')
     in_five_days = (datetime.now() + five_days).strftime('%Y-%m-%d')
-    run_cmd("store load")
-    run_cmd("select reset")
-    run_cmd("select date %s" % now)
+    assert 'mails loaded from queue' in run_cmd("store load")
+    assert 'Selector resetted with store content' in run_cmd("select reset")
+    assert not len(run_cmd("select date %s" % now))
     resp = run_cmd("show selected")
     assert len(resp.split("\n")) == 500
-    run_cmd("select reset")
-    run_cmd("select date %s" % five_days_ago)
+    assert 'Selector resetted with store content' in run_cmd("select reset")
+    assert not len(run_cmd("select date %s" % five_days_ago))
     resp = run_cmd("show selected")
     assert "No element to display" in resp
-    run_cmd("select reset")
-    run_cmd("select date +%s" % five_days_ago)
+    assert 'Selector resetted with store content' in run_cmd("select reset")
+    assert not len(run_cmd("select date +%s" % five_days_ago))
     resp = run_cmd("show selected")
     assert len(resp.split("\n")) == 500
-    run_cmd("select reset")
-    run_cmd("select date +%s" % in_five_days)
+    assert 'Selector resetted with store content' in run_cmd("select reset")
+    assert not len(run_cmd("select date +%s" % in_five_days))
     resp = run_cmd("show selected")
     assert "No element to display" in resp
-    run_cmd("select reset")
-    run_cmd("select date %s..%s" % (five_days_ago, in_five_days))
+    assert 'Selector resetted with store content' in run_cmd("select reset")
+    assert not len(run_cmd("select date %s..%s" % (five_days_ago,
+                                                   in_five_days)))
     resp = run_cmd("show selected")
     assert len(resp.split("\n")) == 500
-    run_cmd("select reset")
-    run_cmd("select date -%s" % in_five_days)
+    assert 'Selector resetted with store content' in run_cmd("select reset")
+    assert not len(run_cmd("select date -%s" % in_five_days))
     resp = run_cmd("show selected")
     assert len(resp.split("\n")) == 500
     resp = run_cmd("select date XXXX-XX-XX")
@@ -322,17 +363,17 @@ def test_shell_select_date():
 
 def test_shell_select_error():
     """Test 'select date' command"""
-    run_cmd("store load")
-    run_cmd("select reset")
-    run_cmd("select error 'Test error message'")
+    assert 'mails loaded from queue' in run_cmd("store load")
+    assert 'Selector resetted with store content' in run_cmd("select reset")
+    assert not len(run_cmd("select error 'Test error message'"))
     resp = run_cmd("show selected")
     assert len(resp.split("\n")) == 16
 
 
 def test_shell_show_filters():
     """Test 'show filters' command with registered filters"""
-    run_cmd("select reset")
-    run_cmd("select status deferred")
+    assert 'Selector resetted with store content' in run_cmd("select reset")
+    assert not len(run_cmd("select status deferred"))
     expected = ("0: select status:\n"
                 "    status: deferred")
     resp = run_cmd("show filters")
@@ -357,6 +398,19 @@ def test_shell_select_reset():
     """Test 'select reset' command"""
     resp = run_cmd("select reset")
     assert "Selector resetted with store content" in resp
+
+
+def test_shell_super_unloaded_or_no_selection():
+    """Test QueueControl with an unloaded store"""
+    loaded_at = PQSHELL.pstore.loaded_at
+    setattr(PQSHELL.pstore, 'loaded_at', None)
+    resp = run_cmd("super hold")
+    assert 'The store is not loaded' in resp
+    setattr(PQSHELL.pstore, 'loaded_at', loaded_at)
+    setattr(PQSHELL.selector, 'mails', [])
+    resp = run_cmd("super hold")
+    assert 'No mail selected' in resp
+    run_cmd("select reset")
 
 
 def test_shell_super_hold():

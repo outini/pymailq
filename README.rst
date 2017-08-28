@@ -50,7 +50,7 @@ License
 .. _PythonPIP: https://pypi.python.org/pypi/pymailq/
 .. |PythonSupport| image:: https://img.shields.io/badge/python-2.7,%203.4,%203.5,%203.6-blue.svg
 .. _PythonSupport: https://github.com/outini/pymailq/
-.. |License| image:: https://img.shields.io/badge/license-GPLv2-green.svg
+.. |License| image:: https://img.shields.io/badge/license-GPLv2-blue.svg
 .. _License: https://github.com/outini/pymailq/
 .. |Codacy| image:: https://api.codacy.com/project/badge/Grade/8444a0f124fe463d86a91d80a2a52e7c
 .. _Codacy: https://www.codacy.com/app/outini/pymailq

@@ -29,19 +29,27 @@ msg() { printf "This is test.\n%$1s\n"; }
 gen_mail() {
     sendmail -f "sender-$1@test-domain.tld" \
              -r "sender-$1@test-domain.tld" \
-             "user-$2@test-domain.tld" <<<"$3"
+             "user-$2@test-domain.tld" <<EOF
+Sender: sender-$1@test-domain.tld
+From: Sender $1 <sender-$1@test-domain.tld>
+To: User $2 <user-$2@test-domain.tld>
+Cc: Carbon User <carbon-user@test-domain.tld>
+Subject: Test email from sender-$1
+
+$3
+EOF
 }
 
 echo -n "injecting test mails "
-(for i in `seq 50`; do gen_mail 1 1 "`msg 1000`"; done; echo -n ".") &
+(for i in `seq 50`; do gen_mail 1 1 "`msg 2000`"; done; echo -n ".") &
 (for i in `seq 50`; do gen_mail 1 2 "`msg 10`"; done; echo -n ".") &
-(for i in `seq 50`; do gen_mail 2 1 "`msg 1000`"; done; echo -n ".") &
-(for i in `seq 50`; do gen_mail 2 3 "`msg 10`"; done; echo -n ".") &
-(for i in `seq 50`; do gen_mail 3 2 "`msg 1000`"; done; echo -n ".") &
+(for i in `seq 50`; do gen_mail 2 1 "`msg 2000`"; done; echo -n ".") &
+(for i in `seq 50`; do gen_mail 2 3 "`msg 20`"; done; echo -n ".") &
+(for i in `seq 50`; do gen_mail 3 2 "`msg 2000`"; done; echo -n ".") &
 (for i in `seq 50`; do gen_mail 4 3 "`msg 10`"; done; echo -n ".") &
-(for i in `seq 50`; do gen_mail 5 2 "`msg 1000`"; done; echo -n ".") &
+(for i in `seq 50`; do gen_mail 5 2 "`msg 2000`"; done; echo -n ".") &
 (for i in `seq 50`; do gen_mail 6 3 "`msg 10`"; done; echo -n ".") &
-(for i in `seq 50`; do gen_mail 7 2 "`msg 1000`"; done; echo -n ".") &
+(for i in `seq 50`; do gen_mail 7 2 "`msg 2000`"; done; echo -n ".") &
 (for i in `seq 50`; do gen_mail 8 3 "`msg 10`"; done; echo -n ".") &
 wait
 echo " done."

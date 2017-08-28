@@ -23,6 +23,7 @@ import gc
 import re
 import subprocess
 import email
+from collections import Counter
 from datetime import datetime, timedelta
 from pymailq import CONFIG, debug
 
@@ -130,9 +131,14 @@ class Mail(object):
 
         .. attribute:: postcat_cmd
 
-            Postfix command and arguments :func:`list` for mails content
-            parsing. Default command and arguments list is build at
-            initialization with: ``["postcat", "-qv", self.qid]``
+            This property use Postfix mails content parsing command defined in
+            :attr:`pymailq.CONFIG` attribute under the key 'cat_message'.
+            Command and arguments list is build on call with the configuration
+            data.
+
+            .. seealso::
+
+                :ref:`pymailq-configuration`
     """
 
     def __init__(self, mail_id, size=0, date=None, sender=""):
@@ -148,15 +154,51 @@ class Mail(object):
         self.errors = []
         self.head = MailHeaders()
 
-        self.postcat_cmd = CONFIG['commands']['cat_message'] + [self.qid]
-        if CONFIG['commands']['use_sudo']:
-            self.postcat_cmd.insert(0, 'sudo')
-
         # Getting optionnal status from postqueue mail_id
         postqueue_status = {'*': "active", '!': "hold"}
         if mail_id[-1] in postqueue_status:
             self.qid = mail_id[:-1]
         self.status = postqueue_status.get(mail_id[-1], "deferred")
+
+    @property
+    def postcat_cmd(self):
+        """
+        Get the cat_message command from configuration
+        :return: Command as :class:`list`
+        """
+        postcat_cmd = CONFIG['commands']['cat_message'] + [self.qid]
+        if CONFIG['commands']['use_sudo']:
+            postcat_cmd.insert(0, 'sudo')
+        return postcat_cmd
+
+    def show(self):
+        """
+        Return mail detailled representation for printing
+
+        :return: Representation as :class:`str`
+        """
+        output = ("=== Mail %s ===\n"
+                  "Received: %s\n"
+                  "Date: %s\n"
+                  "Message-Id: %s\n"
+                  "Size: %sB\n"
+                  "Sender: %s\n"
+                  "From: %s\n"
+                  "To: %s\n"
+                  "Cc: %s\n"
+                  "Subject: %s\n")
+        return output % (
+            self.qid,
+            "\n".join(getattr(self.head, "Received", ["n/a"])),
+            getattr(self.head, "Date", ["n/a"])[0],
+            getattr(self.head, "Message-Id", ["n/a"])[0],
+            self.size,
+            getattr(self.head, "Sender", ["n/a"])[0],
+            getattr(self.head, "From", ["n/a"])[0],
+            ", ".join(getattr(self.head, "To", ["n/a"])),
+            ", ".join(getattr(self.head, "Cc", ["n/a"])),
+            getattr(self.head, "Subject", ["n/a"])[0]
+        )
 
     @debug
     def parse(self):
@@ -164,7 +206,7 @@ class Mail(object):
         Parse message content.
 
         This method use Postfix mails content parsing command defined in
-        :attr:`pymailq.CONFIG` attribute under the key 'cat_message'.
+        :attr:`~Mail.postcat_cmd` attribute.
         This command is runned using :class:`subprocess.Popen` instance.
 
         Parsed headers become attributes and are retrieved with help of
@@ -173,16 +215,25 @@ class Mail(object):
 
         .. seealso::
 
-            :ref:`pymailq-configuration`
-
             Postfix manual:
                 `postcat`_ -- Show Postfix queue file contents
 
         """
+        # Reset parsing error message
+        self.parse_error = ""
+
         child = subprocess.Popen(self.postcat_cmd,
                                  stdout=subprocess.PIPE,
                                  stderr=subprocess.PIPE)
-        stdout = child.communicate()[0]
+        stdout, stderr = child.communicate()
+
+        if not len(stdout):
+            # Ignore first 3 line on stderr which are:
+            #   postcat: name_mask: all
+            #   postcat: inet_addr_local: configured 3 IPv4 addresses
+            #   postcat: inet_addr_local: configured 3 IPv6 addresses
+            self.parse_error = "\n".join(stderr.decode().split('\n')[3:])
+            return
 
         raw_content = list()
         for line in stdout.decode().split('\n'):
@@ -259,9 +310,11 @@ class PostqueueStore(object):
 
         .. attribute:: postqueue_cmd
 
-            :func:`list` object to store Postfix command and arguments to view
-            the mails queue content.
-            Default is ``["/usr/sbin/postqueue", "-p"]``.
+            :obj:`list` object to store Postfix command and arguments to view
+            the mails queue content. This property use Postfix mails content
+            parsing command defined in :attr:`pymailq.CONFIG` attribute under
+            the key 'list_queue'. Command and arguments list is build on call
+            with the configuration data.
 
         .. attribute:: spool_path
 
@@ -512,3 +565,103 @@ class PostqueueStore(object):
         else:
             getattr(self, "_load_from_{0}".format(method))(filename)
         self.loaded_at = datetime.now()
+
+    @debug
+    def summary(self):
+        """
+        Summarize the mails queue content.
+
+        :return: Mail queue summary as :class:`dict`
+
+        Sizes are in bytes.
+
+        Example response::
+
+            {
+                'total_mails': 500,
+                'total_mails_size': 709750,
+                'average_mail_size': 1419.5,
+                'max_mail_size': 2414,
+                'min_mail_size': 423,
+                'top_errors': [
+                    ('mail transport unavailable', 484),
+                    ('Test error message', 16)
+                ],
+                'top_recipient_domains': [
+                    ('test-domain.tld', 500)
+                ],
+                'top_recipients': [
+                    ('user-3@test-domain.tld', 200),
+                    ('user-2@test-domain.tld', 200),
+                    ('user-1@test-domain.tld', 100)
+                ],
+                'top_sender_domains': [
+                    ('test-domain.tld', 500)
+                ],
+                'top_senders': [
+                    ('sender-1@test-domain.tld', 100),
+                    ('sender-2@test-domain.tld', 100),
+                    ('sender-7@test-domain.tld', 50),
+                    ('sender-4@test-domain.tld', 50),
+                    ('sender-5@test-domain.tld', 50)
+                ],
+                'top_status': [
+                    ('deferred', 500),
+                    ('active', 0),
+                    ('hold', 0)
+                ],
+                'unique_recipient_domains': 1,
+                'unique_recipients': 3,
+                'unique_sender_domains': 1,
+                'unique_senders': 8
+            }
+        """
+        senders = Counter()
+        sender_domains = Counter()
+        recipients = Counter()
+        recipient_domains = Counter()
+        status = Counter(active=0, hold=0, deferred=0)
+        errors = Counter()
+        total_mails_size = 0
+        max_mail_size = 0
+        min_mail_size = 0
+
+        for mail in self.mails:
+            status[mail.status] += 1
+            senders[mail.sender] += 1
+            if '@' in mail.sender:
+                sender_domains[mail.sender.split('@', 1)[1]] += 1
+            for recipient in mail.recipients:
+                recipients[recipient] += 1
+                if '@' in recipient:
+                    recipient_domains[recipient.split('@', 1)[1]] += 1
+            for error in mail.errors:
+                errors[error] += 1
+            total_mails_size += mail.size
+            if mail.size > max_mail_size:
+                max_mail_size = mail.size
+            if min_mail_size == 0:
+                min_mail_size = mail.size
+            elif mail.size < min_mail_size:
+                min_mail_size = mail.size
+
+        average_mail_size = total_mails_size / len(self.mails)
+
+        summary = {
+            'total_mails': len(self.mails),
+            'total_mails_size': total_mails_size,
+            'average_mail_size': average_mail_size,
+            'max_mail_size': max_mail_size,
+            'min_mail_size': min_mail_size,
+            'top_status': status.most_common()[:5],
+            'unique_senders': len(list(senders)),
+            'unique_sender_domains': len(list(sender_domains)),
+            'unique_recipients': len(list(recipients)),
+            'unique_recipient_domains': len(list(recipient_domains)),
+            'top_senders': senders.most_common()[:5],
+            'top_sender_domains': sender_domains.most_common()[:5],
+            'top_recipients': recipients.most_common()[:5],
+            'top_recipient_domains': recipient_domains.most_common()[:5],
+            'top_errors': errors.most_common()[:5]
+        }
+        return summary

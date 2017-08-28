@@ -65,16 +65,21 @@ class QueueControl(object):
     def get_operation_cmd(operation):
         """Get operation related command from configuration
 
-        Known operations:
-        - hold: Hold message
-        - release: Release message from hold
-        - requeue: Requeue message
-        - delete: Delete message from queue
+        This method use Postfix administrative commands defined
+        in :attr:`pymailq.CONFIG` attribute under the key 'list_queue'.
+        Command and arguments list is build on call with the configuration data.
+
+        Command keys are built with the ``operation`` argument suffixed with
+        ``_message``. Example: ``hold_message`` for the hold command.
 
         :param str operation: Operation name
         :return: Command and arguments as :class:`list`
 
         :raise KeyError: Operation is unknown
+
+        .. seealso::
+
+            :ref:`pymailq-configuration`
         """
         cmd = CONFIG['commands'][operation + '_message']
         if CONFIG['commands']['use_sudo']:

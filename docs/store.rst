@@ -16,6 +16,7 @@ into python structures.
         .. automethod:: store.PostqueueStore._load_from_spool()
         .. automethod:: store.PostqueueStore._get_postqueue_output()
         .. automethod:: store.PostqueueStore._is_mail_id(mail_id)
+        .. automethod:: store.PostqueueStore.summary()
 
 :class:`~store.Mail` Objects
 ----------------------------
@@ -26,6 +27,7 @@ into python structures.
 
         .. automethod:: store.Mail.parse()
         .. automethod:: store.Mail.dump()
+        .. automethod:: store.Mail.show()
 
 :class:`~store.MailHeaders` Objects
 -----------------------------------
