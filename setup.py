@@ -23,7 +23,7 @@ from distutils.core import setup
 
 if __name__ == '__main__':
     readme_file = os.path.join(os.path.dirname(__file__), 'README.rst')
-    release = "0.7.0"
+    release = "0.8.0"
     setup(
         name="pymailq",
         version=release,

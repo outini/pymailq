@@ -4,6 +4,18 @@ pymailq - Simple mail queue management
 Contact: Denis Pompilio (jawa) <denis.pompilio@gmail.com>
 https://github.com/outini/pymailq
 
+=== v0.8.0 28/08/2017 ===
+    * [bug] Fixing handling of modifiers completion
+    * [bug] Fixing parse_error message retention
+    * [bug] Fixing size selection error when using only maximum size
+    * Removing exception StoreNotLoaded
+    * Making 'cat_message' command dynamic in Mail objects
+    * Implementation of the "long" output format
+    * Implementation of mail queue summary
+    * Implementation of Mail.show() method
+    * Implementation of selection by queue IDs
+    * Improved unittests
+
 === v0.7.0 24/08/2017 ===
     * Support of configuration file
 

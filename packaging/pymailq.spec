@@ -1,7 +1,7 @@
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
 
 Name:           pymailq
-Version:        0.6.0
+Version:        0.8.0
 Release:        1%{?dist}
 Summary:        Simple Postfix queue management
 
@@ -48,6 +48,17 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Aug 28 2017 Denis Pompilio <denis.pompilio@gmail.com> - 0.8.0-1
+- [bug] Fixing handling of modifiers completion
+- [bug] Fixing parse_error message retention
+- [bug] Fixing size selection error when using only maximum size
+- Removing exception StoreNotLoaded
+- Making 'cat_message' command dynamic in Mail objects
+- Implementation of the "long" output format
+- Implementation of mail queue summary
+- Implementation of Mail.show() method
+- Implementation of selection by queue IDs
+- Improved unittests
 * Thu Aug 24 2017 Denis Pompilio <denis.pompilio@gmail.com> - 0.7.0-1
 - Support of configuration file
 * Thu Aug 24 2017 Denis Pompilio <denis.pompilio@gmail.com> - 0.6.0-2

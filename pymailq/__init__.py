@@ -32,7 +32,7 @@ except ImportError:
 DEBUG = False
 
 #: Current version of the package as :class:`str`.
-VERSION = "0.7.0"
+VERSION = "0.8.0"
 
 #: Module configuration as :class:`dict`.
 CONFIG = {
