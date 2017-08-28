@@ -313,7 +313,7 @@ class PostqueueStore(object):
             :obj:`list` object to store Postfix command and arguments to view
             the mails queue content. This property use Postfix mails content
             parsing command defined in :attr:`pymailq.CONFIG` attribute under
-            the key ‘list_queue’. Command and arguments list is build on call
+            the key 'list_queue'. Command and arguments list is build on call
             with the configuration data.
 
         .. attribute:: spool_path

@@ -66,7 +66,7 @@ class QueueControl(object):
         """Get operation related command from configuration
 
         This method use Postfix administrative commands defined
-        in :attr:`pymailq.CONFIG` attribute under the key ‘list_queue’.
+        in :attr:`pymailq.CONFIG` attribute under the key 'list_queue'.
         Command and arguments list is build on call with the configuration data.
 
         Command keys are built with the ``operation`` argument suffixed with
