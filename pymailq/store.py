@@ -167,6 +167,11 @@ class Mail(object):
         return postcat_cmd
 
     def show(self):
+        """
+        Return mail detailled representation for printing
+
+        :return: Representation as :class:`str`
+        """
         output = ("=== Mail %s ===\n"
                   "Received: %s\n"
                   "Date: %s\n"
@@ -559,8 +564,52 @@ class PostqueueStore(object):
     @debug
     def summary(self):
         """
-        Summarize the mails queue content
+        Summarize the mails queue content.
+
         :return: Mail queue summary as :class:`dict`
+
+        Sizes are in bytes.
+
+        Example response::
+
+            {
+                'total_mails': 500,
+                'total_mails_size': 709750,
+                'average_mail_size': 1419.5,
+                'max_mail_size': 2414,
+                'min_mail_size': 423,
+                'top_errors': [
+                    ('mail transport unavailable', 484),
+                    ('Test error message', 16)
+                ],
+                'top_recipient_domains': [
+                    ('test-domain.tld', 500)
+                ],
+                'top_recipients': [
+                    ('user-3@test-domain.tld', 200),
+                    ('user-2@test-domain.tld', 200),
+                    ('user-1@test-domain.tld', 100)
+                ],
+                'top_sender_domains': [
+                    ('test-domain.tld', 500)
+                ],
+                'top_senders': [
+                    ('sender-1@test-domain.tld', 100),
+                    ('sender-2@test-domain.tld', 100),
+                    ('sender-7@test-domain.tld', 50),
+                    ('sender-4@test-domain.tld', 50),
+                    ('sender-5@test-domain.tld', 50)
+                ],
+                'top_status': [
+                    ('deferred', 500),
+                    ('active', 0),
+                    ('hold', 0)
+                ],
+                'unique_recipient_domains': 1,
+                'unique_recipients': 3,
+                'unique_sender_domains': 1,
+                'unique_senders': 8
+            }
         """
         senders = Counter()
         sender_domains = Counter()
