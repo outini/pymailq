@@ -13,7 +13,7 @@ SYNOPSIS
 
 ::
 
-    pqshell [-h] [--version] [--debug] [--config CFG_FILE]
+    pqshell [-h] [--version] [--debug] [--config CFG_FILE] [--summary]
 
 FEATURES
 ********
@@ -27,9 +27,10 @@ OPTIONS
 *******
 
     -h, --help           show help message and exit
-    --version            show shell version
-    --debug              show shell debug and timing info
+    --version            show shell version and exit
+    --debug              activate shell debug and timing info
     --config CFG_FILE    specify a configuration file for PyMailq
+    --summary            show mails queue summary and exit
 
 SHELL COMMANDS
 **************
@@ -69,6 +70,11 @@ select
     applied filters. Order of filters application is also important.
 
     **Subcommands**:
+
+        **qids**
+            Select mails by queue IDs.
+
+            Usage: ``select qids <qid> [qid] ...``
 
         **date**
             Select mails by date.
@@ -141,6 +147,21 @@ select
         Selector resetted with store content (608 mails)
         PyMailq (sel:608)>
 
+inspect
+-------
+
+    Display mails content.
+
+    **Subcommands:**
+
+        **mails:**
+            Show mails most common fields content including by not limited to
+            `From`, `To`, `Subject`, `Received`, ... This command parses mails
+            content and requires specific privileges or the use of `sudo` in
+            configuration.
+
+            Usage: ``inspect mails <qid> [qid] ...``
+
 show
 ----
 
@@ -168,6 +189,11 @@ show
       * ``recipients`` -- Mail recipients (list, no sort).
       * ``size`` -- Mail size.
       * ``errors`` -- Postqueue deferred error messages (list, no sort).
+
+    **Output formatting:**
+
+      * ``brief`` -- Default single line output to display selection
+      * ``long`` -- Long format to also display errors and recipients
 
     **Subcommands:**
 

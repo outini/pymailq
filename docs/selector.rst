@@ -14,6 +14,8 @@ structures from the :mod:`store` module.
         .. automethod:: selector.MailSelector.filter_registration
         .. automethod:: selector.MailSelector.reset()
         .. automethod:: selector.MailSelector.replay_filters()
+        .. automethod:: selector.MailSelector.get_mails_by_qids(qids)
+        .. automethod:: selector.MailSelector.lookup_qids(qids)
         .. automethod:: selector.MailSelector.lookup_status(status)
         .. automethod:: selector.MailSelector.lookup_sender(sender[, partial])
         .. automethod:: selector.MailSelector.lookup_error(error_msg)

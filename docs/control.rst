@@ -12,6 +12,7 @@ on the `postsuper`_ administrative tool functionnalities.
 
     The :class:`~control.QueueControl` instance provides the following methods:
 
+        .. automethod:: control.QueueControl.get_operation_cmd
         .. automethod:: control.QueueControl._operate
         .. automethod:: control.QueueControl.delete_messages
         .. automethod:: control.QueueControl.hold_messages

@@ -131,9 +131,14 @@ class Mail(object):
 
         .. attribute:: postcat_cmd
 
-            Postfix command and arguments :func:`list` for mails content
-            parsing. Default command and arguments list is build at
-            initialization with: ``["postcat", "-qv", self.qid]``
+            This property use Postfix mails content parsing command defined in
+            :attr:`pymailq.CONFIG` attribute under the key 'cat_message'.
+            Command and arguments list is build on call with the configuration
+            data.
+
+            .. seealso::
+
+                :ref:`pymailq-configuration`
     """
 
     def __init__(self, mail_id, size=0, date=None, sender=""):
@@ -201,7 +206,7 @@ class Mail(object):
         Parse message content.
 
         This method use Postfix mails content parsing command defined in
-        :attr:`pymailq.CONFIG` attribute under the key 'cat_message'.
+        :attr:`~Mail.postcat_cmd` attribute.
         This command is runned using :class:`subprocess.Popen` instance.
 
         Parsed headers become attributes and are retrieved with help of
@@ -209,8 +214,6 @@ class Mail(object):
         :mod:`email` module.
 
         .. seealso::
-
-            :ref:`pymailq-configuration`
 
             Postfix manual:
                 `postcat`_ -- Show Postfix queue file contents
@@ -307,9 +310,11 @@ class PostqueueStore(object):
 
         .. attribute:: postqueue_cmd
 
-            :func:`list` object to store Postfix command and arguments to view
-            the mails queue content.
-            Default is ``["/usr/sbin/postqueue", "-p"]``.
+            :obj:`list` object to store Postfix command and arguments to view
+            the mails queue content. This property use Postfix mails content
+            parsing command defined in :attr:`pymailq.CONFIG` attribute under
+            the key ‘list_queue’. Command and arguments list is build on call
+            with the configuration data.
 
         .. attribute:: spool_path
 
