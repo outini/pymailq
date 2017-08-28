@@ -31,13 +31,13 @@ Total mails in queue: {total_mails}
 Total queue size in MB: {total_mails_size:.3}
 
 ----- Mails by status ----------    ----- Mails by size ----------
-Active    {active_mails:<18}        Average size  {average_mail_size:.3} KB
-Hold      {hold_mails:<16}          Maximum size  {max_mail_size:.3} KB
-Deferred  {deferred_mails:<20}      Minimum size  {min_mail_size:.3} KB
+Active      {active_mails:<18}      Average size  {average_mail_size:10.3f} KB
+Hold        {hold_mails:<16}        Maximum size  {max_mail_size:10.3f} KB
+Deferred    {deferred_mails:<20}    Minimum size  {min_mail_size:10.3f} KB
 
 ----- Unique senders -----------    ----- Unique recipients ------
-Senders  {unique_senders:<20}       Recipients  {unique_recipients}
-Domains  {u_s_domains:<17}          Domains     {u_r_domains}
+Senders     {unique_senders:<20}    Recipients    {unique_recipients:>10}
+Domains     {u_s_domains:<17}       Domains       {u_r_domains:>10}
 
 ----- Top senders ------------------------------------------------
 {top_senders}
@@ -91,15 +91,10 @@ if __name__ == "__main__":
         pstore = store.PostqueueStore()
         pstore.load()
         data = pstore.summary()
-
-        from pprint import pprint
-        pprint(data)
-
         data['total_mails_size'] /= 1024*1024.0
         data['average_mail_size'] /= 1024.0
         data['max_mail_size'] /= 1024.0
         data['min_mail_size'] /= 1024.0
-
         data['u_s_domains'] = data['unique_sender_domains']
         data['u_r_domains'] = data['unique_recipient_domains']
         for status in data['top_status']:
@@ -112,7 +107,6 @@ if __name__ == "__main__":
                                    for value in data[key]])
 
         print(SUMMARY.format(**data))
-
         exit()
 
     main()
