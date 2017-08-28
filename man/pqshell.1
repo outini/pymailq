@@ -1,6 +1,6 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "PQSHELL" "1" "Aug 24, 2017" "0.7" "PyMailq"
+.TH "PQSHELL" "1" "Aug 28, 2017" "0.8" "PyMailq"
 .SH NAME
 pqshell \- A shell-like to interact with a Postfix mails queue
 .
@@ -41,7 +41,7 @@ means to view the queue content, filter mails on criterias like \fISender\fP or
 .sp
 .nf
 .ft C
-pqshell [\-h] [\-\-version] [\-\-debug] [\-\-config CFG_FILE]
+pqshell [\-h] [\-\-version] [\-\-debug] [\-\-config CFG_FILE] [\-\-summary]
 .ft P
 .fi
 .UNINDENT
@@ -66,13 +66,16 @@ History and autocomplete via readline, if installed.
 show help message and exit
 .TP
 .B \-\-version
-show shell version
+show shell version and exit
 .TP
 .B \-\-debug
-show shell debug and timing info
+activate shell debug and timing info
 .TP
 .BI \-\-config \ CFG_FILE
 specify a configuration file for PyMailq
+.TP
+.B \-\-summary
+show mails queue summary and exit
 .UNINDENT
 .UNINDENT
 .UNINDENT
@@ -130,6 +133,11 @@ applied filters. Order of filters application is also important.
 .INDENT 0.0
 .INDENT 3.5
 .INDENT 0.0
+.TP
+\fBqids\fP
+Select mails by queue IDs.
+.sp
+Usage: \fBselect qids <qid> [qid] ...\fP
 .TP
 \fBdate\fP
 Select mails by date.
@@ -230,6 +238,28 @@ PyMailq (sel:608)>
 .UNINDENT
 .UNINDENT
 .UNINDENT
+.SS inspect
+.INDENT 0.0
+.INDENT 3.5
+Display mails content.
+.sp
+\fBSubcommands:\fP
+.INDENT 0.0
+.INDENT 3.5
+.INDENT 0.0
+.TP
+\fBmails:\fP
+Show mails most common fields content including by not limited to
+\fIFrom\fP, \fITo\fP, \fISubject\fP, \fIReceived\fP, … This command parses mails
+content and requires specific privileges or the use of \fIsudo\fP in
+configuration.
+.sp
+Usage: \fBinspect mails <qid> [qid] ...\fP
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.UNINDENT
 .SS show
 .INDENT 0.0
 .INDENT 3.5
@@ -270,6 +300,18 @@ Produce mails ranking by field.
 \fBsize\fP – Mail size.
 .IP \(bu 2
 \fBerrors\fP – Postqueue deferred error messages (list, no sort).
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+\fBOutput formatting:\fP
+.INDENT 0.0
+.INDENT 3.5
+.INDENT 0.0
+.IP \(bu 2
+\fBbrief\fP – Default single line output to display selection
+.IP \(bu 2
+\fBlong\fP – Long format to also display errors and recipients
 .UNINDENT
 .UNINDENT
 .UNINDENT
