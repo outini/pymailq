@@ -28,11 +28,6 @@ import inspect
 from pymailq import store, control, selector, utils
 
 
-class StoreNotLoaded(Exception):
-    def __str__(self):
-        return 'The store is not loaded'
-
-
 class PyMailqShell(cmd.Cmd):
     """PyMailq shell for interactive mode"""
 
@@ -482,7 +477,7 @@ class PyMailqShell(cmd.Cmd):
     def __do_super(self, operation):
         """Postsuper generic command"""
         if not self.pstore.loaded_at:
-            raise StoreNotLoaded
+            return ["The store is not loaded"]
         if not len(self.selector.mails):
             return ["No mail selected"]
         else:
