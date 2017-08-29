@@ -134,6 +134,18 @@ def test_selector_sender():
     assert len(mails) == 100
 
 
+def test_selector_recipient():
+    """Test MailSelector.lookup_recipient method"""
+    SELECTOR.reset()
+    mails = SELECTOR.lookup_recipient("user-1", exact=False)
+    assert type(mails) == list
+    assert len(mails) == 100
+    SELECTOR.reset()
+    mails = SELECTOR.lookup_recipient("user-2@test-domain.tld")
+    assert type(mails) == list
+    assert len(mails) == 200
+
+
 def test_selector_error():
     """Test MailSelector.lookup_error method"""
     SELECTOR.reset()

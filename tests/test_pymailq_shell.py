@@ -81,7 +81,7 @@ def test_shell_completion():
     resp = PQSHELL.completedefault("invalid", "invalid")
     assert resp is None
     resp = PQSHELL.completedefault("re", "select re")
-    assert ["replay", "reset"] == sorted(resp)
+    assert ["recipient", "replay", "reset"] == sorted(resp)
     resp = PQSHELL.completedefault("sel", "show sel")
     assert ["selected"] == resp
     resp = PQSHELL.completedefault("", "show selected ")
@@ -261,14 +261,30 @@ def test_shell_select():
 
 def test_shell_select_sender():
     """Test 'select sender' command"""
+    assert 'Selector resetted' in run_cmd("select reset")
     assert not len(run_cmd("select sender sender-1"))
     resp = run_cmd("show selected")
     assert "sender-1@" in resp
     assert len(resp.split('\n')) == 100
+    assert 'Selector resetted' in run_cmd("select reset")
     assert not len(run_cmd("select sender sender-1 exact"))
     resp = run_cmd("show selected")
     assert "No element to display" in resp
     resp = run_cmd("select sender sender-1 invalid")
+    assert "invalid keyword: invalid" in resp
+
+
+def test_shell_select_recipient():
+    """Test 'select recipient' command"""
+    assert 'Selector resetted' in run_cmd("select reset")
+    assert not len(run_cmd("select recipient user-1"))
+    resp = run_cmd("show selected")
+    assert len(resp.split('\n')) == 100
+    assert 'Selector resetted' in run_cmd("select reset")
+    assert not len(run_cmd("select recipient user-1 exact"))
+    resp = run_cmd("show selected")
+    assert "No element to display" in resp
+    resp = run_cmd("select recipient user-1 invalid")
     assert "invalid keyword: invalid" in resp
 
 
