@@ -328,7 +328,7 @@ class PyMailqShell(cmd.Cmd):
                 raise SyntaxError("invalid keyword: %s" % exact)
             exact = True
         self.selector.lookup_recipient(recipient=recipient, exact=exact)
-        
+
     def _select_size(self, size_a, size_b=None):
         """
         Select mails by size in Bytes
