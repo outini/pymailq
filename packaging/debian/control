@@ -1,0 +1,20 @@
+Source: pymailq
+Section: utils
+Priority: optional
+Maintainer: Denis Pompilio <denis.pompilio@gmail.com>
+Build-Depends: debhelper (>= 9), dh-python,
+               python-all, python3-all,
+               python-setuptools, python3-setuptools,
+               wget, ca-certificates, lsb-release
+
+Package: python-pymailq
+Architecture: all
+Homepage: https://github.com/outini/pymailq
+Depends: ${misc:Depends}, ${python:Depends}
+Description: Postfix queue control python tool
+
+Package: python3-pymailq
+Architecture: all
+Homepage: https://github.com/outini/pymailq
+Depends: ${misc:Depends}, ${python3:Depends}
+Description: Postfix queue control python tool
