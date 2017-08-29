@@ -186,6 +186,40 @@ class MailSelector(object):
 
     @debug
     @filter_registration
+    def lookup_recipient(self, recipient, exact=True):
+        """
+        Lookup mails send to a specific recipient.
+
+        Optionnal parameter ``partial`` allow lookup of partial sender like
+        ``@domain.com`` or ``sender@``. By default, ``partial`` is ``False``
+        and selection is made on exact sender.
+
+        .. note::
+
+            Matches are made against :attr:`Mail.recipients` attribute instead
+            of real mail header :mailheader:`To`.
+
+        :param str recipient: Recipient address to lookup in
+                              :class:`~store.Mail` objects selection.
+        :param bool exact: Allow lookup with partial or exact match
+        :return: List of newly selected :class:`~store.Mail` objects
+        :rtype: :func:`list`
+        """
+        if exact is False:
+            selected = []
+            for mail in self.mails:
+                for value in mail.recipients:
+                    if recipient in value:
+                        selected += [mail]
+            self.mails = selected
+        else:
+            self.mails = [mail for mail in self.mails
+                          if recipient in mail.recipients]
+
+        return self.mails
+
+    @debug
+    @filter_registration
     def lookup_error(self, error_msg):
         """
         Lookup mails with specific error message (message may be partial).

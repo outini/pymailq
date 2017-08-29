@@ -110,6 +110,11 @@ select
             Select mails from sender.
 
             Usage: ``select sender <sender> [exact]``
+            
+        **recipient**
+            Select mails to recipient.
+
+            Usage: ``select recipient <recipient> [exact]``
 
         **size**
             Select mails by size in Bytes. Signs - and + are supported, if not
