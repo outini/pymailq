@@ -627,9 +627,9 @@ class PostqueueStore(object):
         max_mail_size = 0
         min_mail_size = 0
         mails_by_age = {
-            'within_24h': 0,
-            'from_1_to_4_days': 0,
-            '4_days_older': 0
+            'last_24h': 0,
+            '1_to_4_days_ago': 0,
+            'older_than_4_days': 0
         }
 
         for mail in self.mails:
@@ -653,11 +653,11 @@ class PostqueueStore(object):
 
             mail_age = datetime.now() - mail.date
             if mail_age.days >= 4:
-                mails_by_age['4_days_older'] += 1
+                mails_by_age['older_than_4_days'] += 1
             elif mail_age.days == 1:
-                mails_by_age['from_1_to_4_days'] += 1
+                mails_by_age['1_to_4_days_ago'] += 1
             elif mail_age.days == 0:
-                mails_by_age['within_24h'] += 1
+                mails_by_age['last_24h'] += 1
 
         if len(self.mails):
             average_mail_size = total_mails_size / len(self.mails)
