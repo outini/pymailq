@@ -30,6 +30,10 @@ SUMMARY = """
 Total mails in queue: {total_mails}
 Total queue size in MB: {total_mails_size:.3}
 
+Mails accepted within last 24h: {mails_by_age[within_24h]}
+Mails accepted from 1 to 4 days: {mails_by_age[from_1_to_4_days]}
+Mails accepted older than 4 days: {mails_by_age[4_days_older]}
+
 ----- Mails by status ----------    ----- Mails by size ----------
 Active      {active_mails:<18}      Average size  {average_mail_size:10.3f} KB
 Hold        {hold_mails:<16}        Maximum size  {max_mail_size:10.3f} KB

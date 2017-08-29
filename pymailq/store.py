@@ -623,8 +623,14 @@ class PostqueueStore(object):
         status = Counter(active=0, hold=0, deferred=0)
         errors = Counter()
         total_mails_size = 0
+        average_mail_size = 0
         max_mail_size = 0
         min_mail_size = 0
+        mails_by_age = {
+            'within_24h': 0,
+            'from_1_to_4_days': 0,
+            '4_days_older': 0
+        }
 
         for mail in self.mails:
             status[mail.status] += 1
@@ -645,10 +651,20 @@ class PostqueueStore(object):
             elif mail.size < min_mail_size:
                 min_mail_size = mail.size
 
-        average_mail_size = total_mails_size / len(self.mails)
+            mail_age = datetime.now() - mail.date
+            if mail_age.days >= 4:
+                mails_by_age['4_days_older'] += 1
+            elif mail_age.days == 1:
+                mails_by_age['from_1_to_4_days'] += 1
+            elif mail_age.days == 0:
+                mails_by_age['within_24h'] += 1
+
+        if len(self.mails):
+            average_mail_size = total_mails_size / len(self.mails)
 
         summary = {
             'total_mails': len(self.mails),
+            'mails_by_age': mails_by_age,
             'total_mails_size': total_mails_size,
             'average_mail_size': average_mail_size,
             'max_mail_size': max_mail_size,
