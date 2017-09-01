@@ -1,4 +1,4 @@
-|PythonPIP|_ |PythonSupport|_ |License|_ |Codacy|_ |Coverage|_ |Travis|_
+|RTFD|_ |PythonPIP|_ |PythonSupport|_ |License|_ |Codacy|_ |Coverage|_ |Travis|_
 
 pymailq - Simple Postfix queue management
 =========================================
@@ -6,7 +6,7 @@ pymailq - Simple Postfix queue management
 | **Contact:** Denis 'jawa' Pompilio <denis.pompilio@gmail.com>
 | **Sources:** https://github.com/outini/pymailq/
 |
-| A full content documentation, is online at http://outini.github.io/pymailq/.
+| A full content documentation, is online at https://pymailq.readthedocs.io/en/latest/
 |
 | The pymailq module makes it easy to view and control Postfix mails queue. It
 | provide several classes to store, view and interact with mail queue using
@@ -33,12 +33,12 @@ Requirements
 This module actually support the following Python versions:
 
   * *Python 2.7*
-  * *Python 3*
+  * *Python 3+*
 
 A shell is provided for interactive administration. Based on Python *cmd*
 module, *readline* is highly recommended to access shell's full features. A
 full documentation on shell's usage is available at
-http://outini.github.io/pymailq/pqshell.html
+https://pymailq.readthedocs.io/en/latest/pqshell.html
 
 License
 -------
@@ -46,6 +46,8 @@ License
 "GNU GENERAL PUBLIC LICENSE" (Version 2) *(see LICENSE file)*
 
 
+.. |RTFD| image:: https://readthedocs.org/projects/pymailq/badge/?version=latest
+.. _RTFD: http://pymailq.readthedocs.io/en/latest/?badge=latest
 .. |PythonPIP| image:: https://badge.fury.io/py/pymailq.svg
 .. _PythonPIP: https://pypi.python.org/pypi/pymailq/
 .. |PythonSupport| image:: https://img.shields.io/badge/python-2.7,%203.4,%203.5,%203.6-blue.svg
