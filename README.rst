@@ -1,4 +1,4 @@
-|RTFD|_ |PythonPIP|_ |PythonSupport|_ |License|_ |Codacy|_ |Coverage|_ |Travis|_
+|PythonPIP|_ |PythonSupport|_ |License|_ |Codacy|_ |Coverage|_ |RTFD|_ |Travis|_
 
 pymailq - Simple Postfix queue management
 =========================================
@@ -163,9 +163,7 @@ License
 "GNU GENERAL PUBLIC LICENSE" (Version 2) *(see LICENSE file)*
 
 
-.. |RTFD| image:: https://readthedocs.org/projects/pymailq/badge/?version=latest
-.. _RTFD: http://pymailq.readthedocs.io/en/latest/?badge=latest
-.. |PythonPIP| image:: https://badge.fury.io/py/pymailq.svg
+.. |PythonPIP| image:: https://img.shields.io/pypi/v/pymailq.svg
 .. _PythonPIP: https://pypi.python.org/pypi/pymailq/
 .. |PythonSupport| image:: https://img.shields.io/badge/python-2.7,%203.4,%203.5,%203.6-blue.svg
 .. _PythonSupport: https://github.com/outini/pymailq/
@@ -175,6 +173,8 @@ License
 .. _Codacy: https://www.codacy.com/app/outini/pymailq
 .. |Coverage| image:: https://api.codacy.com/project/badge/Coverage/8444a0f124fe463d86a91d80a2a52e7c
 .. _Coverage: https://www.codacy.com/app/outini/pymailq
+.. |RTFD| image:: https://readthedocs.org/projects/pymailq/badge/?version=latest
+.. _RTFD: http://pymailq.readthedocs.io/en/latest/?badge=latest
 .. |Travis| image:: https://travis-ci.org/outini/pymailq.svg?branch=master
 .. _Travis: https://travis-ci.org/outini/pymailq
 
