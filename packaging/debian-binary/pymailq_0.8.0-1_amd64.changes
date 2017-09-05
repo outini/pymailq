@@ -1,0 +1,26 @@
+Format: 1.8
+Date: Tue, 29 Aug 2017 10:14:25 +0200
+Source: pymailq
+Binary: python-pymailq python3-pymailq
+Architecture: all
+Version: 0.8.0-1
+Distribution: UNRELEASED
+Urgency: low
+Maintainer: Denis Pompilio <denis.pompilio@gmail.com>
+Changed-By: Denis Pompilio <denis.pompilio@gmail.com>
+Description: 
+ python-pymailq - Postfix queue control python tool (Python 2)
+ python3-pymailq - Postfix queue control python tool (Python 3)
+Changes: 
+ pymailq (0.8.0-1) UNRELEASED; urgency=low
+ .
+   * PyMailq v0.8.0 update
+Checksums-Sha1: 
+ 11eedaadcb2a35f1ac6be6eca0e7dc2fa1286f10 29922 python-pymailq_0.8.0-0~17.30_all.deb
+ 4e93ce42a2c0ad2eab68b3c7fe512f733a47ea48 30000 python3-pymailq_0.8.0-0~17.30_all.deb
+Checksums-Sha256: 
+ 4a50597a8fcc45e8900316c9940ecf89ee4648c27448883a9ece933be9ae72be 29922 python-pymailq_0.8.0-0~17.30_all.deb
+ 3d64dd5765013e500f45eaf2609b5a5a416eda427b76b2124f9115d82095a88f 30000 python3-pymailq_0.8.0-0~17.30_all.deb
+Files: 
+ a215016dc4155c26d5d21e9ac1366c9f 29922 python optional python-pymailq_0.8.0-0~17.30_all.deb
+ 0cf6211203dcc9fbe4b5ff491c55d843 30000 python optional python3-pymailq_0.8.0-0~17.30_all.deb
