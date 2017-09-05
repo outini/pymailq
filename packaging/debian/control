@@ -1,7 +1,8 @@
 Source: pymailq
-Section: utils
-Priority: optional
 Maintainer: Denis Pompilio <denis.pompilio@gmail.com>
+Section: python
+X-Python-Version: >= 2.7
+Priority: optional
 Build-Depends: debhelper (>= 9), dh-python,
                python-all, python3-all,
                python-setuptools, python3-setuptools,
@@ -11,10 +12,32 @@ Package: python-pymailq
 Architecture: all
 Homepage: https://github.com/outini/pymailq
 Depends: ${misc:Depends}, ${python:Depends}
-Description: Postfix queue control python tool
+Conflicts: python3-pymailq
+Replaces: python3-pymailq
+Description: Postfix queue control python tool (Python 2)
+ The pymailq module makes it easy to view and control Postfix mails queue. It
+ provide several classes to store, view and interact with mail queue using
+ Postfix command line tools. This module is provided for automation and
+ monitoring developments.
+ This project also provides a shell-like to interact with Postfix mails queue.
+ It provide simple means to view the queue content, filter mails on criterias
+ like Sender or delivery errors and lead administrative operations.
+ .
+ This package installs the library for Python 2.
 
 Package: python3-pymailq
 Architecture: all
 Homepage: https://github.com/outini/pymailq
 Depends: ${misc:Depends}, ${python3:Depends}
-Description: Postfix queue control python tool
+Conflicts: python-pymailq
+Replaces: python-pymailq
+Description: Postfix queue control python tool (Python 3)
+ The pymailq module makes it easy to view and control Postfix mails queue. It
+ provide several classes to store, view and interact with mail queue using
+ Postfix command line tools. This module is provided for automation and
+ monitoring developments.
+ This project also provides a shell-like to interact with Postfix mails queue.
+ It provide simple means to view the queue content, filter mails on criterias
+ like Sender or delivery errors and lead administrative operations.
+ .
+ This package installs the library for Python 3.

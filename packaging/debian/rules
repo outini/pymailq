@@ -1,5 +1,8 @@
 #!/usr/bin/make -f
 
+#export DH_VERBOSE = 1
+
+export PYBUILD_NAME=pymailq
 export PYBUILD_SYSTEM=distutils
 export PYBUILD_DESTDIR_python2=debian/python-pymailq/
 export PYBUILD_DESTDIR_python3=debian/python3-pymailq/
