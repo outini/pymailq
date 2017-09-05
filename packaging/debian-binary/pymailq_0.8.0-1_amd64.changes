@@ -1,5 +1,5 @@
 Format: 1.8
-Date: Tue, 29 Aug 2017 10:14:25 +0200
+Date: Tue, 05 Sep 2017 16:56:17 +0200
 Source: pymailq
 Binary: python-pymailq python3-pymailq
 Architecture: all
@@ -14,13 +14,22 @@ Description:
 Changes: 
  pymailq (0.8.0-1) UNRELEASED; urgency=low
  .
-   * PyMailq v0.8.0 update
+   * [bug] Fixing handling of modifiers completion
+   * [bug] Fixing parse_error message retention
+   * [bug] Fixing size selection error when using only maximum size
+   * Removing exception StoreNotLoaded
+   * Making 'cat_message' command dynamic in Mail objects
+   * Implementation of the "long" output format
+   * Implementation of mail queue summary
+   * Implementation of Mail.show() method
+   * Implementation of selection by queue IDs
+   * Improved unittests
 Checksums-Sha1: 
- 11eedaadcb2a35f1ac6be6eca0e7dc2fa1286f10 29922 python-pymailq_0.8.0-0~17.30_all.deb
- 4e93ce42a2c0ad2eab68b3c7fe512f733a47ea48 30000 python3-pymailq_0.8.0-0~17.30_all.deb
+ 072ff0972cbc8dcb7ed7db072e6dfa6eee239e21 30128 python-pymailq_0.8.0-0~17.30_all.deb
+ bddeef04ad6094b724eb86cbfc0d87fc9dea9d87 30216 python3-pymailq_0.8.0-0~17.30_all.deb
 Checksums-Sha256: 
- 4a50597a8fcc45e8900316c9940ecf89ee4648c27448883a9ece933be9ae72be 29922 python-pymailq_0.8.0-0~17.30_all.deb
- 3d64dd5765013e500f45eaf2609b5a5a416eda427b76b2124f9115d82095a88f 30000 python3-pymailq_0.8.0-0~17.30_all.deb
+ f81b0ea4eda93a02d437e8c24d5f5d51bc72112beacda2553cd060bdaa9326f5 30128 python-pymailq_0.8.0-0~17.30_all.deb
+ 0e8371b6c697019e3cd36812666f0ac40b8ced69014d2d3dee7aa84f5b7c9e20 30216 python3-pymailq_0.8.0-0~17.30_all.deb
 Files: 
- a215016dc4155c26d5d21e9ac1366c9f 29922 python optional python-pymailq_0.8.0-0~17.30_all.deb
- 0cf6211203dcc9fbe4b5ff491c55d843 30000 python optional python3-pymailq_0.8.0-0~17.30_all.deb
+ 178a07746839e1a2ac06e78230c1a781 30128 python optional python-pymailq_0.8.0-0~17.30_all.deb
+ 2814d8483de288c666fbbe54d9322ca6 30216 python optional python3-pymailq_0.8.0-0~17.30_all.deb
