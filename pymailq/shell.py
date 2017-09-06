@@ -411,7 +411,7 @@ class PyMailqShell(cmd.Cmd):
     def _inspect_mails(self, *qids):
         """
         Show mails content
-          Usage: show mail <mail_qid>
+          Usage: inspect mails <qid> [qid] ...
         """
         mails = self.selector.get_mails_by_qids(qids)
         if not len(mails):
