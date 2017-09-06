@@ -18,6 +18,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
 import os
 import gc
 import re
@@ -224,8 +226,8 @@ class Mail(object):
             self.parse_error = "\n".join(stderr.decode().split('\n')[3:])
             return
 
-        raw_content = u""
-        for line in stdout.decode('utf8', errors='replace').split('\n'):
+        raw_content = ""
+        for line in stdout.decode('utf-8', errors='replace').split('\n'):
             if self.size == 0 and line.startswith("message_size: "):
                 self.size = int(line[14:].strip().split()[0])
             elif self.date is None and line.startswith("create_time: "):
@@ -236,8 +238,11 @@ class Mail(object):
             elif line.startswith("regular_text: "):
                 raw_content += "%s\n" % (line[14:],)
 
-        message = email.message_from_string(
-            raw_content.encode('utf8'))
+        # For python2.7 compatibility, encode unicode to str
+        if not isinstance(raw_content, str):
+            raw_content = raw_content.encode('utf-8')
+
+        message = email.message_from_string(raw_content)
 
         for header in set(message.keys()):
             value = message.get_all(header)
