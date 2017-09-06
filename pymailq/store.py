@@ -177,28 +177,17 @@ class Mail(object):
 
         :return: Representation as :class:`str`
         """
-        output = ("=== Mail %s ===\n"
-                  "Received: %s\n"
-                  "Date: %s\n"
-                  "Message-Id: %s\n"
-                  "Size: %sB\n"
-                  "Sender: %s\n"
-                  "From: %s\n"
-                  "To: %s\n"
-                  "Cc: %s\n"
-                  "Subject: %s\n")
-        return output % (
-            self.qid,
-            "\n".join(getattr(self.head, "Received", ["n/a"])),
-            getattr(self.head, "Date", ["n/a"])[0],
-            getattr(self.head, "Message-Id", ["n/a"])[0],
-            self.size,
-            getattr(self.head, "Sender", ["n/a"])[0],
-            getattr(self.head, "From", ["n/a"])[0],
-            ", ".join(getattr(self.head, "To", ["n/a"])),
-            ", ".join(getattr(self.head, "Cc", ["n/a"])),
-            getattr(self.head, "Subject", ["n/a"])[0]
-        )
+        output = "=== Mail %s ===\n" % (self.qid,)
+        for attr in sorted(dir(self.head)):
+            if attr.startswith("_"):
+                continue
+
+            value = getattr(self.head, attr)
+            if not isinstance(value, str):
+                value = ", ".join(value)
+
+            output += "%s: %s\n" % (attr, value)
+        return output
 
     @debug
     def parse(self):
@@ -235,19 +224,20 @@ class Mail(object):
             self.parse_error = "\n".join(stderr.decode().split('\n')[3:])
             return
 
-        raw_content = list()
-        for line in stdout.decode().split('\n'):
-            if self.size == 0 and line[0:14] == "message_size: ":
+        raw_content = u""
+        for line in stdout.decode('utf8', errors='replace').split('\n'):
+            if self.size == 0 and line.startswith("message_size: "):
                 self.size = int(line[14:].strip().split()[0])
-            elif self.date is None and line[0:13] == "create_time: ":
+            elif self.date is None and line.startswith("create_time: "):
                 self.date = datetime.strptime(line[13:].strip(),
                                               "%a %b %d %H:%M:%S %Y")
-            elif not len(self.sender) and line[0:8] == "sender: ":
+            elif not len(self.sender) and line.startswith("sender: "):
                 self.sender = line[8:].strip()
-            elif line[0:14] == "regular_text: ":
-                raw_content.append(line[14:])
+            elif line.startswith("regular_text: "):
+                raw_content += "%s\n" % (line[14:],)
 
-        message = email.message_from_string('\n'.join(raw_content))
+        message = email.message_from_string(
+            raw_content.encode('utf8'))
 
         for header in set(message.keys()):
             value = message.get_all(header)
