@@ -21,11 +21,13 @@
 
 from __future__ import unicode_literals
 
+import sys
 import os
 import gc
 import re
 import subprocess
 import email
+from email import header
 from collections import Counter
 from datetime import datetime, timedelta
 from pymailq import CONFIG, debug
@@ -188,6 +190,13 @@ class Mail(object):
             value = getattr(self.head, attr)
             if not isinstance(value, str):
                 value = ", ".join(value)
+
+            if attr == "Subject":
+                print(attr, value)
+                value, enc = header.decode_header(value)[0]
+                print(enc, attr, value)
+                if sys.version_info[0] == 2:
+                    value = value.decode(enc) if enc else unicode(value)
 
             output += "%s: %s\n" % (attr, value)
         return output

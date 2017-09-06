@@ -71,7 +71,9 @@ class PyMailqShell(cmd.Cmd):
 
     def respond(self, answer):
         """Send response"""
-        self.stdout.write(str(answer) + '\n')
+        if not isinstance(answer, str):
+            answer = answer.encode('utf-8')
+        self.stdout.write('%s\n' % answer)
 
     # Internal functions
     def emptyline(self):
