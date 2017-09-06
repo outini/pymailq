@@ -36,7 +36,7 @@ To: User $2 <user-$2@test-domain.tld>
 Cc: Carbon User <carbon-user@test-domain.tld>
 Subject: Test email from sender-$1
 
-$3
+é $3
 EOF
 }
 
