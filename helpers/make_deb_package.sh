@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+PACKAGING_DIR="packaging"
+
 requirements="
 debhelper
 devscripts
@@ -22,6 +24,9 @@ grep -q '^un' <<< "$dpkg_output" && {
     }
     sudo apt-get install -qq $requirements
 }
+
+[ -d "$PACKAGING_DIR" ] || { echo "Packaging directory not found."; exit 2; }
+cd "$PACKAGING_DIR"
 
 # Preparing build directory
 [ -d build ] && { echo "Cleaning build directory."; rm -r build; }

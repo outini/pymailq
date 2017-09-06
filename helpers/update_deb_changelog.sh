@@ -1,7 +1,9 @@
 #! /bin/bash
 
-VERSION=$(cat ../VERSION)
-CHANGES=../CHANGES
+PACKAGING_DIR="packaging"
+
+VERSION=$(cat "VERSION")
+CHANGES="CHANGES"
 DEB_DISTRO="UNRELEASED"
 
 get_changes() {
@@ -15,6 +17,9 @@ get_changes() {
         }
     ' "$CHANGES"
 }
+
+[ -d "$PACKAGING_DIR" ] || { echo "Packaging directory not found."; exit 2; }
+cd "$PACKAGING_DIR"
 
 read -p "Updating changelog with CHANGES content.
 Don't forget to export DEB variables:
