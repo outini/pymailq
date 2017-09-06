@@ -45,7 +45,8 @@ class PyMailqShell(cmd.Cmd):
     do_select = None
     do_super = None
 
-    def __init__(self, completekey='tab', stdin=None, stdout=None):
+    def __init__(self, completekey='tab', stdin=None, stdout=None,
+                 store_auto_load=False):
         """Init method"""
         cmd.Cmd.__init__(self, completekey, stdin, stdout)
 
@@ -62,6 +63,10 @@ class PyMailqShell(cmd.Cmd):
         self.pstore = store.PostqueueStore()
         self.selector = selector.MailSelector(self.pstore)
         self.qcontrol = control.QueueControl()
+
+        if store_auto_load:
+            self.respond("Loading mails queue content to store")
+            self._store_load()
 
     def respond(self, answer):
         """Send response"""

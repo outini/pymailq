@@ -31,6 +31,7 @@ OPTIONS
     --debug              activate shell debug and timing info
     --config CFG_FILE    specify a configuration file for PyMailq
     --summary            show mails queue summary and exit
+    --no-auto-load       deactivate store auto load at shell startup
 
 SHELL COMMANDS
 **************

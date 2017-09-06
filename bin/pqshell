@@ -58,9 +58,9 @@ Domains     {u_s_domains:<17}       Domains       {u_r_domains:>10}
 """
 
 
-def main():
+def main(store_auto_load=True):
     """main function"""
-    cli = shell.PyMailqShell()
+    cli = shell.PyMailqShell(store_auto_load=store_auto_load)
     cli.cmdloop_nointerrupt()
 
 
@@ -77,6 +77,9 @@ if __name__ == "__main__":
     parser.add_argument('--summary', dest='summary', action='store_const',
                         const=True, default=False,
                         help='summarize the mails queue content')
+    parser.add_argument('--no-auto-load', dest='noautoload',
+                        action='store_const', const=True, default=False,
+                        help='deactivate store auto load at shell startup')
 
     args = parser.parse_args()
 
@@ -114,4 +117,6 @@ if __name__ == "__main__":
         print(SUMMARY.format(**data))
         exit()
 
-    main()
+    auto_load = False if args.noautoload else True
+
+    main(store_auto_load=auto_load)
