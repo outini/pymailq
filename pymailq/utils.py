@@ -1,3 +1,4 @@
+# coding: utf-8
 #
 #    Postfix queue control python tool (pymailq)
 #
