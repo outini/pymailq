@@ -7,7 +7,7 @@ export PYBUILD_SYSTEM=distutils
 export PYBUILD_DESTDIR_python2=debian/python-pymailq/
 export PYBUILD_DESTDIR_python3=debian/python3-pymailq/
 
-VERSION = 0.8.0
+VERSION = 0.9.0
 DISTRIBUTION = $(shell lsb_release -sr)
 PACKAGEVERSION = $(VERSION)-0~$(DISTRIBUTION)0
 TARBALL = v$(VERSION).tar.gz

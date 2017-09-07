@@ -1,0 +1,32 @@
+Format: 1.8
+Date: Thu, 07 Sep 2017 14:58:29 +0200
+Source: pymailq
+Binary: python-pymailq python3-pymailq
+Architecture: all
+Version: 0.9.0-1
+Distribution: unstable
+Urgency: low
+Maintainer: Denis Pompilio <denis.pompilio@gmail.com>
+Changed-By: Denis Pompilio <denis.pompilio@gmail.com>
+Description: 
+ python-pymailq - Postfix queue control python tool (Python 2)
+ python3-pymailq - Postfix queue control python tool (Python 3)
+Changes: 
+ pymailq (0.9.0-1) unstable; urgency=low
+ .
+   * Update to upstream version v0.9.0
+   * [bug] Fixing wrong usage for command inspect
+   * Auto-decoding encoded mail subjects
+   * Better encoding support for python2.7 and python3+
+   * Mail.show() method now display every mail headers
+   * Implementation of store auto loading
+   * Added Debian binary packages
+Checksums-Sha1: 
+ 00415404b3824f6313b87cf3a9fe2dc9dd65e0e0 33808 python-pymailq_0.9.0-0~17.30_all.deb
+ d1cb8c1a2ca5046d6f09296f73587f836f2d9384 33880 python3-pymailq_0.9.0-0~17.30_all.deb
+Checksums-Sha256: 
+ 2110c37043c20c072cec31815df5497d40362ff07c9b4dad3f9b021be99da2eb 33808 python-pymailq_0.9.0-0~17.30_all.deb
+ 827b263401fa9be5f4e15ae46e97e6afbb99efa5da5e74f665e4e04706ca6723 33880 python3-pymailq_0.9.0-0~17.30_all.deb
+Files: 
+ f5f5fcb07268d261ce5247d200ec4808 33808 python optional python-pymailq_0.9.0-0~17.30_all.deb
+ f594ca98ddd1c0f471f71a3f75466be0 33880 python optional python3-pymailq_0.9.0-0~17.30_all.deb
