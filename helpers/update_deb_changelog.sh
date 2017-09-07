@@ -2,22 +2,24 @@
 
 PACKAGING_DIR="packaging"
 
-VERSION=$(cat "VERSION")
+VERSION=$(cat "VERSION" 2>/dev/null)
 CHANGES="CHANGES"
-DEB_DISTRO="UNRELEASED"
+DEB_DISTRO="unstable"
 
 get_changes() {
     sed -n '
-        /=== v'${VERSION}' /{
+        /=== v'$1' /{
             :getchange
             s/.*//;n
             /^\s*$/q
             s/^\s*[*-]\s\+\(.*\)/\1/p
             bgetchange
         }
-    ' "$CHANGES"
+    ' "$2"
 }
 
+[ -z "$VERSION" ] && { echo "Unable to get current version."; exit 2; }
+[ -f "$CHANGES" ] || { echo "File $CHANGES not found."; exit 2; }
 [ -d "$PACKAGING_DIR" ] || { echo "Packaging directory not found."; exit 2; }
 cd "$PACKAGING_DIR"
 
@@ -27,8 +29,9 @@ Don't forget to export DEB variables:
   DEBFULLNAME='${DEBFULLNAME}'
 proceed ? (^C to abort)"
 
-get_changes | while read changeline; do
+debchange -D "$DEB_DISTRO" -u low -i "Update to upstream version v$VERSION"
+get_changes "$VERSION" "../$CHANGES" | while read changeline; do
+    echo "Adding change: $changeline"
     debchange -a "$changeline"
 done
-
-debchange --distribution "$DEB_DISTRO" -r
+debchange -r

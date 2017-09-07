@@ -43,7 +43,8 @@ mkdir build && cp -a debian build/ &&
 # Verify your build
 echo "Running lintian and inspecting package content."
 lintian -IviE --display-experimental --pedantic -L ">=wishlist" \
-        --color auto --show-overrides --checksums $change_file
+        --color auto --show-overrides --checksums  --profile debian \
+        $change_file
 
 echo "Showing packages infos and content."
 for pkg in $packages; do
