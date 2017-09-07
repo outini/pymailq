@@ -1,10 +1,16 @@
 #! /bin/bash
 
 
+VERSION_FILE="VERSION"
 LIB_FILE="pymailq/__init__.py"
 SETUP_FILE="setup.py"
 CHANGES_FILE="CHANGES"
 
+
+update_master_version() {
+    echo "Updating master version: $VERSION_FILE"
+    echo $1 > $VERSION_FILE
+}
 
 update_lib_version() {
     echo "Updating libraries: $LIB_FILE"
@@ -43,6 +49,7 @@ while getopts :v: opt; do
 done
 
 echo "Updating to version $version"
+update_master_version $version
 update_lib_version $version
 update_setup_version $version
 create_changes_entry $version
