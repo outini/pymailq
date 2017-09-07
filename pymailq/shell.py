@@ -1,3 +1,4 @@
+# coding: utf-8
 #
 #    Postfix queue control python tool (pymailq)
 #
@@ -45,7 +46,8 @@ class PyMailqShell(cmd.Cmd):
     do_select = None
     do_super = None
 
-    def __init__(self, completekey='tab', stdin=None, stdout=None):
+    def __init__(self, completekey='tab', stdin=None, stdout=None,
+                 store_auto_load=False):
         """Init method"""
         cmd.Cmd.__init__(self, completekey, stdin, stdout)
 
@@ -63,9 +65,15 @@ class PyMailqShell(cmd.Cmd):
         self.selector = selector.MailSelector(self.pstore)
         self.qcontrol = control.QueueControl()
 
+        if store_auto_load:
+            self.respond("Loading mails queue content to store")
+            self._store_load()
+
     def respond(self, answer):
         """Send response"""
-        self.stdout.write(str(answer) + '\n')
+        if not isinstance(answer, str):
+            answer = answer.encode('utf-8')
+        self.stdout.write('%s\n' % answer)
 
     # Internal functions
     def emptyline(self):
@@ -197,6 +205,7 @@ class PyMailqShell(cmd.Cmd):
                 'error': ['<error_msg>'],
                 'rmfilter': ['<filterid>'],
                 'sender': ['<sender> [exact]'],
+                'recipient': ['<recipient> [exact]'],
                 'size': ['<-n|n|+n> [-n]'],
                 'status': ['<status>']
             }
@@ -317,6 +326,17 @@ class PyMailqShell(cmd.Cmd):
             exact = True
         self.selector.lookup_sender(sender=sender, exact=exact)
 
+    def _select_recipient(self, recipient, exact=False):
+        """
+        Select mails to recipient
+          Usage: select recipient <recipient> [exact]
+        """
+        if exact is not False:  # received from command line
+            if exact != "exact":
+                raise SyntaxError("invalid keyword: %s" % exact)
+            exact = True
+        self.selector.lookup_recipient(recipient=recipient, exact=exact)
+
     def _select_size(self, size_a, size_b=None):
         """
         Select mails by size in Bytes
@@ -399,7 +419,7 @@ class PyMailqShell(cmd.Cmd):
     def _inspect_mails(self, *qids):
         """
         Show mails content
-          Usage: show mail <mail_qid>
+          Usage: inspect mails <qid> [qid] ...
         """
         mails = self.selector.get_mails_by_qids(qids)
         if not len(mails):

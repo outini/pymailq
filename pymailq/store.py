@@ -1,3 +1,4 @@
+# coding: utf-8
 #
 #    Postfix queue control python tool (pymailq)
 #
@@ -18,11 +19,15 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import unicode_literals
+
+import sys
 import os
 import gc
 import re
 import subprocess
 import email
+from email import header
 from collections import Counter
 from datetime import datetime, timedelta
 from pymailq import CONFIG, debug
@@ -177,28 +182,24 @@ class Mail(object):
 
         :return: Representation as :class:`str`
         """
-        output = ("=== Mail %s ===\n"
-                  "Received: %s\n"
-                  "Date: %s\n"
-                  "Message-Id: %s\n"
-                  "Size: %sB\n"
-                  "Sender: %s\n"
-                  "From: %s\n"
-                  "To: %s\n"
-                  "Cc: %s\n"
-                  "Subject: %s\n")
-        return output % (
-            self.qid,
-            "\n".join(getattr(self.head, "Received", ["n/a"])),
-            getattr(self.head, "Date", ["n/a"])[0],
-            getattr(self.head, "Message-Id", ["n/a"])[0],
-            self.size,
-            getattr(self.head, "Sender", ["n/a"])[0],
-            getattr(self.head, "From", ["n/a"])[0],
-            ", ".join(getattr(self.head, "To", ["n/a"])),
-            ", ".join(getattr(self.head, "Cc", ["n/a"])),
-            getattr(self.head, "Subject", ["n/a"])[0]
-        )
+        output = "=== Mail %s ===\n" % (self.qid,)
+        for attr in sorted(dir(self.head)):
+            if attr.startswith("_"):
+                continue
+
+            value = getattr(self.head, attr)
+            if not isinstance(value, str):
+                value = ", ".join(value)
+
+            if attr == "Subject":
+                print(attr, value)
+                value, enc = header.decode_header(value)[0]
+                print(enc, attr, value)
+                if sys.version_info[0] == 2:
+                    value = value.decode(enc) if enc else unicode(value)
+
+            output += "%s: %s\n" % (attr, value)
+        return output
 
     @debug
     def parse(self):
@@ -235,19 +236,23 @@ class Mail(object):
             self.parse_error = "\n".join(stderr.decode().split('\n')[3:])
             return
 
-        raw_content = list()
-        for line in stdout.decode().split('\n'):
-            if self.size == 0 and line[0:14] == "message_size: ":
+        raw_content = ""
+        for line in stdout.decode('utf-8', errors='replace').split('\n'):
+            if self.size == 0 and line.startswith("message_size: "):
                 self.size = int(line[14:].strip().split()[0])
-            elif self.date is None and line[0:13] == "create_time: ":
+            elif self.date is None and line.startswith("create_time: "):
                 self.date = datetime.strptime(line[13:].strip(),
                                               "%a %b %d %H:%M:%S %Y")
-            elif not len(self.sender) and line[0:8] == "sender: ":
+            elif not len(self.sender) and line.startswith("sender: "):
                 self.sender = line[8:].strip()
-            elif line[0:14] == "regular_text: ":
-                raw_content.append(line[14:])
+            elif line.startswith("regular_text: "):
+                raw_content += "%s\n" % (line[14:],)
 
-        message = email.message_from_string('\n'.join(raw_content))
+        # For python2.7 compatibility, encode unicode to str
+        if not isinstance(raw_content, str):
+            raw_content = raw_content.encode('utf-8')
+
+        message = email.message_from_string(raw_content)
 
         for header in set(message.keys()):
             value = message.get_all(header)
@@ -623,8 +628,14 @@ class PostqueueStore(object):
         status = Counter(active=0, hold=0, deferred=0)
         errors = Counter()
         total_mails_size = 0
+        average_mail_size = 0
         max_mail_size = 0
         min_mail_size = 0
+        mails_by_age = {
+            'last_24h': 0,
+            '1_to_4_days_ago': 0,
+            'older_than_4_days': 0
+        }
 
         for mail in self.mails:
             status[mail.status] += 1
@@ -645,10 +656,20 @@ class PostqueueStore(object):
             elif mail.size < min_mail_size:
                 min_mail_size = mail.size
 
-        average_mail_size = total_mails_size / len(self.mails)
+            mail_age = datetime.now() - mail.date
+            if mail_age.days >= 4:
+                mails_by_age['older_than_4_days'] += 1
+            elif mail_age.days == 1:
+                mails_by_age['1_to_4_days_ago'] += 1
+            elif mail_age.days == 0:
+                mails_by_age['last_24h'] += 1
+
+        if len(self.mails):
+            average_mail_size = total_mails_size / len(self.mails)
 
         summary = {
             'total_mails': len(self.mails),
+            'mails_by_age': mails_by_age,
             'total_mails_size': total_mails_size,
             'average_mail_size': average_mail_size,
             'max_mail_size': max_mail_size,

@@ -13,7 +13,7 @@ SYNOPSIS
 
 ::
 
-    pqshell [-h] [--version] [--debug] [--config CFG_FILE] [--summary]
+    pqshell [OPTION]...
 
 FEATURES
 ********
@@ -31,6 +31,7 @@ OPTIONS
     --debug              activate shell debug and timing info
     --config CFG_FILE    specify a configuration file for PyMailq
     --summary            show mails queue summary and exit
+    --no-auto-load       deactivate store auto load at shell startup
 
 SHELL COMMANDS
 **************
@@ -110,6 +111,11 @@ select
             Select mails from sender.
 
             Usage: ``select sender <sender> [exact]``
+            
+        **recipient**
+            Select mails to recipient.
+
+            Usage: ``select recipient <recipient> [exact]``
 
         **size**
             Select mails by size in Bytes. Signs - and + are supported, if not

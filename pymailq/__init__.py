@@ -1,3 +1,4 @@
+# coding: utf-8
 #
 #    Postfix queue control python tool (pymailq)
 #
@@ -32,7 +33,7 @@ except ImportError:
 DEBUG = False
 
 #: Current version of the package as :class:`str`.
-VERSION = "0.8.0"
+VERSION = "0.9.0"
 
 #: Module configuration as :class:`dict`.
 CONFIG = {

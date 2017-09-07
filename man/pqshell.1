@@ -1,6 +1,6 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "PQSHELL" "1" "Aug 28, 2017" "0.8" "PyMailq"
+.TH "PQSHELL" "1" "Sep 07, 2017" "0.9" "PyMailq"
 .SH NAME
 pqshell \- A shell-like to interact with a Postfix mails queue
 .
@@ -41,7 +41,7 @@ means to view the queue content, filter mails on criterias like \fISender\fP or
 .sp
 .nf
 .ft C
-pqshell [\-h] [\-\-version] [\-\-debug] [\-\-config CFG_FILE] [\-\-summary]
+pqshell [OPTION]...
 .ft P
 .fi
 .UNINDENT
@@ -76,6 +76,9 @@ specify a configuration file for PyMailq
 .TP
 .B \-\-summary
 show mails queue summary and exit
+.TP
+.B \-\-no\-auto\-load
+deactivate store auto load at shell startup
 .UNINDENT
 .UNINDENT
 .UNINDENT
@@ -181,6 +184,11 @@ Usage: \fBselect rmfilter <filterid>\fP
 Select mails from sender.
 .sp
 Usage: \fBselect sender <sender> [exact]\fP
+.TP
+\fBrecipient\fP
+Select mails to recipient.
+.sp
+Usage: \fBselect recipient <recipient> [exact]\fP
 .TP
 \fBsize\fP
 Select mails by size in Bytes. Signs \- and + are supported, if not
