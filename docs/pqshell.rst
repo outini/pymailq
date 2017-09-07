@@ -13,7 +13,7 @@ SYNOPSIS
 
 ::
 
-    pqshell [-h] [--version] [--debug] [--config CFG_FILE] [--summary]
+    pqshell [OPTION]...
 
 FEATURES
 ********
