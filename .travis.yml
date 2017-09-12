@@ -12,5 +12,6 @@ install:
   - python ./setup.py install
 before_script:
   - sudo ./tests/generate_samples.sh
+  - sudo mailq
 script:
   - pytest tests/
