@@ -366,7 +366,7 @@ class PostqueueStore(object):
     postqueue_cmd = None
     spool_path = None
     postqueue_mailstatus = ['active', 'deferred', 'hold']
-    mail_id_re = re.compile(r"^[A-F0-9]{10,12}[*!]?$")
+    mail_id_re = re.compile(r"^[A-F0-9]{8,12}[*!]?$")
     mail_addr_re = re.compile(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]+$")
     MailClass = Mail
 
