@@ -30,6 +30,8 @@ gen_mail() {
     sendmail -f "sender-$1@test-domain.tld" \
              -r "sender-$1@test-domain.tld" \
              "user-$2@test-domain.tld" <<EOF
+X-generated: true
+X-random-$1: $1-$2
 Sender: sender-$1@test-domain.tld
 From: Sender $1 <sender-$1@test-domain.tld>
 To: User $2 <user-$2@test-domain.tld>
