@@ -1,5 +1,8 @@
 #! /bin/bash
 
+# You may validate your documentation with:
+#   (cd docs && make html && xdg-open _build/html/index.html)
+
 DOCS_DIR="docs"
 MAN_DIR="man"
 
