@@ -207,14 +207,6 @@ def test_control_unknown_command():
     pymailq.CONFIG['commands']['hold_message'] = orig_command
 
 
-def test_control_as_user():
-    """Test QueueControl.hold_messages"""
-    pymailq.CONFIG['commands']['use_sudo'] = False
-    with pytest.raises(RuntimeError) as exc:
-        QCONTROL.hold_messages([store.Mail('XXXXXXXXX')])
-    assert "postsuper: fatal: use of this command" in str(exc.value)
-
-
 def test_control_nothing_done():
     """Test QueueControl on unexistent mail ID"""
     pymailq.CONFIG['commands']['use_sudo'] = True

@@ -171,13 +171,6 @@ def test_shell_store_status_loaded():
     assert "store loaded with " in resp
 
 
-def test_shell_inspect_mails_as_user():
-    """Test 'inspect mails' command as user"""
-    CONFIG['commands']['use_sudo'] = False
-    resp = run_cmd("inspect mails %s" % PQSHELL.pstore.mails[0].qid)
-    assert 'Permission denied' in resp
-
-
 def test_shell_inspect_mails_not_found():
     resp = run_cmd("inspect mails XXXXXXXX")
     assert 'Mail IDs not found' in resp
