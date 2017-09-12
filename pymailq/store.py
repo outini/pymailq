@@ -254,9 +254,9 @@ class Mail(object):
 
         message = email.message_from_string(raw_content)
 
-        for header in set(message.keys()):
-            value = message.get_all(header)
-            setattr(self.head, header, value)
+        for mailheader in set(message.keys()):
+            value = message.get_all(mailheader)
+            setattr(self.head, mailheader, value)
 
         self.parsed = True
 
@@ -284,9 +284,11 @@ class Mail(object):
             if attr[0] != "_" and attr != 'head':
                 datas['postqueue'].update({attr: getattr(self, attr)})
 
-        for header in self.head.__dict__:
-            if header[0] != "_":
-                datas['headers'].update({header: getattr(self.head, header)})
+        for mailheader in self.head.__dict__:
+            if mailheader[0] != "_":
+                datas['headers'].update(
+                    {mailheader: getattr(self.head, mailheader)}
+                )
 
         return datas
 
