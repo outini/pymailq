@@ -382,6 +382,20 @@ class PostqueueStore(object):
         self.loaded_at = None
         self.mails = []
 
+    @property
+    @debug
+    def known_headers(self):
+        """Return known headers from loaded mails
+
+        :return: headers as :func:`set`
+        """
+        headers = set()
+        for mail in self.mails:
+            for mailheader in dir(mail.head):
+                if not mailheader.startswith("_"):
+                    headers.add(mailheader)
+        return headers
+
     @debug
     def _get_postqueue_output(self):
         """
