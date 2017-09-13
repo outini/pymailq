@@ -441,7 +441,7 @@ class PostqueueStore(object):
         return True
 
     @debug
-    def _load_from_postqueue(self, filename=None):
+    def _load_from_postqueue(self, filename=None, parse=False):
         """
         Load content from postfix queue using postqueue command output.
 
@@ -479,6 +479,9 @@ class PostqueueStore(object):
         output of the `postqueue`_ command. In this case, output lines of
         `postqueue`_ command are directly read from ``filename`` and parsed,
         the `postqueue`_ command is never used.
+
+        Optionnal argument ``parse`` controls whether mails are parsed or not.
+        This is useful to load every known mail headers for later filtering.
         """
         if filename is None:
             postqueue_output = self._get_postqueue_output()
@@ -527,6 +530,10 @@ class PostqueueStore(object):
                     if self.mail_addr_re.match(rcpt_email_addr):
                         mail.recipients.append(rcpt_email_addr)
 
+        if parse:
+            print("parsing mails")
+            [mail.parse() for mail in self.mails]
+
     @debug
     def _load_from_spool(self):
         """
@@ -560,7 +567,7 @@ class PostqueueStore(object):
         """Unimplemented method"""
 
     @debug
-    def load(self, method="postqueue", filename=None):
+    def load(self, method="postqueue", filename=None, parse=False):
         """
         Load content from postfix mails queue.
 
@@ -582,9 +589,9 @@ class PostqueueStore(object):
 
         self.mails = []
         if filename is None:
-            getattr(self, "_load_from_{0}".format(method))()
+            getattr(self, "_load_from_{0}".format(method))(parse=parse)
         else:
-            getattr(self, "_load_from_{0}".format(method))(filename)
+            getattr(self, "_load_from_{0}".format(method))(filename, parse)
         self.loaded_at = datetime.now()
 
     @debug
