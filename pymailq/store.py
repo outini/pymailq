@@ -482,6 +482,9 @@ class PostqueueStore(object):
 
         Optionnal argument ``parse`` controls whether mails are parsed or not.
         This is useful to load every known mail headers for later filtering.
+
+        :param str filename: File to load mails from
+        :param bool parse: Controls whether loaded mails are parsed or not.
         """
         if filename is None:
             postqueue_output = self._get_postqueue_output()
@@ -535,7 +538,7 @@ class PostqueueStore(object):
             [mail.parse() for mail in self.mails]
 
     @debug
-    def _load_from_spool(self):
+    def _load_from_spool(self, parse=True):
         """
         Load content from postfix queue using files from spool.
 
@@ -544,8 +547,13 @@ class PostqueueStore(object):
         be missing using the :meth:`~store.PostqueueStore._load_from_spool`
         method, including at least :attr:`Mail.status` field.
 
+        Optionnal argument ``parse`` controls whether mails are parsed or not.
+        This is useful to load every known mail headers for later filtering.
+
         Loaded mails are stored as :class:`~store.Mail` objects in
         :attr:`~PostqueueStore.mails` attribute.
+
+        :param bool parse: Controls whether loaded mails are parsed or not.
 
         .. warning::
 
@@ -577,8 +585,12 @@ class PostqueueStore(object):
         method is set to ``"postqueue"`` and the standard Postfix queue
         control tool: `postqueue`_ is used.
 
+        Optionnal argument ``parse`` controls whether mails are parsed or not.
+        This is useful to load every known mail headers for later filtering.
+
         :param str method: Method used to load mails from Postfix queue
         :param str filename: File to load mails from
+        :param bool parse: Controls whether loaded mails are parsed or not.
 
         Provided method :func:`str` name is directly used with :func:`getattr`
         to find a *self._load_from_<method>* method.
