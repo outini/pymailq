@@ -142,6 +142,39 @@ class MailSelector(object):
 
     @debug
     @filter_registration
+    def lookup_header(self, header, value, exact=True):
+        """
+        Lookup mail headers with specified value.
+
+        :param str header: Header name to filter on.
+        :param str value: Header value to filter on.
+        :param bool exact: Allow lookup with partial or exact match
+
+        :return: List of newly selected :class:`~store.Mail` objects
+        :rtype: :func:`list`
+        """
+        matches = []
+        for mail in self.mails:
+            header_value = getattr(mail.head, header, None)
+            if not header_value:
+                continue
+
+            if not isinstance(header_value, list):
+                header_value = [header_value]
+
+            if exact and value in header_value:
+                matches.append(mail)
+            elif not exact:
+                for entry in header_value:
+                    if value in entry:
+                        matches.append(mail)
+                        break
+
+        self.mails = matches
+        return self.mails
+
+    @debug
+    @filter_registration
     def lookup_status(self, status):
         """
         Lookup mails with specified postqueue status.
